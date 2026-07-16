@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Preoperacional — Falabella Home Delivery</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{--green:#00A14B;--green-d:#007A38;--green-l:#E6F7EE;--dark:#111827;--gray-7:#374151;--gray-5:#6B7280;--gray-3:#D1D5DB;--gray-1:#F3F4F6;--white:#FFFFFF;--danger:#DC2626;--danger-l:#FEE2E2;--warn:#D97706;--warn-l:#FEF3C7;--r:12px;--r-sm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{font-size:16px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gray-1);color:var(--dark);min-height:100vh;max-width:480px;margin:0 auto;}
+
+.header{background:var(--green);color:white;padding:16px 20px 18px;position:sticky;top:0;z-index:50;}
+.header-brand{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.75;margin-bottom:2px;}
+.header-title{font-size:20px;font-weight:700;}
+.header-sub{font-size:12px;opacity:.8;margin-top:2px;}
+
+.stepper{background:var(--green-d);padding:10px 20px 12px;position:sticky;top:76px;z-index:49;}
+.stepper-track{height:4px;background:rgba(255,255,255,.25);border-radius:2px;overflow:hidden;}
+.stepper-fill{height:100%;background:white;border-radius:2px;transition:width .4s ease;}
+.stepper-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.sl{font-size:10px;color:rgba(255,255,255,.55);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.sl.active{color:white;}
+
+.step{display:none;padding:18px 16px 110px;animation:fi .2s ease;}
+.step.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.step-eyebrow{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px;}
+.step-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:3px;}
+.step-sub{font-size:13px;color:var(--gray-5);margin-bottom:18px;}
+
+.card{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.field{margin-bottom:14px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px;border-radius:var(--r-sm);border:1.5px solid var(--gray-3);background:var(--white);font-size:16px;font-family:inherit;color:var(--dark);-webkit-appearance:none;transition:border-color .15s;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236B7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(0,161,75,.12);}
+.field textarea{resize:none;min-height:80px;}
+.field.error input,.field.error select{border-color:var(--danger);}
+
+.sec-label{font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--gray-3);}
+
+.score-wrap{background:var(--white);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.score-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+.score-num{font-size:26px;font-weight:800;color:var(--green);}
+.score-of{font-size:13px;color:var(--gray-5);}
+.s-track{height:7px;background:var(--gray-1);border-radius:4px;overflow:hidden;}
+.s-fill{height:100%;border-radius:4px;transition:width .35s,background .35s;}
+.s-msg{font-size:12px;color:var(--gray-5);margin-top:5px;}
+
+.cl{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;background:var(--white);border-radius:var(--r);border:1.5px solid var(--gray-3);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05);min-height:62px;}
+.ci.ok{border-color:var(--green);background:var(--green-l);}
+.ci.fail{border-color:var(--danger);background:var(--danger-l);}
+.ci-left{flex:1;padding:12px 14px;cursor:pointer;user-select:none;}
+.ci-name{font-size:15px;font-weight:600;color:var(--dark);}
+.ci.ok .ci-name{color:var(--green-d);}
+.ci.fail .ci-name{color:var(--danger);}
+.ci-hint{font-size:12px;color:var(--gray-5);margin-top:2px;}
+.ci-btns{display:flex;flex-shrink:0;}
+.cbtn{width:56px;min-height:62px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;border-left:1px solid var(--gray-3);}
+.ci.ok .cbtn.ob{background:var(--green);color:white;}
+.ci.fail .cbtn.fb{background:var(--danger);color:white;}
+.cbtn.ob{color:var(--gray-3);}
+.cbtn.fb{color:var(--gray-3);}
+.ci-note{display:none;padding:0 12px 10px;}
+.ci.fail .ci-note{display:block;}
+.ci-note input{width:100%;padding:8px 10px;font-size:14px;border-radius:6px;border:1px solid var(--danger);background:white;color:var(--dark);font-family:inherit;}
+.ci-note input:focus{outline:none;}
+
+/* ── FOTOS ── */
+.foto-header{background:var(--white);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.foto-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.foto-counter{font-size:26px;font-weight:800;color:var(--green);}
+.foto-counter-of{font-size:13px;color:var(--gray-5);}
+.foto-req-bar{height:7px;background:var(--gray-1);border-radius:4px;overflow:hidden;}
+.foto-req-fill{height:100%;border-radius:4px;transition:width .35s,background .35s;background:var(--green);}
+.foto-req-msg{font-size:12px;margin-top:5px;}
+
+.foto-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.foto-slot{border-radius:var(--r);overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--gray-1);border:2px dashed var(--gray-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.foto-slot.captured{border:2px solid var(--green);background:#000;}
+.foto-slot.required-missing{border:2px dashed var(--danger);background:var(--danger-l);}
+.foto-slot:active{opacity:.85;}
+.foto-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.foto-slot-icon{font-size:28px;color:var(--gray-3);z-index:1;}
+.foto-slot.required-missing .foto-slot-icon{color:var(--danger);}
+.foto-slot-label{font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;z-index:1;text-align:center;padding:0 6px;}
+.foto-slot.required-missing .foto-slot-label{color:var(--danger);}
+.foto-slot.captured .foto-slot-label{display:none;}
+.foto-badge{position:absolute;top:6px;left:6px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;z-index:2;}
+.foto-badge-req{background:var(--danger);}
+.foto-delete{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:white;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;}
+.foto-watermark-info{background:var(--dark);color:white;font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;position:absolute;bottom:6px;left:6px;right:6px;text-align:center;z-index:2;opacity:.85;}
+
+.banner{border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.banner.warn{background:var(--warn-l);color:#92400E;}
+.banner.danger{background:var(--danger-l);color:#991B1B;}
+.banner.ok-b{background:var(--green-l);color:var(--green-d);}
+.banner.info-b{background:#E0F2FE;color:#075985;}
+.banner i{font-size:17px;flex-shrink:0;margin-top:1px;}
+
+.gps-bar{background:var(--green-l);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--green-d);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.gps-bar i{font-size:16px;}
+.gps-bar.warn{background:var(--warn-l);color:#92400E;}
+.gps-bar.error{background:var(--danger-l);color:#991B1B;}
+
+.firma-wrap{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.firma-lbl{font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;}
+#fcanvas{width:100%;height:150px;border:1.5px dashed var(--gray-3);border-radius:var(--r-sm);display:block;background:var(--gray-1);touch-action:none;cursor:crosshair;}
+#fcanvas.signed{border-style:solid;border-color:var(--green);background:white;}
+.firma-hint{font-size:12px;color:var(--gray-5);margin-top:5px;text-align:center;}
+.btn-cf{background:none;border:none;color:var(--danger);font-size:12px;font-family:inherit;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:4px;margin-top:3px;}
+
+.res-grid{display:flex;gap:8px;margin-top:10px;}
+.res-box{flex:1;border-radius:10px;padding:11px;text-align:center;}
+.res-num{font-size:24px;font-weight:800;}
+.res-lbl{font-size:10px;font-weight:700;}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:white;border-top:1px solid var(--gray-3);padding:12px 16px env(safe-area-inset-bottom);display:flex;gap:10px;z-index:100;}
+.btn-back{flex:1;padding:14px;border-radius:var(--r);border:1.5px solid var(--gray-3);background:white;font-size:15px;font-weight:700;color:var(--gray-7);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-next{flex:2;padding:14px;border-radius:var(--r);border:none;background:var(--green);font-size:15px;font-weight:700;color:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-next:active{background:var(--green-d);}
+.btn-next i,.btn-back i{font-size:18px;}
+
+.success{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:32px 20px;text-align:center;}
+.success.active{display:flex;}
+.sico{width:76px;height:76px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.sico i{font-size:38px;color:var(--green);}
+.stitle{font-size:24px;font-weight:800;margin-bottom:8px;}
+.ssub{font-size:15px;color:var(--gray-5);line-height:1.5;}
+.scode{background:var(--dark);color:white;font-size:22px;font-weight:800;letter-spacing:3px;padding:12px 28px;border-radius:var(--r);margin:18px 0;font-family:monospace;}
+.btn-nuevo{margin-top:20px;background:var(--green);color:white;border:none;padding:16px 32px;border-radius:var(--r);font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;}
+
+.saving-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.saving-overlay.active{display:flex;}
+.saving-spinner{width:48px;height:48px;border:4px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;}
+.saving-txt{color:white;font-size:16px;font-weight:600;text-align:center;padding:0 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Hidden canvas for watermark processing */
+#wm-canvas{display:none;}
+input[type=file]{display:none;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <!-- Logo Falabella -->
+    <svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <rect width="100" height="100" rx="26" fill="#ABC81C"/>
+      <text x="45" y="76" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="80" fill="#FFFFFF" text-anchor="middle">f</text>
+      <circle cx="73" cy="68" r="7" fill="#FFFFFF"/>
+    </svg>
+    <div>
+      <div style="font-size:16px;font-weight:800;line-height:1.1;letter-spacing:-.3px;">falabella<span style="opacity:.85">.</span></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;">Home Delivery</div>
+    </div>
+  </div>
+  <div style="font-size:15px;font-weight:700;opacity:.95;margin-bottom:1px;">Preoperacional de vehículo</div>
+  <div class="header-sub" id="hdate"></div>
+</div>
+
+<div class="stepper">
+  <div class="stepper-track"><div class="stepper-fill" id="sfill" style="width:16.6%"></div></div>
+  <div class="stepper-labels">
+    <span class="sl active" id="sl1">Datos</span>
+    <span class="sl" id="sl2">Motor</span>
+    <span class="sl" id="sl3">Seguridad</span>
+    <span class="sl" id="sl4">Fotos</span>
+    <span class="sl" id="sl5">Docs</span>
+    <span class="sl" id="sl6">Firma</span>
+  </div>
+</div>
+
+<!-- ════ PASO 1 — DATOS ════ -->
+<div id="step1" class="step active">
+  <div class="step-eyebrow">Paso 1 de 6</div>
+  <div class="step-title">Datos del turno</div>
+  <div class="step-sub">Información básica antes de iniciar la inspección.</div>
+  <div class="card">
+    <div class="field" id="f-conductor">
+      <label>Tu nombre completo</label>
+      <input type="text" id="conductor" placeholder="Escribe tu nombre y apellidos" autocomplete="name" autocapitalize="words">
+    </div>
+    <div class="field" id="f-placa">
+      <label>Placa del vehículo</label>
+      <input type="text" id="placa" placeholder="Ej. ABC-123" maxlength="8" style="text-transform:uppercase;font-weight:700;letter-spacing:1px;font-size:18px;" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Turno</label>
+      <select id="turno"><option>Mañana (06:00 – 14:00)</option><option>Tarde (14:00 – 22:00)</option><option>Noche (22:00 – 06:00)</option></select>
+    </div>
+    <div class="field" id="f-km">
+      <label>Kilómetros del odómetro</label>
+      <input type="number" id="km" placeholder="Ej. 48250" inputmode="numeric">
+    </div>
+    <div class="field"><label>Fecha</label><input type="date" id="fecha"></div>
+  </div>
+  <div class="banner warn"><i class="ti ti-alert-triangle"></i><span>Se requieren 6 fotos obligatorias del vehículo con marca de agua de fecha, hora y ubicación GPS.</span></div>
+</div>
+
+<!-- ════ PASO 2 — MOTOR ════ -->
+<div id="step2" class="step">
+  <div class="step-eyebrow">Paso 2 de 6</div>
+  <div class="step-title">Motor y mecánica</div>
+  <div class="step-sub">Toca ✓ si está bien o ✗ si hay falla.</div>
+  <div class="score-wrap"><div class="score-row"><span class="score-num" id="sc2">0</span><span class="score-of">/ 7 verificados</span></div><div class="s-track"><div class="s-fill" id="sb2" style="width:0%"></div></div><div class="s-msg" id="sm2">Revisa cada ítem del vehículo.</div></div>
+  <div class="cl" id="cl-m"></div>
+</div>
+
+<!-- ════ PASO 3 — SEGURIDAD ════ -->
+<div id="step3" class="step">
+  <div class="step-eyebrow">Paso 3 de 6</div>
+  <div class="step-title">Seguridad y carrocería</div>
+  <div class="step-sub">Verifica todos los elementos de seguridad.</div>
+  <div class="score-wrap"><div class="score-row"><span class="score-num" id="sc3">0</span><span class="score-of">/ 8 verificados</span></div><div class="s-track"><div class="s-fill" id="sb3" style="width:0%"></div></div><div class="s-msg" id="sm3">Revisa cada ítem del vehículo.</div></div>
+  <div class="cl" id="cl-s"></div>
+</div>
+
+<!-- ════ PASO 4 — FOTOS OBLIGATORIAS ════ -->
+<div id="step4" class="step">
+  <div class="step-eyebrow">Paso 4 de 6</div>
+  <div class="step-title">Fotos del vehículo</div>
+  <div class="step-sub">6 fotos obligatorias. Cada foto lleva marca de agua automática con fecha, hora y ubicación GPS.</div>
+
+  <div id="gps-status" class="gps-bar warn">
+    <i class="ti ti-map-pin"></i>
+    <span id="gps-txt">Obteniendo ubicación GPS...</span>
+  </div>
+
+  <div class="foto-header">
+    <div class="foto-progress">
+      <span><span class="foto-counter" id="foto-cnt">0</span><span class="foto-counter-of"> / 6 fotos</span></span>
+      <span style="font-size:12px;color:var(--gray-5)" id="foto-pct-lbl">0%</span>
+    </div>
+    <div class="foto-req-bar"><div class="foto-req-fill" id="foto-bar" style="width:0%"></div></div>
+    <div class="foto-req-msg" id="foto-msg" style="color:var(--danger);font-weight:600">Faltan 6 fotos obligatorias para continuar.</div>
+  </div>
+
+  <div class="banner info-b"><i class="ti ti-info-circle"></i><span>Toca cada recuadro para abrir la cámara. La marca de agua se aplica automáticamente sobre la foto.</span></div>
+
+  <div class="foto-grid" id="foto-grid">
+    <!-- generado por JS -->
+  </div>
+
+  <!-- Canvas oculto para marca de agua -->
+  <canvas id="wm-canvas"></canvas>
+  <!-- Inputs de archivo ocultos -->
+  <div id="file-inputs"></div>
+</div>
+
+<!-- ════ PASO 5 — DOCUMENTOS ════ -->
+<div id="step5" class="step">
+  <div class="step-eyebrow">Paso 5 de 6</div>
+  <div class="step-title">Documentos</div>
+  <div class="step-sub">Verifica que los documentos estén a bordo y vigentes.</div>
+  <div class="cl" id="cl-d" style="margin-bottom:16px"></div>
+  <div class="sec-label" style="margin-top:0">Observaciones generales</div>
+  <div class="card"><div class="field"><label>Novedades adicionales</label><textarea id="obs" placeholder="Describe cualquier anomalía o novedad no cubierta en los ítems anteriores..."></textarea></div></div>
+</div>
+
+<!-- ════ PASO 6 — FIRMA ════ -->
+<div id="step6" class="step">
+  <div class="step-eyebrow">Paso 6 de 6</div>
+  <div class="step-title">Firma y envío</div>
+  <div class="step-sub">Revisa el resumen y firma para registrar el preoperacional.</div>
+  <div class="card">
+    <div style="font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Resumen</div>
+    <div style="font-size:15px;font-weight:700" id="r-cond">—</div>
+    <div style="font-size:13px;color:var(--gray-5);margin-top:2px" id="r-meta">—</div>
+    <div class="res-grid">
+      <div class="res-box" style="background:var(--green-l)"><div class="res-num" style="color:var(--green)" id="r-ok">0</div><div class="res-lbl" style="color:var(--green-d)">Ítems OK</div></div>
+      <div class="res-box" style="background:var(--danger-l)"><div class="res-num" style="color:var(--danger)" id="r-fail">0</div><div class="res-lbl" style="color:#991B1B">Fallas</div></div>
+      <div class="res-box" style="background:var(--green-l)"><div class="res-num" style="color:var(--green)" id="r-fotos">0</div><div class="res-lbl" style="color:var(--green-d)">Fotos</div></div>
+      <div class="res-box" style="background:var(--gray-1)"><div class="res-num" style="color:var(--gray-7)" id="r-pend">0</div><div class="res-lbl" style="color:var(--gray-5)">Pendientes</div></div>
+    </div>
+    <div id="r-alert" style="margin-top:10px"></div>
+  </div>
+
+  <!-- Miniaturas de fotos en resumen -->
+  <div class="card" id="fotos-resumen-card">
+    <div style="font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Fotos capturadas</div>
+    <div id="fotos-resumen-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
+  </div>
+
+  <div class="firma-wrap">
+    <div class="firma-lbl">Firma del conductor</div>
+    <canvas id="fcanvas" width="440" height="150"></canvas>
+    <div class="firma-hint" id="fhint">Dibuja tu firma con el dedo</div>
+    <button class="btn-cf" onclick="clearFirma()"><i class="ti ti-refresh" style="font-size:13px"></i>Borrar firma</button>
+  </div>
+  <div class="card"><div style="font-size:13px;color:var(--gray-5);line-height:1.5">Al firmar, el conductor declara que la inspección fue realizada de forma objetiva y la información es veraz. Las novedades serán notificadas al Jefe de Transporte.</div></div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="success">
+  <div class="sico"><i class="ti ti-circle-check"></i></div>
+  <div class="stitle">¡Registro enviado!</div>
+  <div class="ssub">El preoperacional y las 6 fotos fueron registrados exitosamente. El panel de control fue actualizado.</div>
+  <div class="scode" id="scode">—</div>
+  <div style="font-size:12px;color:var(--gray-5);margin-bottom:16px" id="smeta">—</div>
+  <div style="width:100%;background:var(--dark);border-radius:var(--r);padding:14px;margin-bottom:12px">
+    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Fotos registradas con marca de agua</div>
+    <div id="success-fotos" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
+  </div>
+  <div style="width:100%;background:var(--green-l);border-radius:var(--r);padding:14px;text-align:left">
+    <div style="font-size:11px;font-weight:700;color:var(--green-d);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Recordatorios para tu turno</div>
+    <div style="font-size:13px;color:var(--gray-7);line-height:1.8">✓ Respeta los límites de velocidad<br>✓ Usa cinturón durante todo el recorrido<br>✓ Reporta novedades al jefe de inmediato<br>✓ No uses el celular conduciendo</div>
+  </div>
+  <button class="btn-nuevo" onclick="location.reload()"><i class="ti ti-plus" style="margin-right:6px"></i>Nuevo preoperacional</button>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar" id="bbar">
+  <button class="btn-back" id="bbk" onclick="prevStep()" style="display:none"><i class="ti ti-arrow-left"></i>Atrás</button>
+  <button class="btn-next" id="bnx" onclick="nextStep()">Continuar <i class="ti ti-arrow-right"></i></button>
+</div>
+
+<!-- SAVING -->
+<div class="saving-overlay" id="saving">
+  <div class="saving-spinner"></div>
+  <div class="saving-txt" id="saving-txt">Aplicando marca de agua a las fotos...</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// ⚙️ CONFIGURACIÓN OBLIGATORIA — PEGA AQUÍ TU URL DE GOOGLE
+// Sigue el instructivo: crea el script en Google Sheets y
+// pega la URL que termina en /exec entre las comillas.
+// Ejemplo: var API_URL = 'https://script.google.com/macros/s/ABC123.../exec';
+var API_URL = 'https://script.google.com/macros/s/AKfycbw0OD-pbsv6ikTd0z4gEJgocfFEVoNgwCHCbaYdFBUlSo2S9b1Ir3otcJX0GPPat6V8/exec';
+// ══════════════════════════════════════════════════════════
+
+var STORAGE_KEY = 'fhd_preops_v1';
+var TOTAL_STEPS = 6;
+var FOTOS_REQUERIDAS = 6;
+
+var FOTO_SLOTS = [
+  {id:'f0', label:'Frente del vehículo',    icon:'ti-camera',   desc:'Parte delantera completa'},
+  {id:'f1', label:'Lateral izquierdo',       icon:'ti-camera',   desc:'Lado conductor'},
+  {id:'f2', label:'Lateral derecho',         icon:'ti-camera',   desc:'Lado pasajero'},
+  {id:'f3', label:'Parte trasera',           icon:'ti-camera',   desc:'Cola del vehículo'},
+  {id:'f4', label:'Área de carga',           icon:'ti-package',  desc:'Interior plataforma/furgón'},
+  {id:'f5', label:'Tablero / odómetro',      icon:'ti-dashboard',desc:'Kilometraje visible'}
+];
+
+var MOTOR_ITEMS = [
+  {name:'Nivel de aceite motor',  hint:'Varilla medidora — entre mín. y máx.', icon:'ti-engine'},
+  {name:'Nivel de refrigerante',  hint:'Depósito entre líneas min/max.',       icon:'ti-droplet'},
+  {name:'Líquido de frenos',      hint:'Color y nivel del depósito.',          icon:'ti-droplet-half'},
+  {name:'Presión de llantas',     hint:'4 llantas + llanta de repuesto.',      icon:'ti-circle'},
+  {name:'Sistema de frenos',      hint:'Pedal firme y freno de mano.',         icon:'ti-brake'},
+  {name:'Limpiaparabrisas',       hint:'Funcionamiento y estado de gomas.',    icon:'ti-windmill'},
+  {name:'Bocina / pito',          hint:'Verificar funcionamiento.',            icon:'ti-speakerphone'}
+];
+var SEG_ITEMS = [
+  {name:'Luces delanteras y stop',hint:'Altas, bajas, direccionales y stop.',  icon:'ti-bulb'},
+  {name:'Espejos y vidrios',      hint:'Sin roturas, bien ajustados.',         icon:'ti-eye'},
+  {name:'Triángulos seguridad',   hint:'Presentes y en buen estado.',          icon:'ti-alert-triangle'},
+  {name:'Extintor vigente',       hint:'Sello, presión y fecha de vencimiento.',icon:'ti-flame'},
+  {name:'Kit primeros auxilios',  hint:'Completo, accesible y vigente.',       icon:'ti-first-aid-kit'},
+  {name:'Cinturones de seguridad',hint:'Todos los puestos — enganche y retracción.',icon:'ti-seatbelt'},
+  {name:'Estado de carrocería',   hint:'Golpes, abolladuras o daños visibles.',icon:'ti-car'},
+  {name:'Área de carga',          hint:'Barandas, puertas y anclajes.',        icon:'ti-package'}
+];
+var DOC_ITEMS = [
+  {name:'SOAT vigente',           hint:'A bordo, legible y dentro de vigencia.',icon:'ti-file-check'},
+  {name:'Tecno-mecánica (RTM)',   hint:'Revisión técnico-mecánica vigente.',   icon:'ti-file-certificate'},
+  {name:'Tarjeta de propiedad',   hint:'Documento original a bordo.',          icon:'ti-id'},
+  {name:'Licencia de conducción', hint:'Vigente y categoría habilitada.',      icon:'ti-id-badge'}
+];
+
+var states   = {m:new Array(7).fill(0), s:new Array(8).fill(0), d:new Array(4).fill(0)};
+var notesTxt = {m:new Array(7).fill(''), s:new Array(8).fill(''), d:new Array(4).fill('')};
+var fotosData = new Array(FOTOS_REQUERIDAS).fill(null); // base64 con marca de agua
+
+var currentStep = 1;
+var firmaSigned = false, fCtx, fDrawing=false, fLX, fLY;
+var gpsData = {lat:null, lng:null, address:'Ubicación no disponible'};
+var gpsReady = false;
+
+// ─── GPS ───
+function initGPS(){
+  if(!navigator.geolocation){
+    setGPSStatus('error','GPS no disponible en este dispositivo.');
+    return;
+  }
+  setGPSStatus('warn','Obteniendo ubicación GPS...');
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      gpsData.lat  = pos.coords.latitude.toFixed(5);
+      gpsData.lng  = pos.coords.longitude.toFixed(5);
+      gpsData.address = 'GPS: '+gpsData.lat+', '+gpsData.lng;
+      gpsReady = true;
+      setGPSStatus('ok','GPS activo · '+gpsData.lat+', '+gpsData.lng);
+    },
+    function(err){
+      gpsData.address = 'Ubicación no autorizada';
+      gpsReady = false;
+      setGPSStatus('error','GPS no autorizado. La marca de agua indicará "Sin GPS".');
+    },
+    {enableHighAccuracy:true, timeout:10000, maximumAge:0}
+  );
+}
+
+function setGPSStatus(type, msg){
+  var el = document.getElementById('gps-status');
+  var txt = document.getElementById('gps-txt');
+  el.className = 'gps-bar '+(type==='ok'?'':type==='warn'?'warn':'error');
+  var ico = type==='ok'?'ti-map-pin-check':type==='warn'?'ti-map-pin':' ti-map-pin-off';
+  el.querySelector('i').className = 'ti '+ico;
+  txt.textContent = msg;
+}
+
+// ─── BUILD CHECKLISTS ───
+function buildCL(containerId, items, group){
+  var el = document.getElementById(containerId);
+  el.innerHTML='';
+  items.forEach(function(item,i){
+    var div=document.createElement('div');
+    div.className='ci'; div.id='ci-'+group+'-'+i;
+    div.innerHTML='<div class="ci-left" onclick="cycleC(\''+group+'\','+i+')">'
+      +'<div class="ci-name"><i class="ti '+item.icon+'" style="font-size:15px;margin-right:6px"></i>'+item.name+'</div>'
+      +'<div class="ci-hint">'+item.hint+'</div></div>'
+      +'<div class="ci-btns">'
+      +'<button class="cbtn ob" onclick="setC(\''+group+'\','+i+',1)"><i class="ti ti-check"></i></button>'
+      +'<button class="cbtn fb" onclick="setC(\''+group+'\','+i+',2)"><i class="ti ti-x"></i></button>'
+      +'</div>';
+    var note=document.createElement('div');
+    note.className='ci-note'; note.id='cn-'+group+'-'+i;
+    note.innerHTML='<input placeholder="Describe la falla..." oninput="notesTxt[\''+group+'\']['+i+']=this.value">';
+    el.appendChild(div); el.appendChild(note);
+  });
+}
+
+function setC(g,i,v){
+  states[g][i]=v;
+  var ci=document.getElementById('ci-'+g+'-'+i);
+  var cn=document.getElementById('cn-'+g+'-'+i);
+  ci.className='ci'+(v===1?' ok':v===2?' fail':'');
+  cn.style.display=v===2?'block':'none';
+  updateScore(g);
+}
+function cycleC(g,i){ setC(g,i,(states[g][i]+1)%3); }
+function updateScore(g){
+  var step=g==='m'?2:g==='s'?3:null; if(!step)return;
+  var total=states[g].length, done=states[g].filter(function(v){return v>0;}).length, fails=states[g].filter(function(v){return v===2;}).length;
+  var pct=Math.round(done/total*100);
+  document.getElementById('sc'+step).textContent=done;
+  var bar=document.getElementById('sb'+step);
+  bar.style.width=pct+'%'; bar.style.background=fails>0?'var(--danger)':pct===100?'var(--green)':'var(--warn)';
+  document.getElementById('sm'+step).textContent=pct===100&&fails===0?'✓ Todo en orden. Puedes continuar.':fails>0?fails+' falla(s). Documenta la novedad.':'Verifica cada ítem del vehículo.';
+}
+
+// ─── BUILD FOTO GRID ───
+function buildFotoGrid(){
+  var grid=document.getElementById('foto-grid');
+  var inputs=document.getElementById('file-inputs');
+  grid.innerHTML=''; inputs.innerHTML='';
+  FOTO_SLOTS.forEach(function(slot,i){
+    // slot visual
+    var div=document.createElement('div');
+    div.className='foto-slot required-missing'; div.id='slot-'+i;
+    div.innerHTML='<span class="foto-badge foto-badge-req">Obligatoria</span>'
+      +'<i class="ti '+slot.icon+' foto-slot-icon"></i>'
+      +'<span class="foto-slot-label">'+slot.label+'</span>';
+    div.onclick=function(){ document.getElementById('input-foto-'+i).click(); };
+    grid.appendChild(div);
+    // input file
+    var inp=document.createElement('input');
+    inp.type='file'; inp.accept='image/*'; inp.capture='environment';
+    inp.id='input-foto-'+i;
+    inp.onchange=function(e){ handleFotoCapture(e,i); };
+    inputs.appendChild(inp);
+  });
+}
+
+// ─── MARCA DE AGUA ───
+function applyWatermark(imgSrc, slotIdx, callback){
+  var canvas=document.getElementById('wm-canvas');
+  var ctx=canvas.getContext('2d');
+  var img=new Image();
+  img.onload=function(){
+    // Redimensionar a máx 1280px de ancho para envío ágil
+    var scale=Math.min(1, 1280/img.naturalWidth);
+    var W=Math.round(img.naturalWidth*scale), H=Math.round(img.naturalHeight*scale);
+    canvas.width=W; canvas.height=H;
+    ctx.drawImage(img,0,0,W,H);
+
+    // Franja inferior negra semitransparente
+    var barH=Math.max(60, H*0.13);
+    ctx.fillStyle='rgba(0,0,0,0.72)';
+    ctx.fillRect(0,H-barH,W,barH);
+
+    var now=new Date();
+    var fecha=now.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var hora=now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    var gps=gpsReady?('GPS: '+gpsData.lat+', '+gpsData.lng):'Sin GPS autorizado';
+    var placa=document.getElementById('placa').value.trim()||'???';
+    var cond=document.getElementById('conductor').value||'???';
+
+    var fBase=Math.max(18, W*0.038);
+    ctx.textBaseline='bottom';
+
+    // Logo / empresa
+    ctx.font='bold '+Math.round(fBase*1.1)+'px Arial';
+    ctx.fillStyle='#00A14B';
+    ctx.fillText('FALABELLA HOME DELIVERY', W*0.022, H-barH+fBase*1.3);
+
+    // Fecha y hora
+    ctx.font='bold '+Math.round(fBase)+'px Arial';
+    ctx.fillStyle='#FFFFFF';
+    ctx.fillText('📅 '+fecha+'  ⏱ '+hora, W*0.022, H-barH+fBase*2.7);
+
+    // GPS
+    ctx.font=Math.round(fBase*0.88)+'px Arial';
+    ctx.fillStyle='#4ADE80';
+    ctx.fillText('📍 '+gps, W*0.022, H-barH+fBase*4.0);
+
+    // Vehículo y conductor
+    ctx.font=Math.round(fBase*0.88)+'px Arial';
+    ctx.fillStyle='#CBD5E1';
+    ctx.fillText('🚛 '+placa+'  👤 '+cond, W*0.022, H-barH+fBase*5.2);
+
+    // Etiqueta de la foto
+    ctx.font='bold '+Math.round(fBase*0.85)+'px Arial';
+    ctx.fillStyle='#FCD34D';
+    var labelText=FOTO_SLOTS[slotIdx].label.toUpperCase();
+    var lw=ctx.measureText(labelText).width;
+    ctx.fillText(labelText, W-lw-W*0.022, H-barH+fBase*1.5);
+
+    // Número de foto
+    ctx.font='bold '+Math.round(fBase*0.8)+'px Arial';
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.fillText('FOTO '+(slotIdx+1)+'/'+FOTOS_REQUERIDAS, W-W*0.022-ctx.measureText('FOTO '+FOTOS_REQUERIDAS+'/'+FOTOS_REQUERIDAS).width, H-barH+fBase*2.8);
+
+    callback(canvas.toDataURL('image/jpeg',0.82));
+  };
+  img.src=imgSrc;
+}
+
+function handleFotoCapture(e, idx){
+  var file=e.target.files[0];
+  if(!file) return;
+
+  // mostrar overlay de procesamiento
+  document.getElementById('saving-txt').textContent='Procesando foto '+(idx+1)+' de '+FOTOS_REQUERIDAS+'...';
+  document.getElementById('saving').classList.add('active');
+
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    applyWatermark(ev.target.result, idx, function(dataUrl){
+      fotosData[idx]=dataUrl;
+      renderSlot(idx, dataUrl);
+      updateFotoProgress();
+      document.getElementById('saving').classList.remove('active');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderSlot(idx, dataUrl){
+  var slot=document.getElementById('slot-'+idx);
+  slot.className='foto-slot captured';
+  slot.innerHTML='<img src="'+dataUrl+'" alt="Foto '+(idx+1)+'">'
+    +'<span class="foto-badge">✓ Capturada</span>'
+    +'<button class="foto-delete" onclick="deleteSlot(event,'+idx+')"><i class="ti ti-x"></i></button>'
+    +'<div class="foto-watermark-info">Marca de agua aplicada</div>';
+  // Re-asignar click para retomar foto
+  slot.onclick=null;
+}
+
+function deleteSlot(e, idx){
+  e.stopPropagation();
+  fotosData[idx]=null;
+  var slot=document.getElementById('slot-'+idx);
+  slot.className='foto-slot required-missing';
+  slot.innerHTML='<span class="foto-badge foto-badge-req">Obligatoria</span>'
+    +'<i class="ti '+FOTO_SLOTS[idx].icon+' foto-slot-icon"></i>'
+    +'<span class="foto-slot-label">'+FOTO_SLOTS[idx].label+'</span>';
+  slot.onclick=function(){ document.getElementById('input-foto-'+idx).click(); };
+  // Reset input
+  document.getElementById('input-foto-'+idx).value='';
+  updateFotoProgress();
+}
+
+function updateFotoProgress(){
+  var captured=fotosData.filter(function(f){return f!==null;}).length;
+  var pct=Math.round(captured/FOTOS_REQUERIDAS*100);
+  document.getElementById('foto-cnt').textContent=captured;
+  document.getElementById('foto-pct-lbl').textContent=pct+'%';
+  document.getElementById('foto-bar').style.width=pct+'%';
+  document.getElementById('foto-bar').style.background=captured===FOTOS_REQUERIDAS?'var(--green)':captured>=4?'var(--warn)':'var(--danger)';
+  var msg=document.getElementById('foto-msg');
+  if(captured===FOTOS_REQUERIDAS){
+    msg.textContent='✓ Todas las fotos capturadas con marca de agua. Puedes continuar.';
+    msg.style.color='var(--green)';
+  } else {
+    var faltan=FOTOS_REQUERIDAS-captured;
+    msg.textContent='Faltan '+faltan+' foto'+(faltan===1?'':'s')+' obligatoria'+(faltan===1?'':'s')+' para continuar.';
+    msg.style.color='var(--danger)';
+  }
+}
+
+// ─── FIRMA ───
+function initFirma(){
+  var c=document.getElementById('fcanvas');
+  c.width=c.offsetWidth||440;
+  fCtx=c.getContext('2d');
+  fCtx.strokeStyle='#111827'; fCtx.lineWidth=2.5; fCtx.lineCap='round'; fCtx.lineJoin='round';
+  function pos(ev){ var r=c.getBoundingClientRect(); var t=ev.touches?ev.touches[0]:ev; return{x:t.clientX-r.left,y:t.clientY-r.top}; }
+  c.addEventListener('touchstart',function(e){e.preventDefault();fDrawing=true;var p=pos(e);fLX=p.x;fLY=p.y;},{passive:false});
+  c.addEventListener('touchmove',function(e){e.preventDefault();if(!fDrawing)return;var p=pos(e);fCtx.beginPath();fCtx.moveTo(fLX,fLY);fCtx.lineTo(p.x,p.y);fCtx.stroke();fLX=p.x;fLY=p.y;firmaSigned=true;c.classList.add('signed');document.getElementById('fhint').textContent='Firma registrada ✓';},{passive:false});
+  c.addEventListener('touchend',function(){fDrawing=false;});
+  c.addEventListener('mousedown',function(e){fDrawing=true;var p=pos(e);fLX=p.x;fLY=p.y;});
+  c.addEventListener('mousemove',function(e){if(!fDrawing)return;var p=pos(e);fCtx.beginPath();fCtx.moveTo(fLX,fLY);fCtx.lineTo(p.x,p.y);fCtx.stroke();fLX=p.x;fLY=p.y;firmaSigned=true;document.getElementById('fcanvas').classList.add('signed');document.getElementById('fhint').textContent='Firma registrada ✓';});
+  c.addEventListener('mouseup',function(){fDrawing=false;});
+}
+function clearFirma(){
+  var c=document.getElementById('fcanvas'); fCtx.clearRect(0,0,c.width,c.height);
+  firmaSigned=false; c.classList.remove('signed'); document.getElementById('fhint').textContent='Dibuja tu firma con el dedo';
+}
+
+// ─── RESUMEN ───
+function buildResumen(){
+  var cond=document.getElementById('conductor').value;
+  var placa=document.getElementById('placa').value.trim();
+  var km=document.getElementById('km').value;
+  var turno=document.getElementById('turno').value;
+  document.getElementById('r-cond').textContent=cond;
+  document.getElementById('r-meta').textContent=placa+' · '+turno+' · Km '+parseInt(km||0).toLocaleString('es-CO');
+  var all=states.m.concat(states.s).concat(states.d);
+  var ok=all.filter(function(v){return v===1;}).length;
+  var fail=all.filter(function(v){return v===2;}).length;
+  var pend=all.filter(function(v){return v===0;}).length;
+  var fotos=fotosData.filter(function(f){return f!==null;}).length;
+  document.getElementById('r-ok').textContent=ok;
+  document.getElementById('r-fail').textContent=fail;
+  document.getElementById('r-pend').textContent=pend;
+  document.getElementById('r-fotos').textContent=fotos;
+  var al=document.getElementById('r-alert');
+  if(fail>0) al.innerHTML='<div class="banner danger"><i class="ti ti-alert-circle"></i><span><strong>'+fail+' falla(s) reportada(s).</strong> Notificación al Jefe de Transporte.</span></div>';
+  else if(pend>0) al.innerHTML='<div class="banner warn"><i class="ti ti-alert-triangle"></i><span>'+pend+' ítems sin verificar registrados como pendientes.</span></div>';
+  else al.innerHTML='<div class="banner ok-b"><i class="ti ti-circle-check"></i><span><strong>Vehículo en perfecto estado.</strong> Todos los ítems verificados.</span></div>';
+  // miniaturas fotos resumen
+  var fg=document.getElementById('fotos-resumen-grid');
+  fg.innerHTML='';
+  fotosData.forEach(function(f,i){
+    var div=document.createElement('div');
+    div.style.cssText='border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#000;position:relative;';
+    if(f){ div.innerHTML='<img src="'+f+'" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:9px;color:#fff;font-weight:700;padding:2px 4px;text-align:center">'+FOTO_SLOTS[i].label+'</div>'; }
+    else { div.style.background='var(--gray-1)'; div.style.display='flex'; div.style.alignItems='center'; div.style.justifyContent='center'; div.innerHTML='<span style="font-size:10px;color:var(--gray-5)">Sin foto</span>'; }
+    fg.appendChild(div);
+  });
+}
+
+// ─── NAVIGATION ───
+function nextStep(){
+  if(!validateStep()) return;
+  if(currentStep===TOTAL_STEPS){ submitForm(); return; }
+  currentStep++;
+  if(currentStep===6) buildResumen();
+  showStep();
+}
+function prevStep(){ if(currentStep>1){currentStep--;showStep();} }
+function showStep(){
+  for(var i=1;i<=TOTAL_STEPS;i++){
+    document.getElementById('step'+i).classList.toggle('active',i===currentStep);
+    document.getElementById('sl'+i).classList.toggle('active',i<=currentStep);
+  }
+  document.getElementById('sfill').style.width=(currentStep/TOTAL_STEPS*100)+'%';
+  document.getElementById('bbk').style.display=currentStep>1?'flex':'none';
+  var nb=document.getElementById('bnx');
+  nb.innerHTML=currentStep===TOTAL_STEPS?'<i class="ti ti-send"></i> Enviar al panel de control':'Continuar <i class="ti ti-arrow-right"></i>';
+  window.scrollTo(0,0);
+}
+
+function validateStep(){
+  if(currentStep===1){
+    var ok=true;
+    ['conductor','placa','km'].forEach(function(id){
+      var el=document.getElementById(id);
+      var fi=document.getElementById('f-'+id);
+      if(!el.value.trim()){if(fi)fi.classList.add('error');ok=false;}
+      else{if(fi)fi.classList.remove('error');}
+    });
+    var placaV=document.getElementById('placa').value.trim();
+    if(placaV && placaV.replace('-','').length<5){
+      document.getElementById('f-placa').classList.add('error');
+      alert('La placa debe tener el formato ABC-123.');
+      return false;
+    }
+    var nombreV=document.getElementById('conductor').value.trim();
+    if(nombreV && nombreV.split(' ').length<2){
+      document.getElementById('f-conductor').classList.add('error');
+      alert('Escribe tu nombre completo (nombre y apellido).');
+      return false;
+    }
+    if(!ok){alert('Completa todos los campos obligatorios antes de continuar.');return false;}
+    return true;
+  }
+  if(currentStep===4){
+    var captured=fotosData.filter(function(f){return f!==null;}).length;
+    if(captured<FOTOS_REQUERIDAS){
+      alert('Debes tomar las '+FOTOS_REQUERIDAS+' fotos obligatorias del vehículo antes de continuar. Faltan '+(FOTOS_REQUERIDAS-captured)+'.');
+      return false;
+    }
+    return true;
+  }
+  if(currentStep===TOTAL_STEPS&&!firmaSigned){alert('Por favor firma el preoperacional antes de enviar.');return false;}
+  return true;
+}
+
+// ─── SUBMIT ───
+function saveToStorage(record){
+  try{
+    var ex=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+    ex.unshift(record);
+    if(ex.length>100)ex=ex.slice(0,100);
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(ex));
+    return true;
+  }catch(e){return false;}
+}
+
+function submitForm(){
+  document.getElementById('saving-txt').textContent='Guardando registro y fotos...';
+  document.getElementById('saving').classList.add('active');
+
+  var cond  =document.getElementById('conductor').value;
+  var placa =document.getElementById('placa').value.trim();
+  var km    =document.getElementById('km').value;
+  var turno =document.getElementById('turno').value.split('(')[0].trim();
+  var fecha =document.getElementById('fecha').value;
+  var obs   =document.getElementById('obs').value;
+  var all   =states.m.concat(states.s).concat(states.d);
+  var okCnt =all.filter(function(v){return v===1;}).length;
+  var failCnt=all.filter(function(v){return v===2;}).length;
+  var pendCnt=all.filter(function(v){return v===0;}).length;
+  var code  ='FHD-'+Date.now().toString(36).toUpperCase().slice(-6);
+
+  var ITEMS_ALL=[].concat(
+    MOTOR_ITEMS.map(function(x,i){return{name:x.name,grupo:'Motor',estado:states.m[i],nota:notesTxt.m[i]};}),
+    SEG_ITEMS.map(function(x,i){return{name:x.name,grupo:'Seguridad',estado:states.s[i],nota:notesTxt.s[i]};}),
+    DOC_ITEMS.map(function(x,i){return{name:x.name,grupo:'Documentos',estado:states.d[i],nota:notesTxt.d[i]};})
+  );
+
+  var record={
+    id:code, timestamp:new Date().toISOString(), fecha:fecha,
+    conductor:cond, placa:placa, turno:turno, km:km,
+    ok:okCnt, fallas:failCnt, pendientes:pendCnt,
+    observaciones:obs, items:ITEMS_ALL,
+    estado:failCnt>0?'falla':pendCnt>0?'incompleto':'ok',
+    fotos:fotosData.map(function(f,i){return{idx:i,label:FOTO_SLOTS[i].label,data:f};}),
+    gps:gpsData
+  };
+
+  function finishOk(online){
+    document.getElementById('saving').classList.remove('active');
+    document.querySelector('.header').style.display='none';
+    document.querySelector('.stepper').style.display='none';
+    document.getElementById('bbar').style.display='none';
+    for(var i=1;i<=TOTAL_STEPS;i++) document.getElementById('step'+i).style.display='none';
+    document.getElementById('scode').textContent=code;
+    document.getElementById('smeta').textContent=cond+' · '+placa+' · '+turno;
+    if(!online){
+      document.querySelector('.ssub').innerHTML='⚠️ Sin conexión al servidor. El registro quedó guardado <strong>en este celular</strong>. Vuelve a abrir el formulario con internet para reintentar, o avisa al jefe de transporte.';
+    }
+    var sf=document.getElementById('success-fotos');
+    sf.innerHTML='';
+    fotosData.forEach(function(f,i){
+      if(!f) return;
+      var d=document.createElement('div');
+      d.style.cssText='border-radius:6px;overflow:hidden;aspect-ratio:4/3;';
+      d.innerHTML='<img src="'+f+'" style="width:100%;height:100%;object-fit:cover">';
+      sf.appendChild(d);
+    });
+    document.getElementById('success').classList.add('active');
+    document.getElementById('success').style.display='flex';
+  }
+
+  if(API_URL){
+    // Envío real a Google Sheets — llega al panel desde cualquier parte
+    document.getElementById('saving-txt').textContent='Enviando registro y fotos al panel de control...';
+    fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(record)
+    })
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res && res.ok){ finishOk(true); }
+      else { throw new Error(res && res.error ? res.error : 'Respuesta inválida'); }
+    })
+    .catch(function(err){
+      // Respaldo local sin fotos (para no llenar la memoria)
+      var backup=JSON.parse(JSON.stringify(record));
+      backup.fotos=[];
+      saveToStorage(backup);
+      finishOk(false);
+    });
+  } else {
+    // Modo local (sin Google Sheets configurado)
+    saveToStorage(record);
+    setTimeout(function(){ finishOk(true); },1500);
+  }
+}
+
+// ─── INIT ───
+window.onload=function(){
+  // Autoformato de placa: ABC-123
+  var placaInput=document.getElementById('placa');
+  placaInput.addEventListener('input',function(){
+    var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(v.length>3) v=v.slice(0,3)+'-'+v.slice(3,6);
+    this.value=v;
+  });
+  buildCL('cl-m',MOTOR_ITEMS,'m');
+  buildCL('cl-s',SEG_ITEMS,'s');
+  buildCL('cl-d',DOC_ITEMS,'d');
+  buildFotoGrid();
+  var d=new Date();
+  document.getElementById('hdate').textContent=d.toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('fecha').valueAsDate=d;
+  initFirma();
+  initGPS();
+};
+</script>
+</body>
+</html>
