@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Falabella Home Delivery — Panel de Control de Flota</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --green:#00A14B;--green-d:#007A38;--green-l:#E6F7EE;
+  --fhd-green-lima:#9DC208;
+  --dark:#1A1A1A;--gray-7:#3D3D3D;--gray-5:#6B6B6B;--gray-3:#B0B0B0;
+  --gray-1:#F2F2F2;--gray-50:#F9F9F9;--white:#FFFFFF;
+  --danger:#D32F2F;--danger-bg:#FDECEA;--warn:#E65100;--warn-bg:#FFF3E0;
+  --info:#0277BD;--info-bg:#E1F0FA;
+  --r:8px;--r-lg:14px;
+  --sh:0 1px 4px rgba(0,0,0,.10),0 0 0 0.5px rgba(0,0,0,.06);
+  --sh-md:0 4px 16px rgba(0,0,0,.12);
+  --sidebar-w:230px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gray-1);color:var(--dark);font-size:14px;}
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:#0f1117;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+
+/* LOGO FALABELLA en sidebar */
+.sb-logo{padding:18px 16px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
+.falabella-logo-wrap{display:flex;align-items:center;gap:10px;}
+.falabella-logo-svg{flex-shrink:0;}
+.logo-text-block{display:flex;flex-direction:column;}
+.logo-name{color:#fff;font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1;}
+.logo-name span{color:#ABC81C;}
+.logo-division{color:rgba(255,255,255,.5);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.logo-sub{color:rgba(255,255,255,.4);font-size:10px;margin-top:2px;}
+.logo-tag{background:#ABC81C;color:#1A1A1A!important;color:#fff;font-size:9px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:3px;text-transform:uppercase;align-self:flex-start;margin-top:4px;}
+
+.sb-section{padding:10px 10px 4px;}
+.sb-sec-lbl{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 8px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:rgba(255,255,255,.55);font-size:13px;transition:all .14s;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{background:var(--green);color:#fff;}
+.nav-item i{font-size:16px;flex-shrink:0;}
+.nav-badge{margin-left:auto;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;}
+.nav-badge.red{background:var(--danger);}
+.nav-badge.orange{background:var(--warn);}
+.sb-footer{margin-top:auto;padding:12px 10px;border-top:1px solid rgba(255,255,255,.08);}
+.fleet-box{background:rgba(0,161,75,.15);border-radius:var(--r);padding:10px 12px;}
+.fleet-num{font-size:22px;font-weight:700;color:var(--green);}
+.fleet-lbl{font-size:11px;color:rgba(255,255,255,.4);}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{background:var(--white);border-bottom:1px solid #E8E8E8;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-title{font-size:16px;font-weight:600;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tb-date{font-size:12px;color:var(--gray-5);}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-icon{width:34px;height:34px;border-radius:var(--r);border:1px solid #E8E8E8;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-7);transition:all .12s;}
+.btn-icon:hover{background:var(--gray-1);}
+.btn-icon i{font-size:18px;}
+.content{flex:1;overflow-y:auto;padding:20px 24px;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* LINK BANNER */
+.link-banner{background:linear-gradient(135deg,var(--green-d),var(--green));border-radius:var(--r-lg);padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;color:white;}
+.lb-icon{font-size:30px;opacity:.7;margin-bottom:4px;display:block;}
+.lb-title{font-size:15px;font-weight:700;margin-bottom:2px;}
+.lb-sub{font-size:12px;opacity:.8;}
+.lb-btns{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.lb-url{background:rgba(255,255,255,.18);border-radius:var(--r);padding:7px 13px;font-size:12px;font-family:monospace;cursor:pointer;display:flex;align-items:center;gap:7px;border:none;color:white;white-space:nowrap;}
+.lb-url:hover{background:rgba(255,255,255,.28);}
+.lb-url i{font-size:15px;}
+
+/* KPI */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.kpi-card{background:var(--white);border-radius:var(--r-lg);box-shadow:var(--sh);padding:14px 16px;}
+.kpi-ico{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.kpi-ico.green{background:var(--green-l);color:var(--green);}
+.kpi-ico.red{background:var(--danger-bg);color:var(--danger);}
+.kpi-ico.orange{background:var(--warn-bg);color:var(--warn);}
+.kpi-ico.blue{background:var(--info-bg);color:var(--info);}
+.kpi-ico i{font-size:18px;}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;}
+.kpi-val.green{color:var(--green);}
+.kpi-val.red{color:var(--danger);}
+.kpi-val.orange{color:var(--warn);}
+.kpi-val.blue{color:var(--info);}
+.kpi-lbl{font-size:11px;color:var(--gray-5);margin-top:2px;}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--r-lg);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden;}
+.card-hdr{padding:13px 18px;border-bottom:1px solid #F0F0F0;display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.card-title i{font-size:17px;color:var(--green);}
+.card-body{padding:16px 18px;}
+.two-col{display:grid;grid-template-columns:3fr 2fr;gap:16px;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:500px;}
+th{text-align:left;padding:9px 12px;font-size:10px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid #F0F0F0;background:var(--gray-50);}
+td{padding:9px 12px;border-bottom:1px solid #F5F5F5;color:var(--gray-7);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--green-l);}
+.placa{display:inline-flex;align-items:center;background:var(--dark);color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;padding:3px 9px;border-radius:5px;font-family:monospace;}
+
+/* STATUS */
+.st{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.st-ok{background:var(--green-l);color:var(--green-d);}
+.st-warn{background:var(--warn-bg);color:var(--warn);}
+.st-danger{background:var(--danger-bg);color:var(--danger);}
+.st-info{background:var(--info-bg);color:var(--info);}
+.st-gray{background:var(--gray-1);color:var(--gray-7);}
+
+/* ALERT */
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;border-radius:var(--r);margin-bottom:7px;}
+.ai-crit{background:var(--danger-bg);border-left:3px solid var(--danger);}
+.ai-warn{background:var(--warn-bg);border-left:3px solid var(--warn);}
+.ai-info{background:var(--info-bg);border-left:3px solid var(--info);}
+.ai-ok{background:var(--green-l);border-left:3px solid var(--green);}
+.ai-ico{font-size:16px;margin-top:1px;flex-shrink:0;}
+.ai-crit .ai-ico{color:var(--danger);}
+.ai-warn .ai-ico{color:var(--warn);}
+.ai-info .ai-ico{color:var(--info);}
+.ai-ok .ai-ico{color:var(--green);}
+.ai-title{font-size:12px;font-weight:600;}
+.ai-body{font-size:12px;color:var(--gray-7);margin-top:1px;}
+
+/* PROGRESS */
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.prog-lbl{font-size:12px;color:var(--gray-7);width:140px;flex-shrink:0;}
+.prog-track{flex:1;height:7px;background:var(--gray-1);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;}
+.prog-pct{font-size:12px;font-weight:600;width:36px;text-align:right;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap;}
+.btn{padding:7px 15px;border-radius:var(--r);border:1px solid #D8D8D8;background:var(--white);cursor:pointer;font-size:13px;font-family:inherit;color:var(--gray-7);display:inline-flex;align-items:center;gap:6px;transition:all .12s;}
+.btn:hover{background:var(--gray-1);}
+.btn i{font-size:15px;}
+.btn-primary{background:var(--green);color:#fff;border-color:var(--green);}
+.btn-primary:hover{background:var(--green-d);}
+.btn-danger{background:var(--danger);color:#fff;border-color:var(--danger);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+
+/* FIELDS */
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.field label{font-size:11px;font-weight:600;color:var(--gray-7);text-transform:uppercase;letter-spacing:.3px;}
+.field input,.field select,.field textarea{padding:8px 11px;border-radius:var(--r);border:1px solid #E0E0E0;background:var(--white);font-size:13px;font-family:inherit;color:var(--dark);transition:border-color .12s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(0,161,75,.1);}
+.field textarea{resize:vertical;min-height:70px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;}
+.sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-5);margin:16px 0 8px;border-bottom:1px solid #F0F0F0;padding-bottom:6px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:var(--r-lg);box-shadow:var(--sh-md);padding:24px;width:640px;max-width:96vw;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.modal-title i{color:var(--green);font-size:20px;}
+.modal-close{margin-left:auto;background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray-5);line-height:1;}
+.modal-items{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;margin-bottom:12px;}
+.mi-row{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:var(--r);border:1px solid #F0F0F0;font-size:13px;}
+.mi-row.mi-ok{background:var(--green-l);}
+.mi-row.mi-fail{background:var(--danger-bg);}
+.mi-row.mi-pend{background:var(--gray-50);}
+.mi-ico{font-size:16px;flex-shrink:0;margin-top:1px;}
+.mi-row.mi-ok .mi-ico{color:var(--green);}
+.mi-row.mi-fail .mi-ico{color:var(--danger);}
+.mi-row.mi-pend .mi-ico{color:var(--gray-3);}
+.mi-name{flex:1;font-weight:600;}
+.mi-grupo{font-size:10px;color:var(--gray-5);margin-top:1px;}
+.mi-nota{font-size:11px;color:var(--danger);margin-top:2px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--dark);color:#fff;padding:12px 18px;border-radius:var(--r);font-size:13px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh-md);transform:translateY(80px);transition:transform .25s;pointer-events:none;max-width:360px;}
+.toast.show{transform:translateY(0);}
+.toast i{color:var(--green);font-size:17px;flex-shrink:0;}
+
+.badge-live{background:var(--green-l);color:var(--green-d);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;display:flex;align-items:center;gap:4px;}
+.empty{text-align:center;padding:36px 20px;color:var(--gray-5);}
+.empty i{font-size:38px;display:block;margin-bottom:10px;color:var(--gray-3);}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;}
+.foto-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;display:block;}
+.foto-grid-modal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.foto-item{border-radius:8px;overflow:hidden;position:relative;}
+.foto-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;font-size:9px;font-weight:700;padding:3px 6px;text-align:center;}
+.inline-edit{background:none;border:none;border-bottom:1px dashed var(--gray-3);padding:2px 4px;font-size:inherit;font-family:inherit;color:inherit;cursor:text;min-width:60px;}
+.inline-edit:focus{outline:none;border-bottom-color:var(--green);}
+.row-actions{display:flex;gap:4px;}
+
+/* Confirm delete overlay */
+.confirm-box{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:center;justify-content:center;}
+.confirm-box.open{display:flex;}
+.confirm-inner{background:#fff;border-radius:var(--r-lg);padding:24px;max-width:340px;width:90%;text-align:center;box-shadow:var(--sh-md);}
+.confirm-title{font-size:16px;font-weight:700;margin-bottom:8px;}
+.confirm-sub{font-size:13px;color:var(--gray-5);margin-bottom:20px;}
+.confirm-btns{display:flex;gap:10px;justify-content:center;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="falabella-logo-wrap">
+      <svg width="42" height="42" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="20" fill="#9DC208"/>
+  <rect width="100" height="100" rx="20" fill="url(#fgrad)" opacity="0.3"/>
+  <defs>
+    <radialGradient id="fgrad" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#c8e64a"/>
+      <stop offset="100%" stop-color="#7a9800"/>
+    </radialGradient>
+  </defs>
+  <!-- f cursiva Falabella -->
+  <path d="M58 18 C58 18 48 20 44 30 C42 36 42 42 42 42 L36 42 L36 50 L42 50 L42 78 L52 78 L52 50 L60 50 L60 42 L52 42 C52 42 52 36 54 32 C56 28 62 28 62 28 Z" fill="white"/>
+  <!-- punto -->
+  <circle cx="63" cy="72" r="5.5" fill="white"/>
+</svg>
+      <div class="logo-text-block">
+        <div class="logo-name">falabella<span>.</span></div>
+        <div class="logo-division">Home Delivery</div>
+      </div>
+    </div>
+    <div class="logo-sub">Transportes Nacional Home Delivery</div>
+    <div class="logo-tag">Panel de Control</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Dashboard</div>
+    <button class="nav-item active" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i>Resumen general</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Operaciones</div>
+    <button class="nav-item" onclick="nav('preops',this)"><i class="ti ti-clipboard-check"></i>Preoperacionales<span class="nav-badge red" id="b-preops" style="display:none">0</span></button>
+    <button class="nav-item" onclick="nav('personal',this)"><i class="ti ti-users"></i>Control personal</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Mantenimientos</div>
+    <button class="nav-item" onclick="nav('mant-prev',this)"><i class="ti ti-tool"></i>Preventivo<span class="nav-badge orange" id="b-mp">3</span></button>
+    <button class="nav-item" onclick="nav('mant-corr',this)"><i class="ti ti-alert-triangle"></i>Correctivo<span class="nav-badge red" id="b-mc">1</span></button>
+    <button class="nav-item" onclick="nav('combustible',this)"><i class="ti ti-gas-station"></i>Combustible</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Operación diaria</div>
+    <button class="nav-item" onclick="nav('cumplimiento',this)"><i class="ti ti-checklist"></i>Cumplimiento preop.<span class="nav-badge red" id="b-cump" style="display:none">0</span></button>
+    <button class="nav-item" onclick="nav('despachos',this)"><i class="ti ti-route"></i>Despachos / Rutas</button>
+    <button class="nav-item" onclick="nav('nov-ruta',this)"><i class="ti ti-map-pin-exclamation"></i>Novedades en ruta<span class="nav-badge orange" id="b-nov" style="display:none">0</span></button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Costos</div>
+    <button class="nav-item" onclick="nav('cpk',this)"><i class="ti ti-coin"></i>Costo por km</button>
+    <button class="nav-item" onclick="nav('rendimiento',this)"><i class="ti ti-gauge"></i>Rendimiento comb.</button>
+    <button class="nav-item" onclick="nav('presupuesto',this)"><i class="ti ti-chart-pie"></i>Presupuesto</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Cumplimiento y PESV</div>
+    <button class="nav-item" onclick="nav('vencimientos',this)"><i class="ti ti-calendar-exclamation"></i>Vencimientos<span class="nav-badge red" id="b-venc" style="display:none">0</span></button>
+    <button class="nav-item" onclick="nav('comparendos',this)"><i class="ti ti-receipt"></i>Comparendos</button>
+    <button class="nav-item" onclick="nav('actas',this)"><i class="ti ti-clipboard-text"></i>Actas entrega</button>
+    <button class="nav-item" onclick="nav('pesv',this)"><i class="ti ti-shield-check"></i>Indicadores PESV</button>
+    <button class="nav-item" onclick="nav('alcohol',this)"><i class="ti ti-test-pipe"></i>Alcoholimetrías</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-sec-lbl">Flota y documentos</div>
+    <button class="nav-item" onclick="nav('placas',this)"><i class="ti ti-license"></i>Vehículos / Placas</button>
+    <button class="nav-item" onclick="nav('docs-cond',this)"><i class="ti ti-id-badge"></i>Conductores</button>
+    <button class="nav-item" onclick="nav('alertas',this)"><i class="ti ti-bell"></i>Alertas<span class="nav-badge red" id="b-al">5</span></button>
+    <button class="nav-item" onclick="nav('formato',this)"><i class="ti ti-printer"></i>Formato imprimible</button>
+  </div>
+  <div class="sb-footer">
+    <div class="fleet-box">
+      <div class="fleet-num" id="flota-cnt">0</div>
+      <div class="fleet-lbl">vehículos en flota</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <svg width="30" height="30" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="20" fill="#9DC208"/>
+  <defs>
+    <radialGradient id="fgrad2" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#c8e64a"/>
+      <stop offset="100%" stop-color="#7a9800"/>
+    </radialGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="url(#fgrad2)" opacity="0.3"/>
+  <path d="M58 18 C58 18 48 20 44 30 C42 36 42 42 42 42 L36 42 L36 50 L42 50 L42 78 L52 78 L52 50 L60 50 L60 42 L52 42 C52 42 52 36 54 32 C56 28 62 28 62 28 Z" fill="white"/>
+  <circle cx="63" cy="72" r="5.5" fill="white"/>
+</svg>
+      <div class="topbar-title" id="page-title">Resumen general</div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge-live" id="conn-badge"><span class="live-dot"></span><span id="conn-txt">Modo local</span></span>
+      <span class="tb-date" id="top-date"></span>
+      <button class="btn btn-primary btn-sm" onclick="exportInformeEjecutivo()" title="Descargar informe ejecutivo completo en Excel"><i class="ti ti-file-spreadsheet"></i>Informe Excel</button>
+      <button class="btn-icon" onclick="loadPreops()" title="Actualizar"><i class="ti ti-refresh"></i></button>
+      <button class="btn-icon" onclick="window.print()" title="Imprimir"><i class="ti ti-printer"></i></button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══════════════ DASHBOARD ═══════════════ -->
+    <div id="p-dashboard" class="panel active">
+      <div class="link-banner">
+        <div>
+          <i class="ti ti-device-mobile lb-icon"></i>
+          <div class="lb-title">Enlace para conductores — Preoperacional móvil</div>
+          <div class="lb-sub">Comparte este enlace por WhatsApp. El conductor lo abre desde su celular, toma las 6 fotos obligatorias con GPS y su registro aparece aquí automáticamente.</div>
+        </div>
+        <div class="lb-btns">
+          <button class="lb-url" onclick="copyLink()"><i class="ti ti-copy"></i>Copiar enlace</button>
+          <button class="lb-url" onclick="openWhatsApp()"><i class="ti ti-brand-whatsapp"></i>Enviar por WhatsApp</button>
+        </div>
+      </div>
+
+      <div class="kpi-strip">
+        <div class="kpi-card"><div class="kpi-ico green"><i class="ti ti-truck"></i></div><div class="kpi-val green" id="d-flota">0</div><div class="kpi-lbl">Vehículos activos</div></div>
+        <div class="kpi-card"><div class="kpi-ico green"><i class="ti ti-clipboard-check"></i></div><div class="kpi-val green" id="d-preop-ok">0</div><div class="kpi-lbl">Preop. OK hoy</div></div>
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-alert-circle"></i></div><div class="kpi-val red" id="d-preop-falla">0</div><div class="kpi-lbl">Preop. con fallas</div></div>
+        <div class="kpi-card"><div class="kpi-ico orange"><i class="ti ti-tool"></i></div><div class="kpi-val orange" id="d-mant-pend">0</div><div class="kpi-lbl">Mant. pendientes</div></div>
+        <div class="kpi-card"><div class="kpi-ico blue"><i class="ti ti-bell"></i></div><div class="kpi-val blue" id="d-alertas">0</div><div class="kpi-lbl">Alertas activas</div></div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="card">
+            <div class="card-hdr">
+              <div class="card-title"><i class="ti ti-activity"></i>Preoperacionales recibidos hoy</div>
+              <div class="badge-live"><span class="live-dot"></span><span id="preop-cnt-badge">0 registros</span></div>
+            </div>
+            <div id="preop-feed-home">
+              <div class="empty" id="feed-empty"><i class="ti ti-clipboard"></i>Aún no hay registros hoy.<br>Comparte el enlace con los conductores.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hdr"><div class="card-title"><i class="ti ti-alert-circle"></i>Alertas activas</div></div>
+            <div class="card-body" style="padding-top:10px" id="dash-alertas-body"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hdr"><div class="card-title"><i class="ti ti-truck"></i>Estado flota hoy</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:8px;padding-top:10px">
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span>Operativos</span><span class="st st-ok" id="d-op">0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span>En mantenimiento</span><span class="st st-warn" id="d-mant">0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span>Bloqueados</span><span class="st st-danger" id="d-bloq">0</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span>Disponibles</span><span class="st st-info" id="d-disp">0</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hdr"><div class="card-title"><i class="ti ti-tool"></i>Programa mantenimiento</div></div>
+            <div class="card-body" id="prog-mant-body"></div>
+          </div>
+          <div class="card">
+            <div class="card-hdr"><div class="card-title"><i class="ti ti-gas-station"></i>Consumo semanal</div></div>
+            <div class="card-body">
+              <div style="font-size:24px;font-weight:800;color:var(--green);text-align:center" id="cs-total">$0</div>
+              <div style="font-size:11px;color:var(--gray-5);text-align:center;margin:2px 0 10px">COP — últimos 7 días</div>
+              <div style="font-size:12px;color:var(--gray-7);display:flex;justify-content:space-between"><span>Tanqueos registrados</span><strong id="cs-n">0</strong></div>
+              <div style="font-size:12px;color:var(--gray-7);display:flex;justify-content:space-between;margin-top:4px"><span>Galones</span><strong id="cs-gal">0 gal</strong></div>
+              <div style="font-size:12px;color:var(--gray-7);display:flex;justify-content:space-between;margin-top:4px"><span>km recorridos</span><strong id="cs-km">0 km</strong></div>
+              <div style="font-size:12px;color:var(--gray-7);display:flex;justify-content:space-between;margin-top:4px"><span>Rendimiento promedio</span><strong id="cs-rend" style="color:var(--green)">—</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ PREOPERACIONALES ═══════════════ -->
+    <div id="p-preops" class="panel">
+      <div class="link-banner" style="margin-bottom:16px">
+        <div><div class="lb-title"><i class="ti ti-device-mobile" style="margin-right:6px"></i>Enlace para conductores</div><div class="lb-sub">Los conductores abren este enlace, diligencian el formulario y el registro aparece aquí en tiempo real.</div></div>
+        <div class="lb-btns">
+          <button class="lb-url" onclick="copyLink()"><i class="ti ti-copy"></i>Copiar enlace</button>
+          <button class="lb-url" onclick="openWhatsApp()"><i class="ti ti-brand-whatsapp"></i>WhatsApp</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title"><i class="ti ti-clipboard-check"></i>Preoperacionales recibidos</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="badge-live"><span class="live-dot"></span><span id="preop-total-cnt">0</span> total</span>
+            <button class="btn btn-sm" onclick="exportExcel('preops')"><i class="ti ti-file-spreadsheet"></i>Excel</button>
+            <button class="btn btn-sm btn-primary" onclick="loadPreops()"><i class="ti ti-refresh"></i>Actualizar</button>
+          </div>
+        </div>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Hora</th><th>Código</th><th>Conductor</th><th>Placa</th><th>Turno</th><th>Km</th><th>OK</th><th>Fallas</th><th>Fotos</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody id="preop-tbody">
+              <tr><td colspan="11" class="empty"><i class="ti ti-inbox" style="font-size:28px;display:block;margin-bottom:8px;color:var(--gray-3)"></i>Sin preoperacionales aún. Comparte el enlace con los conductores.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ PERSONAL ═══════════════ -->
+    <div id="p-personal" class="panel">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title"><i class="ti ti-users"></i>Conductores registrados</div>
+          <div style="display:flex;gap:8px"><button class="btn btn-sm" onclick="exportExcel('conductores')"><i class="ti ti-file-spreadsheet"></i>Excel</button><button class="btn btn-primary btn-sm" onclick="openModal('m-new-cond')"><i class="ti ti-plus"></i>Agregar conductor</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Conductor</th><th>Cédula</th><th>Teléfono</th><th>Licencia</th><th>Cat.</th><th>Vence lic.</th><th>Examen médico</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="cond-tbody"></tbody>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-alert-circle"></i>Registrar novedad de personal</div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><label>Conductor</label><select id="nov-cond"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Tipo de novedad</label><select id="nov-tipo"><option>Incapacidad médica</option><option>Permiso autorizado</option><option>Infracción de tránsito</option><option>Prueba alcoholimetría (+)</option><option>Capacitación</option><option>Accidente de tránsito</option><option>Ausencia injustificada</option><option>Otro</option></select></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label>Fecha</label><input type="date" id="nov-fecha"></div>
+            <div class="field"><label>Días de duración</label><input type="number" id="nov-dias" placeholder="Ej. 5"></div>
+          </div>
+          <div class="field"><label>Descripción detallada</label><textarea id="nov-desc" placeholder="Describa la novedad, acciones tomadas y seguimiento..."></textarea></div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveNovedad()"><i class="ti ti-device-floppy"></i>Guardar novedad</button></div>
+        </div>
+      </div>
+      <!-- Historial novedades -->
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Historial de novedades</div></div>
+        <div class="tw"><table>
+          <thead><tr><th>Fecha</th><th>Conductor</th><th>Tipo</th><th>Días</th><th>Descripción</th><th></th></tr></thead>
+          <tbody id="nov-tbody"><tr><td colspan="6" class="empty" style="padding:20px">Sin novedades registradas.</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ MANT. PREVENTIVO ═══════════════ -->
+    <div id="p-mant-prev" class="panel">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title"><i class="ti ti-tool"></i>Mantenimientos preventivos</div>
+          <div style="display:flex;gap:8px"><button class="btn btn-sm" onclick="exportExcel('mantPrev')"><i class="ti ti-file-spreadsheet"></i>Excel</button><button class="btn btn-primary btn-sm" onclick="openModal('m-new-mp')"><i class="ti ti-plus"></i>Programar</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Placa</th><th>Tipo vehículo</th><th>Servicio</th><th>Km actual</th><th>Km programado</th><th>Fecha límite</th><th>Taller</th><th>Costo est.</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="mp-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ MANT. CORRECTIVO ═══════════════ -->
+    <div id="p-mant-corr" class="panel">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title"><i class="ti ti-alert-triangle"></i>Mantenimientos correctivos</div>
+          <div style="display:flex;gap:8px"><button class="btn btn-sm" onclick="exportExcel('mantCorr')"><i class="ti ti-file-spreadsheet"></i>Excel</button><button class="btn btn-danger btn-sm" onclick="openModal('m-new-mc')"><i class="ti ti-plus"></i>Registrar avería</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Fecha</th><th>Placa</th><th>Avería / falla</th><th>Reporta</th><th>Prioridad</th><th>Taller</th><th>Fecha entrega</th><th>Costo</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="mc-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ COMBUSTIBLE ═══════════════ -->
+    <div id="p-combustible" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-gas-station"></i>Registrar abastecimiento</div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><label>Vehículo (placa)</label><select id="c-placa"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Conductor</label><select id="c-cond"><option value="">Seleccionar...</option></select></div>
+          </div>
+          <div class="form-grid-3">
+            <div class="field"><label>Fecha y hora</label><input type="datetime-local" id="c-dt"></div>
+            <div class="field"><label>Estación de servicio</label><input type="text" id="c-est" placeholder="Ej. Primax Calle 80"></div>
+            <div class="field"><label>Tipo combustible</label><select id="c-tipo"><option>Diesel</option><option>Corriente</option><option>Extra</option><option>Gas natural</option></select></div>
+          </div>
+          <div class="form-grid-4">
+            <div class="field"><label>Galones cargados</label><input type="number" id="c-gal" placeholder="0" oninput="calcComb()"></div>
+            <div class="field"><label>Valor/galón COP</label><input type="number" id="c-val" placeholder="0" oninput="calcComb()"></div>
+            <div class="field"><label>Km actual</label><input type="number" id="c-kma" placeholder="0" oninput="calcComb()"></div>
+            <div class="field"><label>Km anterior</label><input type="number" id="c-kmp" placeholder="0" oninput="calcComb()"></div>
+          </div>
+          <div id="c-result" style="display:none;background:var(--green-l);border-radius:var(--r);padding:10px 14px;margin-bottom:10px;display:flex;gap:20px;flex-wrap:wrap">
+            <div><div style="font-size:20px;font-weight:800;color:var(--green)" id="c-rkm">—</div><div style="font-size:11px;color:var(--gray-5)">km recorridos</div></div>
+            <div><div style="font-size:20px;font-weight:800;color:var(--green-d)" id="c-rend">—</div><div style="font-size:11px;color:var(--gray-5)">km / galón</div></div>
+            <div><div style="font-size:20px;font-weight:800;color:var(--dark)" id="c-rtot">—</div><div style="font-size:11px;color:var(--gray-5)">costo total</div></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveCombustible()"><i class="ti ti-device-floppy"></i>Guardar tanqueo</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Historial de consumo</div><button class="btn btn-sm" onclick="exportExcel('combustible')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table>
+          <thead><tr><th>Fecha</th><th>Placa</th><th>Conductor</th><th>Estación</th><th>Galones</th><th>Km rec.</th><th>Rendim.</th><th>Costo</th><th></th></tr></thead>
+          <tbody id="comb-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ VEHÍCULOS / PLACAS ═══════════════ -->
+    <div id="p-placas" class="panel">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title"><i class="ti ti-license"></i>Flota de vehículos — Renting</div>
+          <div style="display:flex;gap:8px"><button class="btn btn-sm" onclick="exportExcel('vehiculos')"><i class="ti ti-file-spreadsheet"></i>Excel</button><button class="btn btn-primary btn-sm" onclick="openModal('m-new-vh')"><i class="ti ti-plus"></i>Agregar vehículo</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Placa</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Cap.</th><th>Contrato</th><th>Vence</th><th>Km actual</th><th>Conductor</th><th>SOAT</th><th>RTM</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="vh-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ CONDUCTORES / DOCUMENTOS ═══════════════ -->
+    <div id="p-docs-cond" class="panel">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title"><i class="ti ti-id-badge"></i>Documentos de conductores</div>
+          <button class="btn btn-primary btn-sm" onclick="openModal('m-new-cond')"><i class="ti ti-plus"></i>Nuevo conductor</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Conductor</th><th>Cédula</th><th>N° Licencia</th><th>Cat.</th><th>Vence licencia</th><th>IPS examen</th><th>Vence examen</th><th>Estado</th></tr></thead>
+          <tbody id="docs-cond-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ FORMATO IMPRIMIBLE ═══════════════ -->
+    <div id="p-formato" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-printer"></i>Formato preoperacional imprimible — Plan de contingencia</div></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--gray-7);margin-bottom:14px;line-height:1.6">
+            Genera el formato físico <strong>FOR-PRE-001</strong> para diligenciar a mano cuando el enlace digital presente
+            alguna novedad (falla de internet, celular dañado, contingencia). Incluye los mismos 19 ítems de inspección,
+            registro de las 6 fotos, novedades y firmas. Una vez normalizado el servicio, el registro físico se debe
+            transcribir al sistema digital.
+          </p>
+          <div class="form-grid-3">
+            <div class="field"><label>Placa (opcional — prediligenciada)</label><input type="text" id="fmt-placa" placeholder="Dejar vacío para campo en blanco" style="text-transform:uppercase"></div>
+            <div class="field"><label>Conductor (opcional)</label><input type="text" id="fmt-cond" placeholder="Dejar vacío para campo en blanco"></div>
+            <div class="field"><label>Copias a imprimir</label><select id="fmt-copias"><option value="1">1 copia</option><option value="5">5 copias</option><option value="10">10 copias</option><option value="20">20 copias</option></select></div>
+          </div>
+          <div class="btn-row" style="justify-content:flex-start">
+            <button class="btn btn-primary" onclick="printFormato(true)"><i class="ti ti-printer"></i>Generar e imprimir formato</button>
+            <button class="btn" onclick="printFormato(false)"><i class="ti ti-eye"></i>Vista previa</button>
+          </div>
+          <div style="background:var(--warn-bg);border-left:4px solid var(--warn);border-radius:8px;padding:10px 14px;margin-top:14px;font-size:12px;color:#92400E">
+            <strong>Procedimiento de contingencia:</strong> 1) El conductor diligencia el formato físico y lo firma.
+            2) Toma las 6 fotos con su celular (aunque sea sin la app) conservando la evidencia.
+            3) Entrega el formato al coordinador de zona. 4) El coordinador transcribe el registro al panel
+            cuando el sistema esté disponible y archiva el físico por mínimo 6 meses.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CUMPLIMIENTO DIARIO ═══ -->
+    <div id="p-cumplimiento" class="panel">
+      <div class="kpi-strip" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi-card"><div class="kpi-ico green"><i class="ti ti-circle-check"></i></div><div class="kpi-val green" id="cum-ok">0</div><div class="kpi-lbl">Con preoperacional hoy</div></div>
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-circle-x"></i></div><div class="kpi-val red" id="cum-falta">0</div><div class="kpi-lbl">Sin preoperacional</div></div>
+        <div class="kpi-card"><div class="kpi-ico blue"><i class="ti ti-percentage"></i></div><div class="kpi-val blue" id="cum-pct">0%</div><div class="kpi-lbl">Cumplimiento del día</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-checklist"></i>Semáforo por placa — hoy</div><button class="btn btn-sm" onclick="exportExcel('cumplimiento')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Placa</th><th>Vehículo</th><th>Conductor habitual</th><th>Estado flota</th><th>Preop. hoy</th><th>Hora registro</th><th>Resultado</th></tr></thead><tbody id="cum-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ DESPACHOS ═══ -->
+    <div id="p-despachos" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-route"></i>Registrar despacho</div></div>
+        <div class="card-body">
+          <div class="form-grid-4">
+            <div class="field"><label>Placa</label><select id="dp-placa"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Conductor</label><select id="dp-cond"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Ciudad / destino</label><input id="dp-ciudad" placeholder="Ej. Medellín"></div>
+            <div class="field"><label>Entregas asignadas</label><input type="number" id="dp-entregas" placeholder="0"></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveDespacho()"><i class="ti ti-send"></i>Registrar salida</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Despachos</div><button class="btn btn-sm" onclick="exportExcel('despachos')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Fecha</th><th>Placa</th><th>Conductor</th><th>Destino</th><th>Salida</th><th>Llegada</th><th>Asig.</th><th>Cumplidas</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="dp-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ NOVEDADES EN RUTA ═══ -->
+    <div id="p-nov-ruta" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-map-pin-exclamation"></i>Reportar novedad en ruta</div></div>
+        <div class="card-body">
+          <div class="form-grid-4">
+            <div class="field"><label>Placa</label><select id="nr-placa"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Conductor</label><select id="nr-cond"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Tipo</label><select id="nr-tipo"><option>Vehículo varado</option><option>Accidente de tránsito</option><option>Bloqueo vial</option><option>Retraso operativo</option><option>Problema con cliente</option><option>Otro</option></select></div>
+            <div class="field"><label>Ubicación</label><input id="nr-ubi" placeholder="Ciudad / punto"></div>
+          </div>
+          <div class="field"><label>Descripción</label><textarea id="nr-desc" placeholder="Detalle de la novedad..."></textarea></div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveNovRuta()"><i class="ti ti-alert-triangle"></i>Registrar novedad</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Novedades registradas</div><button class="btn btn-sm" onclick="exportExcel('novedadesRuta')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Fecha/hora</th><th>Placa</th><th>Conductor</th><th>Tipo</th><th>Ubicación</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="nr-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ COSTO POR KM ═══ -->
+    <div id="p-cpk" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-coin"></i>Costo por kilómetro — últimos 30 días</div><button class="btn btn-sm" onclick="exportExcel('cpk')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="card-body" style="padding-bottom:8px"><div style="font-size:12px;color:var(--gray-5)">Suma canon renting mensual + combustible + mantenimientos de los últimos 30 días, dividido entre los km recorridos (según tanqueos). El canon se configura en Vehículos / Placas al editar cada vehículo.</div></div>
+        <div class="tw"><table><thead><tr><th>Placa</th><th>Canon renting</th><th>Combustible 30d</th><th>Mant. prev. 30d</th><th>Mant. corr. 30d</th><th>Total 30d</th><th>Km 30d</th><th>Costo / km</th></tr></thead><tbody id="cpk-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ RENDIMIENTO COMBUSTIBLE ═══ -->
+    <div id="p-rendimiento" class="panel">
+      <div class="kpi-strip" style="grid-template-columns:repeat(2,1fr)">
+        <div class="kpi-card"><div class="kpi-ico green"><i class="ti ti-gauge"></i></div><div class="kpi-val green" id="rend-flota">—</div><div class="kpi-lbl">Rendimiento promedio flota (km/gal)</div></div>
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-alert-triangle"></i></div><div class="kpi-val red" id="rend-bajo">0</div><div class="kpi-lbl">Vehículos bajo el promedio (-15%)</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-gauge"></i>Ranking por vehículo</div><button class="btn btn-sm" onclick="exportExcel('rendimiento')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>#</th><th>Placa</th><th>Tanqueos</th><th>Galones</th><th>Km</th><th>km/gal</th><th>vs. flota</th><th>Estado</th></tr></thead><tbody id="rend-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ PRESUPUESTO ═══ -->
+    <div id="p-presupuesto" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-chart-pie"></i>Presupuesto del mes — <span id="pre-mes-lbl"></span></div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><label>Presupuesto combustible (COP)</label><input type="number" id="pre-comb" placeholder="0"></div>
+            <div class="field"><label>Presupuesto mantenimiento (COP)</label><input type="number" id="pre-mant" placeholder="0"></div>
+          </div>
+          <div class="btn-row" style="justify-content:flex-start"><button class="btn btn-primary" onclick="savePresupuesto()"><i class="ti ti-device-floppy"></i>Guardar presupuesto</button></div>
+          <div class="sec-lbl">Ejecución del mes actual</div>
+          <div id="pre-bars"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VENCIMIENTOS ═══ -->
+    <div id="p-vencimientos" class="panel">
+      <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr)">
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-alert-circle"></i></div><div class="kpi-val red" id="ven-vencidos">0</div><div class="kpi-lbl">Vencidos</div></div>
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-calendar-x"></i></div><div class="kpi-val red" id="ven-30">0</div><div class="kpi-lbl">Vencen ≤ 30 días</div></div>
+        <div class="kpi-card"><div class="kpi-ico orange"><i class="ti ti-calendar-exclamation"></i></div><div class="kpi-val orange" id="ven-60">0</div><div class="kpi-lbl">Vencen ≤ 60 días</div></div>
+        <div class="kpi-card"><div class="kpi-ico blue"><i class="ti ti-calendar"></i></div><div class="kpi-val blue" id="ven-90">0</div><div class="kpi-lbl">Vencen ≤ 90 días</div></div>
+        <div class="kpi-card"><div class="kpi-ico orange"><i class="ti ti-calendar-due"></i></div><div class="kpi-val orange" id="ven-365">0</div><div class="kpi-lbl">Vencen &lt; 1 año</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-calendar-exclamation"></i>Semáforo de vencimientos — flota y conductores</div><button class="btn btn-sm" onclick="exportExcel('vencimientos')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Tipo documento</th><th>Asociado a</th><th>Fecha vencimiento</th><th>Días restantes</th><th>Estado</th></tr></thead><tbody id="ven-tbody"></tbody></table></div>
+      </div>
+
+    </div>
+
+    <!-- ═══ COMPARENDOS ═══ -->
+    <div id="p-comparendos" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-search"></i>Consultar comparendos en fuentes oficiales</div></div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--gray-7);margin-bottom:12px;line-height:1.6">
+            No es posible traer los resultados automáticamente al panel porque estos organismos exigen verificación humana
+            (captcha) y no ofrecen API pública. Escribe la placa o la cédula y ábrela directo en el portal oficial —
+            copia el resultado que te interese y regístralo abajo en la tabla del panel.
+          </p>
+          <div class="form-grid-3">
+            <div class="field"><label>Placa a consultar</label><input type="text" id="cq-placa" placeholder="ABC123" style="text-transform:uppercase"></div>
+            <div class="field"><label>Cédula del conductor (opcional)</label><input type="text" id="cq-cedula" placeholder="0000000000"></div>
+            <div class="field"><label>&nbsp;</label><div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="btn btn-sm" onclick="consultarExterno('simit')"><i class="ti ti-external-link"></i>SIMIT</button>
+              <button class="btn btn-sm" onclick="consultarExterno('runt')"><i class="ti ti-external-link"></i>RUNT</button>
+              <button class="btn btn-sm" onclick="consultarExterno('fenix')"><i class="ti ti-external-link"></i>Fenix (Bogotá)</button>
+            </div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-receipt"></i>Registrar comparendo</div></div>
+        <div class="card-body">
+          <div class="form-grid-4">
+            <div class="field"><label>Fecha</label><input type="date" id="cp-fecha"></div>
+            <div class="field"><label>Placa</label><select id="cp-placa"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Conductor</label><select id="cp-cond"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Valor (COP)</label><input type="number" id="cp-valor" placeholder="0"></div>
+          </div>
+          <div class="field"><label>Infracción (código y descripción)</label><input id="cp-inf" placeholder="Ej. C29 — Exceso de velocidad"></div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveComparendo()"><i class="ti ti-device-floppy"></i>Registrar</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Comparendos registrados</div><button class="btn btn-sm" onclick="exportExcel('comparendos')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Fecha</th><th>Placa</th><th>Conductor</th><th>Infracción</th><th>Valor</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="cp-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ ACTAS ═══ -->
+    <div id="p-actas" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-clipboard-text"></i>Nueva acta de entrega / devolución</div></div>
+        <div class="card-body">
+          <div class="form-grid-4">
+            <div class="field"><label>Tipo</label><select id="ac-tipo"><option>Entrega a conductor</option><option>Devolución a base</option><option>Devolución al renting</option><option>Rotación entre conductores</option></select></div>
+            <div class="field"><label>Placa</label><select id="ac-placa"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Entrega (nombre)</label><input id="ac-entrega" placeholder="Quien entrega"></div>
+            <div class="field"><label>Recibe (nombre)</label><input id="ac-recibe" placeholder="Quien recibe"></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label>Km al momento del acta</label><input type="number" id="ac-km" placeholder="0"></div>
+            <div class="field"><label>Estado del vehículo / observaciones</label><input id="ac-obs" placeholder="Rayones, faltantes, nivel combustible..."></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveActa()"><i class="ti ti-device-floppy"></i>Generar acta</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Actas generadas</div><button class="btn btn-sm" onclick="exportExcel('actas')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Placa</th><th>Entrega</th><th>Recibe</th><th>Km</th><th>Acciones</th></tr></thead><tbody id="ac-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ PESV ═══ -->
+    <div id="p-pesv" class="panel">
+      <div class="kpi-strip" style="grid-template-columns:repeat(4,1fr)">
+        <div class="kpi-card"><div class="kpi-ico blue"><i class="ti ti-road"></i></div><div class="kpi-val blue" id="pesv-km">0</div><div class="kpi-lbl">Km recorridos este mes</div></div>
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-car-crash"></i></div><div class="kpi-val red" id="pesv-acc">0</div><div class="kpi-lbl">Accidentes este mes</div></div>
+        <div class="kpi-card"><div class="kpi-ico orange"><i class="ti ti-percentage"></i></div><div class="kpi-val orange" id="pesv-indice">0</div><div class="kpi-lbl">Índice accid. × 100.000 km</div></div>
+        <div class="kpi-card"><div class="kpi-ico green"><i class="ti ti-school"></i></div><div class="kpi-val green" id="pesv-cap">0%</div><div class="kpi-lbl">Capacitaciones cumplidas</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-shield-check"></i>Registrar indicadores del mes — <span id="pesv-mes-lbl"></span></div></div>
+        <div class="card-body">
+          <div class="form-grid-3">
+            <div class="field"><label>Accidentes de tránsito del mes</label><input type="number" id="pesv-in-acc" placeholder="0"></div>
+            <div class="field"><label>Capacitaciones programadas</label><input type="number" id="pesv-in-capp" placeholder="0"></div>
+            <div class="field"><label>Capacitaciones realizadas</label><input type="number" id="pesv-in-capr" placeholder="0"></div>
+          </div>
+          <div class="btn-row" style="justify-content:flex-start"><button class="btn btn-primary" onclick="savePESV()"><i class="ti ti-device-floppy"></i>Guardar mes</button></div>
+          <div class="sec-lbl">Histórico mensual</div>
+          <div class="tw"><table><thead><tr><th>Mes</th><th>Km</th><th>Accidentes</th><th>Índice ×100k</th><th>Capacitación</th></tr></thead><tbody id="pesv-tbody"></tbody></table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ALCOHOLIMETRÍAS ═══ -->
+    <div id="p-alcohol" class="panel">
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-test-pipe"></i>Registrar prueba de alcoholimetría</div></div>
+        <div class="card-body">
+          <div class="form-grid-4">
+            <div class="field"><label>Conductor</label><select id="al-cond"><option value="">Seleccionar...</option></select></div>
+            <div class="field"><label>Resultado</label><select id="al-res"><option>Negativa</option><option>Positiva</option></select></div>
+            <div class="field"><label>Grado (mg/L)</label><input id="al-grado" placeholder="0.0"></div>
+            <div class="field"><label>Responsable de la prueba</label><input id="al-resp" placeholder="Nombre"></div>
+          </div>
+          <div class="field"><label>Observaciones</label><input id="al-obs" placeholder="Opcional"></div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveAlcohol()"><i class="ti ti-device-floppy"></i>Registrar prueba</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-history"></i>Pruebas realizadas</div><button class="btn btn-sm" onclick="exportExcel('alcohol')"><i class="ti ti-file-spreadsheet"></i>Excel</button></div>
+        <div class="tw"><table><thead><tr><th>Fecha/hora</th><th>Conductor</th><th>Resultado</th><th>Grado</th><th>Responsable</th><th>Observación</th><th></th></tr></thead><tbody id="al-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ ALERTAS ═══════════════ -->
+    <div id="p-alertas" class="panel">
+      <div class="kpi-strip" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi-card"><div class="kpi-ico red"><i class="ti ti-alert-circle"></i></div><div class="kpi-val red" id="kpi-al-crit">0</div><div class="kpi-lbl">Críticas</div></div>
+        <div class="kpi-card"><div class="kpi-ico orange"><i class="ti ti-alert-triangle"></i></div><div class="kpi-val orange" id="kpi-al-warn">0</div><div class="kpi-lbl">Atención</div></div>
+        <div class="kpi-card"><div class="kpi-ico blue"><i class="ti ti-info-circle"></i></div><div class="kpi-val blue" id="kpi-al-info">0</div><div class="kpi-lbl">Informativas</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-bell"></i>Alertas activas</div><button class="btn btn-primary btn-sm" onclick="openModal('m-new-alert')"><i class="ti ti-plus"></i>Nueva alerta</button></div>
+        <div class="card-body" style="padding-top:10px" id="alertas-body"></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><div class="card-title"><i class="ti ti-settings"></i>Configurar umbrales</div></div>
+        <div class="card-body">
+          <div class="form-grid-3">
+            <div class="field"><label>Días anticipación (mantenimiento)</label><input type="number" value="15" id="umb-mant"></div>
+            <div class="field"><label>Días anticipación (documentos)</label><input type="number" value="30" id="umb-doc"></div>
+            <div class="field"><label>Km margen de alerta</label><input type="number" value="1000" id="umb-km"></div>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" onclick="saveUmbrales()"><i class="ti ti-device-floppy"></i>Guardar configuración</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══════════════ MODALES ══════════════ -->
+
+<!-- Detalle preop -->
+<div class="modal-overlay" id="m-preop-detail">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-clipboard-check"></i><span id="md-title">Detalle preoperacional</span><button class="modal-close" onclick="closeModal('m-preop-detail')">×</button></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+      <div style="background:var(--green-l);border-radius:var(--r);padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--green)" id="md-ok">0</div><div style="font-size:10px;color:var(--green-d);font-weight:700">OK</div></div>
+      <div style="background:var(--danger-bg);border-radius:var(--r);padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--danger)" id="md-fail">0</div><div style="font-size:10px;color:var(--danger);font-weight:700">Fallas</div></div>
+      <div style="background:var(--gray-1);border-radius:var(--r);padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--gray-7)" id="md-pend">0</div><div style="font-size:10px;color:var(--gray-5);font-weight:700">Pendientes</div></div>
+      <div style="background:var(--info-bg);border-radius:var(--r);padding:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:var(--info)" id="md-fotos">0</div><div style="font-size:10px;color:var(--info);font-weight:700">Fotos</div></div>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Ítems inspeccionados</div>
+    <div class="modal-items" id="md-items"></div>
+    <div id="md-obs-wrap" style="display:none;margin-top:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">Observaciones</div>
+      <div style="font-size:13px;color:var(--gray-7);background:var(--gray-50);border-radius:var(--r);padding:10px" id="md-obs"></div>
+    </div>
+    <div id="md-fotos-wrap" style="display:none;margin-top:12px">
+      <div style="font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Fotos con marca de agua</div>
+      <div class="foto-grid-modal" id="md-fotos-grid"></div>
+    </div>
+    <div class="btn-row"><button class="btn" onclick="closeModal('m-preop-detail')">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- Nuevo conductor -->
+<div class="modal-overlay" id="m-new-cond">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-user-plus"></i>Registrar conductor<button class="modal-close" onclick="closeModal('m-new-cond')">×</button></div>
+    <div class="form-grid"><div class="field"><label>Nombre completo</label><input id="nc-nombre" placeholder="Nombre y apellidos"></div><div class="field"><label>N° cédula</label><input id="nc-cedula" placeholder="00.000.000"></div></div>
+    <div class="form-grid"><div class="field"><label>Teléfono</label><input id="nc-tel" placeholder="310-000-0000"></div><div class="field"><label>Categoría licencia</label><select id="nc-cat"><option>B1</option><option>B2</option><option>C1</option><option>C2</option><option>C3</option></select></div></div>
+    <div class="form-grid"><div class="field"><label>N° licencia</label><input id="nc-nlic" placeholder="LCON-000"></div><div class="field"><label>Vence licencia</label><input type="date" id="nc-vlic"></div></div>
+    <div class="form-grid"><div class="field"><label>IPS examen médico</label><input id="nc-ips" placeholder="Nombre de la IPS"></div><div class="field"><label>Vence examen médico</label><input type="date" id="nc-vmed"></div></div>
+    <div class="btn-row"><button class="btn" onclick="closeModal('m-new-cond')">Cancelar</button><button class="btn btn-primary" onclick="saveConductor()"><i class="ti ti-device-floppy"></i>Registrar</button></div>
+  </div>
+</div>
+
+<!-- Nuevo vehículo -->
+<div class="modal-overlay" id="m-new-vh">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-license"></i>Agregar vehículo a la flota<button class="modal-close" onclick="closeModal('m-new-vh')">×</button></div>
+    <div class="form-grid"><div class="field"><label>Placa</label><input id="nv-placa" placeholder="ABC-123" style="text-transform:uppercase"></div><div class="field"><label>Marca</label><input id="nv-marca" placeholder="Isuzu"></div></div>
+    <div class="form-grid"><div class="field"><label>Modelo / línea</label><input id="nv-modelo" placeholder="NQR 5.2T"></div><div class="field"><label>Año</label><input type="number" id="nv-anio" placeholder="2024"></div></div>
+    <div class="form-grid"><div class="field"><label>Capacidad de carga</label><input id="nv-cap" placeholder="Ej. 5.200 kg"></div><div class="field"><label>N° contrato renting</label><input id="nv-contrato" placeholder="RENT-005-24"></div></div>
+    <div class="form-grid"><div class="field"><label>Vence contrato</label><input type="date" id="nv-venc"></div><div class="field"><label>Km inicial</label><input type="number" id="nv-km" placeholder="0"></div></div>
+    <div class="form-grid"><div class="field"><label>Conductor habitual</label><select id="nv-cond"><option value="">Seleccionar...</option></select></div><div class="field"><label>Vence SOAT</label><input type="date" id="nv-soat"></div></div>
+    <div class="form-grid"><div class="field"><label>Vence RTM</label><input type="date" id="nv-rtm"></div><div class="field"><label>Canon renting mensual (COP)</label><input type="number" id="nv-canon" placeholder="Ej. 4200000"></div></div>
+    <div class="form-grid"><div class="field"><label>Estado inicial</label><select id="nv-estado"><option value="ok">Operativo</option><option value="mant">En mantenimiento</option><option value="bloq">Bloqueado</option><option value="disp">Disponible</option></select></div><div></div></div>
+    <div class="btn-row"><button class="btn" onclick="closeModal('m-new-vh')">Cancelar</button><button class="btn btn-primary" onclick="saveVehiculo()"><i class="ti ti-plus"></i>Agregar a flota</button></div>
+  </div>
+</div>
+
+<!-- Nuevo mant. preventivo -->
+<div class="modal-overlay" id="m-new-mp">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-tool"></i>Programar mantenimiento preventivo<button class="modal-close" onclick="closeModal('m-new-mp')">×</button></div>
+    <div class="form-grid"><div class="field"><label>Vehículo (placa)</label><select id="mp-placa"><option value="">Seleccionar...</option></select></div><div class="field"><label>Tipo de servicio</label><select id="mp-tipo"><option>Cambio aceite + filtros</option><option>Revisión frenos</option><option>Alineación y balanceo</option><option>Suspensión</option><option>Correa distribución</option><option>Revisión eléctrica</option><option>Inspección RTM</option><option>Otro</option></select></div></div>
+    <div class="form-grid"><div class="field"><label>Km programado</label><input type="number" id="mp-km" placeholder="50000"></div><div class="field"><label>Fecha límite</label><input type="date" id="mp-fecha"></div></div>
+    <div class="form-grid"><div class="field"><label>Taller autorizado</label><select id="mp-taller"><option>Red autorizada Renting</option><option>Concesionario oficial</option><option>Taller especializado</option></select></div><div class="field"><label>Costo estimado (COP)</label><input type="number" id="mp-costo" placeholder="0"></div></div>
+    <div class="field"><label>Descripción del servicio</label><textarea id="mp-desc" placeholder="Detalle del trabajo a realizar..."></textarea></div>
+    <div class="btn-row"><button class="btn" onclick="closeModal('m-new-mp')">Cancelar</button><button class="btn btn-primary" onclick="saveMantPrev()"><i class="ti ti-calendar-plus"></i>Programar</button></div>
+  </div>
+</div>
+
+<!-- Nuevo mant. correctivo -->
+<div class="modal-overlay" id="m-new-mc">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-alert-triangle"></i>Registrar avería / correctivo<button class="modal-close" onclick="closeModal('m-new-mc')">×</button></div>
+    <div class="form-grid"><div class="field"><label>Vehículo (placa)</label><select id="mc-placa"><option value="">Seleccionar...</option></select></div><div class="field"><label>Conductor que reporta</label><select id="mc-cond"><option value="">Seleccionar...</option></select></div></div>
+    <div class="form-grid"><div class="field"><label>Fecha reporte</label><input type="date" id="mc-fecha"></div><div class="field"><label>Prioridad</label><select id="mc-prio"><option>Crítica — vehículo varado</option><option>Alta — operación limitada</option><option>Media — operación normal</option></select></div></div>
+    <div class="field"><label>Descripción de la avería</label><textarea id="mc-desc" placeholder="Describa la falla en detalle..."></textarea></div>
+    <div class="form-grid"><div class="field"><label>Taller asignado</label><select id="mc-taller"><option>Red Renting</option><option>Concesionario oficial</option><option>Taller emergencia</option></select></div><div class="field"><label>Fecha estimada entrega</label><input type="date" id="mc-entrega"></div></div>
+    <div class="field"><label>Costo estimado reparación (COP)</label><input type="number" id="mc-costo" placeholder="0"></div>
+    <div class="btn-row"><button class="btn" onclick="closeModal('m-new-mc')">Cancelar</button><button class="btn btn-danger" onclick="saveMantCorr()"><i class="ti ti-send"></i>Registrar avería</button></div>
+  </div>
+</div>
+
+<!-- Nueva alerta -->
+<div class="modal-overlay" id="m-new-alert">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-bell"></i>Registrar nueva alerta<button class="modal-close" onclick="closeModal('m-new-alert')">×</button></div>
+    <div class="form-grid"><div class="field"><label>Tipo</label><select id="al-tipo"><option value="crit">Crítica</option><option value="warn">Atención</option><option value="info">Informativa</option></select></div><div class="field"><label>Relacionado con</label><input id="al-rel" placeholder="Ej. GHI-789 / Andrés López"></div></div>
+    <div class="field"><label>Título de la alerta</label><input id="al-titulo" placeholder="Ej. Contrato por vencer"></div>
+    <div class="field"><label>Descripción</label><textarea id="al-desc" placeholder="Detalle de la alerta..."></textarea></div>
+    <div class="btn-row"><button class="btn" onclick="closeModal('m-new-alert')">Cancelar</button><button class="btn btn-primary" onclick="saveAlerta()"><i class="ti ti-bell"></i>Agregar alerta</button></div>
+  </div>
+</div>
+
+<!-- Confirm delete -->
+<div class="confirm-box" id="confirm-box">
+  <div class="confirm-inner">
+    <div class="confirm-title">¿Eliminar registro?</div>
+    <div class="confirm-sub">Esta acción no se puede deshacer.</div>
+    <div class="confirm-btns">
+      <button class="btn" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast-el"><i class="ti ti-circle-check"></i><span id="toast-msg"></span></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// ⚙️ CONFIGURACIÓN OBLIGATORIA — PEGA AQUÍ TU URL DE GOOGLE
+// La MISMA URL que pegaste en el formulario del conductor.
+// Ejemplo: var API_URL = 'https://script.google.com/macros/s/ABC123.../exec';
+var API_URL = 'https://script.google.com/macros/s/AKfycbyWbU461QgLwM0hX3XqHlB3VbaI0faeS32ZIeBmYo4M7iSCOgv-sOeKjFrn44B2FQ/exec';
+// ══════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════
+//  ESTADO GLOBAL — toda la data vive aquí
+// ══════════════════════════════════════════════
+var STORAGE_KEY   = 'fhd_preops_v1';
+var DATA_KEY      = 'fhd_panel_data_v1';
+var PREOP_FILE    = 'fhd-preop-conductor.html';
+var toastTimer, confirmCb;
+
+var DB = {
+  vehiculos: [
+    {placa:'ABC-123',marca:'Isuzu',modelo:'NQR 5.2T',anio:'2022',cap:'5.200 kg',contrato:'RENT-001-22',venc:'2027-12-31',km:'48250',cond:'Carlos Mendoza Ríos',soat:'2027-01-15',rtm:'2027-03-10',canon:'4800000',estado:'ok'},
+    {placa:'DEF-456',marca:'Mercedes-Benz',modelo:'Sprinter 416',anio:'2023',cap:'1.600 kg',contrato:'RENT-002-23',venc:'2028-03-31',km:'32100',cond:'Andrés López Vera',soat:'2027-02-20',rtm:'2027-06-15',canon:'3900000',estado:'ok'},
+    {placa:'GHI-789',marca:'Toyota',modelo:'HiLux 2.8D',anio:'2021',cap:'1.000 kg',contrato:'RENT-003-21',venc:'2026-08-31',km:'61800',cond:'Miguel Torres Prada',soat:'2026-09-10',rtm:'2026-09-10',canon:'3200000',estado:'bloq'},
+    {placa:'JKL-012',marca:'Hyundai',modelo:'HD78 3.5T',anio:'2022',cap:'3.500 kg',contrato:'RENT-004-22',venc:'2028-01-31',km:'44600',cond:'Luisa Fernández Gil',soat:'2027-04-20',rtm:'2027-11-15',canon:'4200000',estado:'mant'}
+  ],
+  conductores: [
+    {nombre:'Carlos Mendoza Ríos',cedula:'79.123.456',tel:'310-000-0001',cat:'C3',nlic:'LCON-001',vlic:'2027-12-15',ips:'Centro Médico Lab',vmed:'2027-04-15'},
+    {nombre:'Andrés López Vera',cedula:'71.456.789',tel:'310-000-0002',cat:'C1',nlic:'LCON-002',vlic:'2026-08-30',ips:'IPS Salud Total',vmed:'2027-03-20'},
+    {nombre:'Miguel Torres Prada',cedula:'80.234.567',tel:'310-000-0003',cat:'B1',nlic:'LCON-003',vlic:'2028-03-22',ips:'Clínica Norte',vmed:'2027-06-10'},
+    {nombre:'Luisa Fernández Gil',cedula:'52.789.012',tel:'310-000-0004',cat:'C3',nlic:'LCON-004',vlic:'2029-05-10',ips:'—',vmed:'2025-12-01'}
+  ],
+  mantPrev: [
+    {placa:'ABC-123',tipo:'Camión NQR',servicio:'Cambio aceite + filtro',kmAct:'48250',kmProg:'50000',fecha:'2026-07-20',taller:'Red Renting',costo:'280000',estado:'Próximo'},
+    {placa:'DEF-456',tipo:'Furgón Sprinter',servicio:'Revisión frenos',kmAct:'32100',kmProg:'35000',fecha:'2026-07-31',taller:'Concesionario',costo:'150000',estado:'Al día'},
+    {placa:'GHI-789',tipo:'Camioneta HiLux',servicio:'Correa distribución',kmAct:'61800',kmProg:'60000',fecha:'2026-07-05',taller:'Toyota',costo:'480000',estado:'Vencido'},
+    {placa:'JKL-012',tipo:'Turbo Truck HD78',servicio:'Suspensión delantera',kmAct:'44600',kmProg:'45000',fecha:'2026-07-18',taller:'Red Renting',costo:'350000',estado:'Próximo'}
+  ],
+  mantCorr: [
+    {fecha:'2026-07-13',placa:'GHI-789',averia:'Correa distribución rota — no arranca',reporta:'M. Torres',prioridad:'Crítica',taller:'Toyota',entrega:'2026-07-17',costo:'650000',estado:'En taller'}
+  ],
+  combustible: [
+    {fecha:'2026-07-12',placa:'ABC-123',cond:'C. Mendoza',estacion:'Primax Cra 30',galones:'45',km:'378',rend:'8.4',costo:'315000'},
+    {fecha:'2026-07-11',placa:'DEF-456',cond:'A. López',estacion:'Terpel Autopista',galones:'30',km:'240',rend:'8.0',costo:'210000'}
+  ],
+  novedades: [],
+  alertas: [
+    {tipo:'crit',titulo:'Mantenimiento vencido — GHI-789',desc:'Correa distribución debía intervenirse el 5 Jul 2026. Vehículo inmovilizado.'},
+    {tipo:'crit',titulo:'Contrato renting por vencer — GHI-789',desc:'RENT-003-21 vence agosto 2026. Gestionar renovación.'},
+    {tipo:'warn',titulo:'Licencia próxima — Andrés López',desc:'Lic. C1 vence 30 Ago 2026. Programar renovación.'},
+    {tipo:'warn',titulo:'Mantenimiento próximo — ABC-123',desc:'Cambio aceite programado 20 Jul 2026.'},
+    {tipo:'info',titulo:'Examen médico vencido — Luisa Fernández',desc:'No puede operar hasta presentar examen vigente.'}
+  ],
+  despachos: [],
+  novedadesRuta: [],
+  comparendos: [],
+  actas: [],
+  alcohol: [],
+  pesv: {},
+  presupuesto: {}
+};
+var DB_DEFAULTS_ALERTAS = JSON.parse(JSON.stringify(DB.alertas));
+
+// ── PERSISTIR / CARGAR DB ──
+function saveDB(){
+  try{ localStorage.setItem(DATA_KEY, JSON.stringify(DB)); }catch(e){}
+  syncAll(false); // cada guardado refresca TODAS las pestañas automáticamente
+}
+// ══════════ SINCRONIZACIÓN GLOBAL — actualiza todas las pestañas ══════════
+// Se llama automáticamente desde saveDB() (cualquier guardado/edición/eliminación
+// en cualquier módulo) y desde loadPreops() cada vez que llegan preoperacionales
+// nuevos. skipFormInputs=true evita sobreescribir campos que el usuario pueda
+// estar escribiendo en ese momento (usado solo en el refresco automático de 15s).
+var SYNC_RUNNING = false;
+function syncAll(skipFormInputs){
+  if(SYNC_RUNNING) return; // evita reentradas si algo dispara saveDB() en cascada
+  SYNC_RUNNING = true;
+  try{
+    // Dashboard y resumen
+    updateDashboard();
+    renderProgramaMant();
+    updateConsumoSemanal();
+    // Flota y documentos
+    if(typeof renderVehiculos==='function')   renderVehiculos();
+    if(typeof renderPersonal==='function')    renderPersonal();
+    if(typeof renderAlertas==='function')     renderAlertas();
+    if(typeof renderNovedades==='function')   renderNovedades();
+    // Mantenimientos y combustible
+    if(typeof renderMantPrev==='function')    renderMantPrev();
+    if(typeof renderMantCorr==='function')    renderMantCorr();
+    if(typeof renderCombustible==='function') renderCombustible();
+    // Operación diaria
+    if(typeof renderCumplimiento==='function')renderCumplimiento();
+    if(typeof renderDespachos==='function')   renderDespachos();
+    if(typeof renderNovRuta==='function')     renderNovRuta();
+    // Costos
+    if(typeof renderCPK==='function')         renderCPK();
+    if(typeof renderRendimiento==='function') renderRendimiento();
+    if(typeof renderPresupuesto==='function') renderPresupuesto(!skipFormInputs);
+    // Cumplimiento y PESV
+    if(typeof renderVencimientos==='function')renderVencimientos();
+    if(typeof renderComparendos==='function') renderComparendos();
+    if(typeof renderActas==='function')       renderActas();
+    if(typeof renderPESV==='function')        renderPESV(!skipFormInputs);
+    if(typeof renderAlcohol==='function')     renderAlcohol();
+    // Badges y selects al final (dependen de todo lo anterior)
+    refreshSelects();
+    updateBadges();
+  }catch(e){ console.warn('syncAll:', e); }
+  SYNC_RUNNING = false;
+}
+function loadDB(){
+  try{
+    var saved = localStorage.getItem(DATA_KEY);
+    if(saved){ DB = JSON.parse(saved); }
+  }catch(e){}
+  if(!DB.alertas) DB.alertas = DB_DEFAULTS_ALERTAS;
+  if(!DB.novedades) DB.novedades = [];
+  ['despachos','novedadesRuta','comparendos','actas','alcohol'].forEach(function(k){ if(!DB[k]) DB[k]=[]; });
+  if(!DB.pesv) DB.pesv = {};
+  if(!DB.presupuesto) DB.presupuesto = {};
+}
+
+// ══════════ NAV ══════════
+var PANEL_TITLES = {dashboard:'Resumen general',preops:'Preoperacionales recibidos',personal:'Control de personal','mant-prev':'Mantenimientos preventivos','mant-corr':'Mantenimientos correctivos',combustible:'Control de combustible',placas:'Vehículos y placas','docs-cond':'Documentos de conductores',alertas:'Centro de alertas',formato:'Formato preoperacional imprimible',cumplimiento:'Cumplimiento diario de preoperacionales',despachos:'Despachos y rutas','nov-ruta':'Novedades en ruta',cpk:'Costo por kilómetro por vehículo',rendimiento:'Rendimiento de combustible',presupuesto:'Presupuesto vs ejecutado',vencimientos:'Semáforo de vencimientos',comparendos:'Control de comparendos',actas:'Actas de entrega y devolución',pesv:'Indicadores PESV — Seguridad Vial',alcohol:'Control de alcoholimetrías'};
+function nav(id, btn){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('page-title').textContent = PANEL_TITLES[id]||id;
+  renderCurrentPanel(id);
+}
+function renderCurrentPanel(id){
+  if(id==='preops')      loadPreops();
+  if(id==='personal')    renderPersonal();
+  if(id==='placas')      renderVehiculos();
+  if(id==='docs-cond')   renderDocsCond();
+  if(id==='mant-prev')   renderMantPrev();
+  if(id==='mant-corr')   renderMantCorr();
+  if(id==='combustible') renderCombustible();
+  if(id==='cumplimiento') renderCumplimiento();
+  if(id==='despachos')   renderDespachos();
+  if(id==='nov-ruta')    renderNovRuta();
+  if(id==='cpk')         renderCPK();
+  if(id==='rendimiento') renderRendimiento();
+  if(id==='presupuesto') renderPresupuesto();
+  if(id==='vencimientos')renderVencimientos();
+  if(id==='comparendos') renderComparendos();
+  if(id==='actas')       renderActas();
+  if(id==='pesv')        renderPESV();
+  if(id==='alcohol')     renderAlcohol();
+}
+
+// ══════════ LINK ══════════
+function getPreopUrl(){ return window.location.href.replace(/[^/]*$/, PREOP_FILE); }
+function copyLink(){
+  navigator.clipboard.writeText(getPreopUrl())
+    .then(function(){ toast('Enlace copiado. Pégalo en WhatsApp.'); })
+    .catch(function(){ toast('Enlace: '+PREOP_FILE); });
+}
+function openWhatsApp(){
+  var msg = encodeURIComponent('Hola! Por favor diligencia el preoperacional de tu vehículo antes de iniciar el turno 🚛\n👉 '+getPreopUrl()+'\n\nFalabella Home Delivery — Jefatura de Transporte');
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+
+// ══════════ PREOPERACIONALES (desde localStorage del formulario) ══════════
+var preopsData = [];
+function loadPreops(isBackground){
+  if(API_URL){
+    fetch(API_URL)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        preopsData = Array.isArray(data)?data:[];
+        renderPreops();
+        syncAll(!!isBackground);
+      })
+      .catch(function(err){
+        console.warn('No se pudo conectar a Google Sheets:', err);
+        loadPreopsLocal(isBackground);
+      });
+  } else {
+    loadPreopsLocal(isBackground);
+  }
+}
+function loadPreopsLocal(isBackground){
+  try{ preopsData = JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch(e){ preopsData=[]; }
+  renderPreops();
+  syncAll(!!isBackground);
+}
+function renderPreops(){
+  var tbody = document.getElementById('preop-tbody');
+  var feed  = document.getElementById('preop-feed-home');
+  var badge = document.getElementById('b-preops');
+  document.getElementById('preop-total-cnt').textContent = preopsData.length;
+  document.getElementById('preop-cnt-badge').textContent = preopsData.length+' '+(preopsData.length===1?'registro':'registros');
+  var fails = preopsData.filter(function(r){return r.estado==='falla';}).length;
+  if(fails>0){ badge.textContent=fails; badge.style.display='inline'; } else{ badge.style.display='none'; }
+
+  if(preopsData.length===0){
+    tbody.innerHTML='<tr><td colspan="11" class="empty"><i class="ti ti-inbox" style="font-size:26px;display:block;margin-bottom:8px;color:var(--gray-3)"></i>Sin preoperacionales. Comparte el enlace con los conductores.</td></tr>';
+    feed.innerHTML='<div class="empty"><i class="ti ti-clipboard"></i>Sin registros hoy.</div>';
+    return;
+  }
+  tbody.innerHTML='';
+  preopsData.forEach(function(r,idx){
+    var t = r.timestamp?new Date(r.timestamp).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}):'—';
+    var stCls = r.estado==='ok'?'st-ok':r.estado==='falla'?'st-danger':'st-warn';
+    var stLbl = r.estado==='ok'?'Sin novedad':r.estado==='falla'?'Con falla':'Incompleto';
+    var fotosN = (r.fotos||[]).filter(function(f){return f&&(f.data||f.url);}).length;
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+t+'</td>'
+      +'<td><code style="font-size:10px;background:var(--gray-1);padding:2px 6px;border-radius:4px">'+r.id+'</code></td>'
+      +'<td><strong>'+r.conductor+'</strong></td>'
+      +'<td><span class="placa">'+r.placa+'</span></td>'
+      +'<td>'+r.turno+'</td>'
+      +'<td>'+parseInt(r.km||0).toLocaleString('es-CO')+' km</td>'
+      +'<td style="color:var(--green);font-weight:700">'+r.ok+'</td>'
+      +'<td style="color:'+(r.fallas>0?'var(--danger)':'var(--gray-5)')+';font-weight:700">'+r.fallas+'</td>'
+      +'<td><span class="st st-info">'+fotosN+' 📷</span></td>'
+      +'<td><span class="st '+stCls+'">'+stLbl+'</span></td>'
+      +'<td><div class="row-actions"><button class="btn btn-sm" onclick="showPreopDetail('+idx+')"><i class="ti ti-eye"></i>Ver</button><button class="btn btn-sm" style="color:var(--danger)" title="Eliminar registro" onclick="deletePreop(\''+r.id+'\')"><i class="ti ti-trash"></i></button></div></td>';
+    tbody.appendChild(tr);
+  });
+  // Feed dashboard (últimos 4)
+  feed.innerHTML='';
+  preopsData.slice(0,4).forEach(function(r){
+    var t=r.timestamp?new Date(r.timestamp).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}):'—';
+    var cls=r.estado==='ok'?'ai-ok':r.estado==='falla'?'ai-crit':'ai-warn';
+    var ico=r.estado==='ok'?'ti-circle-check':r.estado==='falla'?'ti-alert-circle':'ti-alert-triangle';
+    var lbl=r.estado==='ok'?'Sin novedad':r.estado==='falla'?r.fallas+' falla(s)':'Incompleto';
+    var div=document.createElement('div');
+    div.className='alert-item '+cls;
+    div.style.cursor='pointer';
+    var idx=preopsData.indexOf(r);
+    div.onclick=function(){showPreopDetail(idx);};
+    div.innerHTML='<i class="ti '+ico+' ai-ico"></i><div style="flex:1"><div class="ai-title"><strong>'+r.conductor+'</strong> — <span class="placa" style="font-size:10px">'+r.placa+'</span></div><div class="ai-body">'+lbl+' · '+t+'</div></div>';
+    feed.appendChild(div);
+  });
+}
+function deletePreop(id){
+  confirmDelete(function(){
+    if(API_URL){
+      toast('Eliminando registro '+id+'...');
+      fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'delete', id:id})
+      })
+      .then(function(r){return r.json();})
+      .then(function(res){
+        if(res && res.ok){ toast('Registro '+id+' eliminado de Google Sheets.'); loadPreops(); }
+        else { toast('No se pudo eliminar: '+(res&&res.error?res.error:'verifica que el script esté actualizado.')); }
+      })
+      .catch(function(){ toast('Error de conexión al eliminar. Verifica el script de Google.'); });
+    } else {
+      preopsData = preopsData.filter(function(r){ return r.id!==id; });
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(preopsData)); }catch(e){}
+      renderPreops(); updateDashboard();
+      toast('Registro '+id+' eliminado.');
+    }
+  });
+}
+function showPreopDetail(idx){
+  var r=preopsData[idx]; if(!r) return;
+  var t=r.timestamp?new Date(r.timestamp).toLocaleString('es-CO'):'—';
+  document.getElementById('md-title').textContent=r.conductor+' · '+r.placa+' · '+t;
+  document.getElementById('md-ok').textContent=r.ok;
+  document.getElementById('md-fail').textContent=r.fallas;
+  document.getElementById('md-pend').textContent=r.pendientes;
+  var fotosN=(r.fotos||[]).filter(function(f){return f&&(f.data||f.url);}).length;
+  document.getElementById('md-fotos').textContent=fotosN;
+  var cont=document.getElementById('md-items');
+  cont.innerHTML='';
+  (r.items||[]).forEach(function(item){
+    var cls=item.estado===1?'mi-ok':item.estado===2?'mi-fail':'mi-pend';
+    var ico=item.estado===1?'ti-check':item.estado===2?'ti-x':'ti-minus';
+    var d=document.createElement('div');
+    d.className='mi-row '+cls;
+    d.innerHTML='<i class="ti '+ico+' mi-ico"></i><div><div class="mi-name">'+item.name+'</div><div class="mi-grupo">'+item.grupo+'</div>'+(item.nota?'<div class="mi-nota">'+item.nota+'</div>':'')+'</div>';
+    cont.appendChild(d);
+  });
+  var obsEl=document.getElementById('md-obs-wrap');
+  var obsTxt = r.observaciones || '';
+  var coords = getCoords(r);
+  if(coords){
+    obsTxt = (obsTxt?obsTxt+'\n\n':'') + '📍 Ubicación GPS: ' + coords;
+  }
+  if(r.docs && (r.docs.soatVence || r.docs.rtmVence)){
+    var docLines=[];
+    if(r.docs.soatVence){
+      var dS=daysTo(r.docs.soatVence);
+      docLines.push('SOAT vence '+r.docs.soatVence+(dS!==null?(dS<0?' — ⚠️ VENCIDO':dS<365?' — ⚠️ menos de 1 año ('+dS+' días)':' — vigente'):''));
+    }
+    if(r.docs.rtmVence){
+      var dR=daysTo(r.docs.rtmVence);
+      docLines.push('RTM vence '+r.docs.rtmVence+(dR!==null?(dR<0?' — ⚠️ VENCIDA':dR<365?' — ⚠️ menos de 1 año ('+dR+' días)':' — vigente'):''));
+    }
+    obsTxt = (obsTxt?obsTxt+'\n\n':'') + '📄 '+docLines.join('\n📄 ');
+  }
+  if(obsTxt){
+    obsEl.style.display='block';
+    var obsDiv=document.getElementById('md-obs');
+    obsDiv.textContent=obsTxt;
+    if(coords){
+      obsDiv.innerHTML = obsDiv.innerHTML + ' — <a href="https://www.google.com/maps?q='+coords.replace(/\s/g,'')+'" target="_blank" style="color:var(--green);font-weight:600">Ver en mapa</a>';
+    }
+  } else { obsEl.style.display='none'; }
+  var fotosWrap=document.getElementById('md-fotos-wrap');
+  var fotosGrid=document.getElementById('md-fotos-grid');
+  fotosGrid.innerHTML='';
+  var fotos=(r.fotos||[]).filter(function(f){return f&&(f.data||f.url);});
+  if(fotos.length>0){
+    fotosWrap.style.display='block';
+    fotos.forEach(function(f){
+      var div=document.createElement('div');
+      div.className='foto-item';
+      div.innerHTML='<img class="foto-thumb" src="'+(f.data||f.url)+'" alt="'+f.label+'" loading="lazy"><div class="foto-lbl">'+f.label+'</div>';
+      fotosGrid.appendChild(div);
+    });
+  } else { fotosWrap.style.display='none'; }
+  openModal('m-preop-detail');
+}
+
+function updateDashboard(){
+  updateConsumoSemanal();
+  var today=new Date().toISOString().split('T')[0];
+  var todayRecs=preopsData.filter(function(r){return r.fecha===today;});
+  document.getElementById('d-preop-ok').textContent=todayRecs.filter(function(r){return r.estado==='ok';}).length;
+  document.getElementById('d-preop-falla').textContent=todayRecs.filter(function(r){return r.estado==='falla';}).length;
+  document.getElementById('d-flota').textContent=DB.vehiculos.length;
+  document.getElementById('flota-cnt').textContent=DB.vehiculos.length;
+  var ok=DB.vehiculos.filter(function(v){return v.estado==='ok';}).length;
+  var mant=DB.vehiculos.filter(function(v){return v.estado==='mant';}).length;
+  var bloq=DB.vehiculos.filter(function(v){return v.estado==='bloq';}).length;
+  var disp=DB.vehiculos.filter(function(v){return v.estado==='disp';}).length;
+  document.getElementById('d-op').textContent=ok;
+  document.getElementById('d-mant').textContent=mant;
+  document.getElementById('d-bloq').textContent=bloq;
+  document.getElementById('d-disp').textContent=disp;
+}
+
+// ══════════ VEHÍCULOS ══════════
+function renderVehiculos(){
+  var tbody=document.getElementById('vh-tbody');
+  tbody.innerHTML='';
+  if(DB.vehiculos.length===0){tbody.innerHTML='<tr><td colspan="13" class="empty">Sin vehículos registrados.</td></tr>';return;}
+  DB.vehiculos.forEach(function(v,i){
+    var stCls=v.estado==='ok'?'st-ok':v.estado==='mant'?'st-warn':v.estado==='bloq'?'st-danger':'st-info';
+    var stLbl=v.estado==='ok'?'Operativo':v.estado==='mant'?'En mantenimiento':v.estado==='bloq'?'Bloqueado':'Disponible';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="placa">'+v.placa+'</span></td>'
+      +'<td>'+v.marca+'</td><td>'+v.modelo+'</td><td>'+v.anio+'</td><td>'+v.cap+'</td>'
+      +'<td>'+v.contrato+'</td><td>'+v.venc+'</td>'
+      +'<td>'+parseInt(v.km).toLocaleString('es-CO')+' km</td>'
+      +'<td>'+v.cond+'</td><td>'+v.soat+'</td><td>'+v.rtm+'</td>'
+      +'<td><span class="st '+stCls+'">'+stLbl+'</span></td>'
+      +'<td><div class="row-actions"><button class="btn btn-sm" onclick="editVehiculo('+i+')"><i class="ti ti-edit"></i></button><button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){deleteVehiculo('+i+')})"><i class="ti ti-trash"></i></button></div></td>';
+    tbody.appendChild(tr);
+  });
+  updateDashboard();
+  refreshSelects();
+}
+function saveVehiculo(){
+  var placa=document.getElementById('nv-placa').value.trim().toUpperCase();
+  if(!placa){toast('Ingresa la placa del vehículo.');return;}
+  var v={
+    placa:placa,
+    marca:document.getElementById('nv-marca').value,
+    modelo:document.getElementById('nv-modelo').value,
+    anio:document.getElementById('nv-anio').value,
+    cap:document.getElementById('nv-cap').value,
+    contrato:document.getElementById('nv-contrato').value,
+    venc:document.getElementById('nv-venc').value,
+    km:document.getElementById('nv-km').value||'0',
+    cond:document.getElementById('nv-cond').value,
+    soat:document.getElementById('nv-soat').value,
+    rtm:document.getElementById('nv-rtm').value,
+    canon:document.getElementById('nv-canon').value||'0',
+    estado:document.getElementById('nv-estado').value
+  };
+  DB.vehiculos.push(v);
+  saveDB(); renderVehiculos();
+  closeModal('m-new-vh');
+  ['nv-placa','nv-marca','nv-modelo','nv-anio','nv-cap','nv-contrato','nv-km'].forEach(function(id){document.getElementById(id).value='';});
+  toast('Vehículo '+placa+' agregado a la flota.');
+}
+function editVehiculo(i){
+  var v=DB.vehiculos[i];
+  document.getElementById('nv-placa').value=v.placa;
+  document.getElementById('nv-marca').value=v.marca;
+  document.getElementById('nv-modelo').value=v.modelo;
+  document.getElementById('nv-anio').value=v.anio;
+  document.getElementById('nv-cap').value=v.cap;
+  document.getElementById('nv-contrato').value=v.contrato;
+  document.getElementById('nv-venc').value=v.venc;
+  document.getElementById('nv-km').value=v.km;
+  document.getElementById('nv-soat').value=v.soat||'';
+  document.getElementById('nv-rtm').value=v.rtm||'';
+  document.getElementById('nv-canon').value=v.canon||'';
+  document.getElementById('nv-estado').value=v.estado;
+  DB.vehiculos.splice(i,1);
+  saveDB();
+  openModal('m-new-vh');
+}
+function deleteVehiculo(i){ DB.vehiculos.splice(i,1); saveDB(); renderVehiculos(); toast('Vehículo eliminado.'); }
+
+// ══════════ CONDUCTORES ══════════
+function renderPersonal(){
+  var tbody=document.getElementById('cond-tbody');
+  tbody.innerHTML='';
+  if(DB.conductores.length===0){tbody.innerHTML='<tr><td colspan="9" class="empty">Sin conductores registrados.</td></tr>';return;}
+  DB.conductores.forEach(function(c,i){
+    var now=new Date();
+    var vlic=new Date(c.vlic); var vmed=new Date(c.vmed);
+    var diasLic=Math.ceil((vlic-now)/(1000*60*60*24));
+    var diasMed=Math.ceil((vmed-now)/(1000*60*60*24));
+    var stCls=diasLic<0||diasMed<0?'st-danger':diasLic<60||diasMed<60?'st-warn':'st-ok';
+    var stLbl=diasLic<0||diasMed<0?'Bloqueado':diasLic<60||diasMed<60?'Alerta':'Habilitado';
+    var licCls=diasLic<0?'color:var(--danger);font-weight:700':diasLic<60?'color:var(--warn);font-weight:600':'';
+    var medCls=diasMed<0?'color:var(--danger);font-weight:700':diasMed<60?'color:var(--warn);font-weight:600':'';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><strong>'+c.nombre+'</strong></td>'
+      +'<td>'+c.cedula+'</td><td>'+c.tel+'</td>'
+      +'<td>'+c.nlic+'</td><td>'+c.cat+'</td>'
+      +'<td style="'+licCls+'">'+c.vlic+'</td>'
+      +'<td>'+c.ips+'</td>'
+      +'<td style="'+medCls+'">'+c.vmed+'</td>'
+      +'<td><span class="st '+stCls+'">'+stLbl+'</span></td>'
+      +'<td><div class="row-actions"><button class="btn btn-sm" onclick="editConductor('+i+')"><i class="ti ti-edit"></i></button><button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){deleteConductor('+i+')})"><i class="ti ti-trash"></i></button></div></td>';
+    tbody.appendChild(tr);
+  });
+  renderDocsCond();
+  refreshSelects();
+  refreshCondSelect();
+}
+function saveConductor(){
+  var nombre=document.getElementById('nc-nombre').value.trim();
+  if(!nombre){toast('Ingresa el nombre del conductor.');return;}
+  DB.conductores.push({nombre:nombre,cedula:document.getElementById('nc-cedula').value,tel:document.getElementById('nc-tel').value,cat:document.getElementById('nc-cat').value,nlic:document.getElementById('nc-nlic').value,vlic:document.getElementById('nc-vlic').value,ips:document.getElementById('nc-ips').value,vmed:document.getElementById('nc-vmed').value});
+  saveDB(); renderPersonal();
+  closeModal('m-new-cond');
+  ['nc-nombre','nc-cedula','nc-tel','nc-nlic','nc-ips'].forEach(function(id){document.getElementById(id).value='';});
+  toast('Conductor '+nombre+' registrado.');
+}
+function editConductor(i){
+  var c=DB.conductores[i];
+  document.getElementById('nc-nombre').value=c.nombre;
+  document.getElementById('nc-cedula').value=c.cedula;
+  document.getElementById('nc-tel').value=c.tel;
+  document.getElementById('nc-cat').value=c.cat;
+  document.getElementById('nc-nlic').value=c.nlic;
+  document.getElementById('nc-vlic').value=c.vlic;
+  document.getElementById('nc-ips').value=c.ips;
+  document.getElementById('nc-vmed').value=c.vmed;
+  DB.conductores.splice(i,1);
+  saveDB();
+  openModal('m-new-cond');
+}
+function deleteConductor(i){ DB.conductores.splice(i,1); saveDB(); renderPersonal(); toast('Conductor eliminado.'); }
+function renderDocsCond(){
+  var tbody=document.getElementById('docs-cond-tbody');
+  tbody.innerHTML='';
+  DB.conductores.forEach(function(c){
+    var now=new Date();
+    var vlic=new Date(c.vlic); var vmed=new Date(c.vmed);
+    var dL=Math.ceil((vlic-now)/(86400000)), dM=Math.ceil((vmed-now)/(86400000));
+    var stCls=dL<0||dM<0?'st-danger':dL<60||dM<60?'st-warn':'st-ok';
+    var stLbl=dL<0||dM<0?'Bloqueado':dL<60||dM<60?'Alerta doc.':'Habilitado';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><strong>'+c.nombre+'</strong></td><td>'+c.cedula+'</td><td>'+c.nlic+'</td><td>'+c.cat+'</td>'
+      +'<td style="'+(dL<0?'color:var(--danger);font-weight:700':dL<60?'color:var(--warn)':'')+'">'+c.vlic+'</td>'
+      +'<td>'+c.ips+'</td>'
+      +'<td style="'+(dM<0?'color:var(--danger);font-weight:700':dM<60?'color:var(--warn)':'')+'">'+c.vmed+'</td>'
+      +'<td><span class="st '+stCls+'">'+stLbl+'</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+// ══════════ NOVEDADES ══════════
+function refreshCondSelect(){
+  var sel=document.getElementById('nov-cond');
+  sel.innerHTML='<option value="">Seleccionar...</option>';
+  DB.conductores.forEach(function(c){sel.innerHTML+='<option>'+c.nombre+'</option>';});
+}
+function saveNovedad(){
+  var cond=document.getElementById('nov-cond').value;
+  if(!cond){toast('Selecciona un conductor.');return;}
+  DB.novedades.push({fecha:document.getElementById('nov-fecha').value,cond:cond,tipo:document.getElementById('nov-tipo').value,dias:document.getElementById('nov-dias').value,desc:document.getElementById('nov-desc').value});
+  saveDB(); renderNovedades();
+  document.getElementById('nov-desc').value=''; document.getElementById('nov-dias').value='';
+  toast('Novedad registrada correctamente.');
+}
+function renderNovedades(){
+  var tbody=document.getElementById('nov-tbody');
+  tbody.innerHTML='';
+  if(DB.novedades.length===0){tbody.innerHTML='<tr><td colspan="6" class="empty" style="padding:20px">Sin novedades registradas.</td></tr>';return;}
+  DB.novedades.forEach(function(n,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+n.fecha+'</td><td>'+n.cond+'</td><td>'+n.tipo+'</td><td>'+(n.dias||'—')+' días</td><td>'+n.desc+'</td>'
+      +'<td><button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.novedades.splice('+i+',1);saveDB();renderNovedades();})"><i class="ti ti-trash"></i></button></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+// ══════════ MANT. PREVENTIVO ══════════
+function renderMantPrev(){
+  updateBadges();
+  renderProgramaMant();
+  var tbody=document.getElementById('mp-tbody');
+  tbody.innerHTML='';
+  DB.mantPrev.forEach(function(m,i){
+    var stCls=m.estado==='Vencido'?'st-danger':m.estado==='Próximo'||m.estado==='Programado'?'st-warn':'st-ok';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="placa">'+m.placa+'</span></td><td>'+m.tipo+'</td><td>'+m.servicio+'</td>'
+      +'<td>'+parseInt(m.kmAct).toLocaleString('es-CO')+'</td><td>'+parseInt(m.kmProg).toLocaleString('es-CO')+'</td>'
+      +'<td>'+m.fecha+'</td><td>'+m.taller+'</td>'
+      +'<td>$'+parseInt(m.costo).toLocaleString('es-CO')+'</td>'
+      +'<td><span class="st '+stCls+'">'+m.estado+'</span></td>'
+      +'<td><div class="row-actions"><button class="btn btn-sm" style="color:var(--green)" title="Marcar como realizado" onclick="markMPRealizado('+i+')"><i class="ti ti-check"></i></button><button class="btn btn-sm" onclick="editMP('+i+')"><i class="ti ti-edit"></i></button><button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.mantPrev.splice('+i+',1);saveDB();renderMantPrev();})"><i class="ti ti-trash"></i></button></div></td>';
+    tbody.appendChild(tr);
+  });
+}
+function saveMantPrev(){
+  var placa=document.getElementById('mp-placa').value;
+  if(!placa){toast('Selecciona el vehículo.');return;}
+  var vh=DB.vehiculos.find(function(v){return v.placa===placa;})||{modelo:'—'};
+  DB.mantPrev.push({placa:placa,tipo:vh.modelo,servicio:document.getElementById('mp-tipo').value,kmAct:vh.km||'0',kmProg:document.getElementById('mp-km').value,fecha:document.getElementById('mp-fecha').value,taller:document.getElementById('mp-taller').value,costo:document.getElementById('mp-costo').value||'0',estado:'Programado'});
+  saveDB(); renderMantPrev(); closeModal('m-new-mp');
+  toast('Mantenimiento programado correctamente.');
+}
+function markMPRealizado(i){
+  DB.mantPrev[i].estado='Realizado';
+  saveDB();
+  renderMantPrev();
+  toast('Mantenimiento marcado como realizado.');
+}
+function editMP(i){
+  var m=DB.mantPrev[i];
+  document.getElementById('mp-placa').value=m.placa;
+  document.getElementById('mp-tipo').value=m.servicio;
+  document.getElementById('mp-km').value=m.kmProg;
+  document.getElementById('mp-fecha').value=m.fecha;
+  document.getElementById('mp-taller').value=m.taller;
+  document.getElementById('mp-costo').value=m.costo;
+  DB.mantPrev.splice(i,1); saveDB();
+  openModal('m-new-mp');
+}
+
+// ══════════ MANT. CORRECTIVO ══════════
+function renderMantCorr(){
+  updateBadges();
+  var tbody=document.getElementById('mc-tbody');
+  tbody.innerHTML='';
+  if(DB.mantCorr.length===0){tbody.innerHTML='<tr><td colspan="10" class="empty">Sin averías registradas.</td></tr>';return;}
+  DB.mantCorr.forEach(function(m,i){
+    var priCls=m.prioridad.includes('Crítica')?'st-danger':m.prioridad.includes('Alta')?'st-warn':'st-info';
+    var stCls=m.estado==='Reparado'?'st-ok':m.estado==='En taller'?'st-warn':'st-danger';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+m.fecha+'</td><td><span class="placa">'+m.placa+'</span></td>'
+      +'<td>'+m.averia+'</td><td>'+m.reporta+'</td>'
+      +'<td><span class="st '+priCls+'">'+m.prioridad.split(' ')[0]+'</span></td>'
+      +'<td>'+m.taller+'</td><td>'+m.entrega+'</td>'
+      +'<td>$'+parseInt(m.costo).toLocaleString('es-CO')+'</td>'
+      +'<td><span class="st '+stCls+'">'+m.estado+'</span></td>'
+      +'<td><div class="row-actions">'
+        +'<button class="btn btn-sm" onclick="markReparado('+i+')"><i class="ti ti-check"></i></button>'
+        +'<button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.mantCorr.splice('+i+',1);saveDB();renderMantCorr();})"><i class="ti ti-trash"></i></button>'
+      +'</div></td>';
+    tbody.appendChild(tr);
+  });
+}
+function saveMantCorr(){
+  var placa=document.getElementById('mc-placa').value;
+  if(!placa){toast('Selecciona el vehículo.');return;}
+  DB.mantCorr.unshift({fecha:document.getElementById('mc-fecha').value,placa:placa,averia:document.getElementById('mc-desc').value,reporta:document.getElementById('mc-cond').value,prioridad:document.getElementById('mc-prio').value,taller:document.getElementById('mc-taller').value,entrega:document.getElementById('mc-entrega').value,costo:document.getElementById('mc-costo').value||'0',estado:'Pendiente'});
+  saveDB(); renderMantCorr(); closeModal('m-new-mc');
+  toast('Avería registrada. Notificación enviada al área de mantenimiento.');
+}
+function markReparado(i){ DB.mantCorr[i].estado='Reparado'; saveDB(); renderMantCorr(); toast('Marcado como reparado.'); }
+
+// ══════════ COMBUSTIBLE ══════════
+function renderCombustible(){
+  updateConsumoSemanal();
+  var tbody=document.getElementById('comb-tbody');
+  tbody.innerHTML='';
+  if(DB.combustible.length===0){tbody.innerHTML='<tr><td colspan="9" class="empty">Sin registros de combustible.</td></tr>';return;}
+  DB.combustible.forEach(function(c,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+c.fecha+'</td><td><span class="placa">'+c.placa+'</span></td>'
+      +'<td>'+c.cond+'</td><td>'+c.estacion+'</td><td>'+c.galones+' gal</td>'
+      +'<td>'+c.km+' km</td><td>'+c.rend+' km/gal</td>'
+      +'<td>$'+parseInt(c.costo).toLocaleString('es-CO')+'</td>'
+      +'<td><button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.combustible.splice('+i+',1);saveDB();renderCombustible();})"><i class="ti ti-trash"></i></button></td>';
+    tbody.appendChild(tr);
+  });
+}
+function updateConsumoSemanal(){
+  var hoy=new Date();
+  var hace7=new Date(); hace7.setDate(hoy.getDate()-7); hace7.setHours(0,0,0,0);
+  var tot=0,gal=0,km=0,n=0;
+  DB.combustible.forEach(function(c){
+    var f=new Date(String(c.fecha)+'T12:00:00');
+    if(!isNaN(f.getTime()) && f>=hace7){
+      tot+=parseFloat(c.costo)||0;
+      gal+=parseFloat(c.galones)||0;
+      km+=parseFloat(c.km)||0;
+      n++;
+    }
+  });
+  var e;
+  e=document.getElementById('cs-total'); if(e)e.textContent='$'+Math.round(tot).toLocaleString('es-CO');
+  e=document.getElementById('cs-n');     if(e)e.textContent=n;
+  e=document.getElementById('cs-gal');   if(e)e.textContent=Math.round(gal*10)/10+' gal';
+  e=document.getElementById('cs-km');    if(e)e.textContent=Math.round(km).toLocaleString('es-CO')+' km';
+  e=document.getElementById('cs-rend');  if(e)e.textContent=(gal>0&&km>0)?((km/gal).toFixed(1)+' km/gal'):'—';
+}
+function calcComb(){
+  var g=parseFloat(document.getElementById('c-gal').value)||0;
+  var v=parseFloat(document.getElementById('c-val').value)||0;
+  var kma=parseFloat(document.getElementById('c-kma').value)||0;
+  var kmp=parseFloat(document.getElementById('c-kmp').value)||0;
+  var res=document.getElementById('c-result');
+  if(g>0){
+    res.style.display='flex';
+    document.getElementById('c-rkm').textContent=kma>0&&kmp>0?Math.round(kma-kmp)+' km':'—';
+    document.getElementById('c-rend').textContent=kma>0&&kmp>0&&g>0?((kma-kmp)/g).toFixed(1)+' km/gal':'—';
+    document.getElementById('c-rtot').textContent=v>0?'$'+Math.round(g*v).toLocaleString('es-CO'):'—';
+  } else { res.style.display='none'; }
+}
+function saveCombustible(){
+  var placa=document.getElementById('c-placa').value;
+  var cond=document.getElementById('c-cond').value;
+  if(!placa){toast('Selecciona el vehículo.');return;}
+  var g=parseFloat(document.getElementById('c-gal').value)||0;
+  var v=parseFloat(document.getElementById('c-val').value)||0;
+  var kma=parseFloat(document.getElementById('c-kma').value)||0;
+  var kmp=parseFloat(document.getElementById('c-kmp').value)||0;
+  DB.combustible.unshift({fecha:new Date().toISOString().split('T')[0],placa:placa,cond:cond,estacion:document.getElementById('c-est').value,galones:g,km:Math.round(kma-kmp),rend:g>0&&(kma-kmp)>0?((kma-kmp)/g).toFixed(1):'—',costo:Math.round(g*v)});
+  saveDB(); renderCombustible();
+  ['c-gal','c-val','c-kma','c-kmp','c-est'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('c-result').style.display='none';
+  toast('Tanqueo registrado correctamente.');
+}
+
+// ══════════ ALERTAS ══════════
+function renderAlertas(){
+  var clsMap={crit:'ai-crit',warn:'ai-warn',info:'ai-info'};
+  var icoMap={crit:'ti-alert-circle',warn:'ti-alert-triangle',info:'ti-info-circle'};
+  var body=document.getElementById('alertas-body');
+  var dash=document.getElementById('dash-alertas-body');
+  body.innerHTML=''; if(dash) dash.innerHTML='';
+  if(DB.alertas.length===0){
+    body.innerHTML='<div class="empty" style="padding:24px"><i class="ti ti-circle-check" style="color:var(--green)"></i>Sin alertas activas. Todo al día. ✅</div>';
+    if(dash) dash.innerHTML='<div class="empty" style="padding:18px"><i class="ti ti-circle-check" style="color:var(--green)"></i>Sin alertas activas.</div>';
+  } else {
+    DB.alertas.forEach(function(a,i){
+      var div=document.createElement('div');
+      div.className='alert-item '+clsMap[a.tipo];
+      div.innerHTML='<i class="ti '+icoMap[a.tipo]+' ai-ico"></i><div style="flex:1"><div class="ai-title">'+a.titulo+'</div><div class="ai-body">'+a.desc+'</div></div>'
+        +'<button class="btn btn-sm" style="flex-shrink:0;color:var(--green)" title="Marcar como resuelta" onclick="resolverAlerta('+i+')"><i class="ti ti-check"></i>Resolver</button>';
+      body.appendChild(div);
+    });
+    if(dash){
+      DB.alertas.slice(0,3).forEach(function(a){
+        var d=document.createElement('div');
+        d.className='alert-item '+clsMap[a.tipo];
+        d.innerHTML='<i class="ti '+icoMap[a.tipo]+' ai-ico"></i><div><div class="ai-title">'+a.titulo+'</div><div class="ai-body">'+a.desc+'</div></div>';
+        dash.appendChild(d);
+      });
+    }
+  }
+  updateBadges();
+}
+function resolverAlerta(i){
+  DB.alertas.splice(i,1);
+  saveDB();
+  renderAlertas();
+  toast('Alerta marcada como resuelta.');
+}
+function saveAlerta(){
+  var titulo=document.getElementById('al-titulo').value.trim();
+  if(!titulo){toast('Ingresa el título de la alerta.');return;}
+  var rel=document.getElementById('al-rel').value;
+  DB.alertas.unshift({
+    tipo:document.getElementById('al-tipo').value,
+    titulo:(rel?rel+' — ':'')+titulo,
+    desc:document.getElementById('al-desc').value
+  });
+  saveDB();
+  renderAlertas();
+  closeModal('m-new-alert');
+  ['al-titulo','al-rel','al-desc'].forEach(function(id){document.getElementById(id).value='';});
+  toast('Alerta agregada.');
+}
+// ══════════ BADGES Y KPIs DINÁMICOS ══════════
+function updateBadges(){
+  // Mantenimientos preventivos pendientes (no realizados)
+  var mpPend=DB.mantPrev.filter(function(m){return m.estado!=='Realizado'&&m.estado!=='Al día';}).length;
+  var mpB=document.getElementById('b-mp');
+  if(mpB){mpB.textContent=mpPend;mpB.style.display=mpPend>0?'inline':'none';}
+  // Correctivos sin reparar
+  var mcPend=DB.mantCorr.filter(function(m){return m.estado!=='Reparado';}).length;
+  var mcB=document.getElementById('b-mc');
+  if(mcB){mcB.textContent=mcPend;mcB.style.display=mcPend>0?'inline':'none';}
+  // Alertas
+  var alB=document.getElementById('b-al');
+  if(alB){alB.textContent=DB.alertas.length;alB.style.display=DB.alertas.length>0?'inline':'none';}
+  // Cumplimiento: placas sin preoperacional hoy
+  var today=new Date().toISOString().split('T')[0];
+  var hoyPlacas={};
+  preopsData.forEach(function(r){ if(r.fecha===today) hoyPlacas[normPlaca(r.placa)]=true; });
+  var faltantes=DB.vehiculos.filter(function(v){ return !hoyPlacas[normPlaca(v.placa)]; }).length;
+  var cumB=document.getElementById('b-cump');
+  if(cumB){cumB.textContent=faltantes;cumB.style.display=faltantes>0?'inline':'none';}
+  // Novedades en ruta abiertas
+  var novAbiertas=(DB.novedadesRuta||[]).filter(function(n){return n.estado==='Abierta';}).length;
+  var novB=document.getElementById('b-nov');
+  if(novB){novB.textContent=novAbiertas;novB.style.display=novAbiertas>0?'inline':'none';}
+  // Vencimientos ≤30 días o vencidos
+  var venCrit=getVencimientosData().filter(function(o){return o.dias<=30;}).length;
+  var venB=document.getElementById('b-venc');
+  if(venB){venB.textContent=venCrit;venB.style.display=venCrit>0?'inline':'none';}
+  // KPIs dashboard
+  var dm=document.getElementById('d-mant-pend'); if(dm)dm.textContent=mpPend+mcPend;
+  var da=document.getElementById('d-alertas'); if(da)da.textContent=DB.alertas.length;
+  // KPIs centro alertas
+  var c=DB.alertas.filter(function(a){return a.tipo==='crit';}).length;
+  var w=DB.alertas.filter(function(a){return a.tipo==='warn';}).length;
+  var inf=DB.alertas.filter(function(a){return a.tipo==='info';}).length;
+  var e1=document.getElementById('kpi-al-crit'); if(e1)e1.textContent=c;
+  var e2=document.getElementById('kpi-al-warn'); if(e2)e2.textContent=w;
+  var e3=document.getElementById('kpi-al-info'); if(e3)e3.textContent=inf;
+}
+function saveUmbrales(){ toast('Configuración de alertas guardada.'); }
+
+// ══════════ PROGRAMA DE MANTENIMIENTO DINÁMICO (dashboard) ══════════
+function renderProgramaMant(){
+  var body=document.getElementById('prog-mant-body');
+  if(!body) return;
+  if(DB.mantPrev.length===0){
+    body.innerHTML='<div class="empty" style="padding:16px"><i class="ti ti-tool"></i>Sin mantenimientos programados.</div>';
+    return;
+  }
+  // Agrupar por servicio: % = realizados / total
+  var grupos={};
+  DB.mantPrev.forEach(function(m){
+    var key=m.servicio||'Otro';
+    if(!grupos[key]) grupos[key]={total:0,done:0,vencido:false};
+    grupos[key].total++;
+    if(m.estado==='Realizado'||m.estado==='Al día') grupos[key].done++;
+    if(m.estado==='Vencido') grupos[key].vencido=true;
+  });
+  body.innerHTML='';
+  Object.keys(grupos).forEach(function(k){
+    var g=grupos[k];
+    var pct=Math.round(g.done/g.total*100);
+    var color=g.vencido&&pct<100?'var(--danger)':pct===100?'var(--green)':pct>=50?'var(--info)':'var(--warn)';
+    var row=document.createElement('div');
+    row.className='prog-row';
+    row.innerHTML='<span class="prog-lbl" title="'+k+'">'+(k.length>20?k.slice(0,19)+'…':k)+'</span>'
+      +'<div class="prog-track"><div class="prog-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'
+      +'<span class="prog-pct" style="color:'+color+'">'+pct+'%</span>';
+    body.appendChild(row);
+  });
+  // Resumen global al final
+  var totDone=DB.mantPrev.filter(function(m){return m.estado==='Realizado'||m.estado==='Al día';}).length;
+  var totPct=Math.round(totDone/DB.mantPrev.length*100);
+  var foot=document.createElement('div');
+  foot.style.cssText='margin-top:10px;padding-top:8px;border-top:1px solid #F0F0F0;font-size:12px;display:flex;justify-content:space-between;color:var(--gray-7)';
+  foot.innerHTML='<span>Avance general del programa</span><strong style="color:'+(totPct===100?'var(--green)':totPct>=50?'var(--info)':'var(--warn)')+'">'+totDone+'/'+DB.mantPrev.length+' · '+totPct+'%</strong>';
+  body.appendChild(foot);
+}
+
+// ══════════ FORMATO PREOPERACIONAL IMPRIMIBLE ══════════
+function buildFormatoHTML(){
+  var placa=(document.getElementById('fmt-placa')||{value:''}).value.trim().toUpperCase();
+  var cond=(document.getElementById('fmt-cond')||{value:''}).value.trim();
+  var hoy=new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'});
+  var blank='____________________';
+  function rowItem(n,item,hint){
+    return '<tr><td class="num">'+n+'</td><td class="item"><strong>'+item+'</strong><br><span class="hint">'+hint+'</span></td>'
+      +'<td class="chk">☐</td><td class="chk">☐</td><td class="chk">☐</td><td class="obs"></td></tr>';
+  }
+  var motorRows =
+    rowItem(1,'Nivel de aceite motor','Varilla medidora entre mín. y máx.')
+    +rowItem(2,'Nivel de refrigerante','Depósito entre líneas min/max')
+    +rowItem(3,'Líquido de frenos','Color y nivel del depósito')
+    +rowItem(4,'Presión de llantas','4 llantas + repuesto')
+    +rowItem(5,'Sistema de frenos','Pedal firme y freno de mano')
+    +rowItem(6,'Limpiaparabrisas','Funcionamiento y gomas')
+    +rowItem(7,'Bocina / pito','Funcionamiento');
+  var segRows =
+    rowItem(8,'Luces delanteras y stop','Altas, bajas, direccionales, stop')
+    +rowItem(9,'Espejos y vidrios','Sin roturas, ajustados, limpios')
+    +rowItem(10,'Triángulos de seguridad','Presentes y en buen estado')
+    +rowItem(11,'Extintor vigente','Sello, presión y fecha')
+    +rowItem(12,'Kit primeros auxilios','Completo y vigente')
+    +rowItem(13,'Cinturones de seguridad','Todos los puestos')
+    +rowItem(14,'Estado de carrocería','Golpes o daños visibles')
+    +rowItem(15,'Área de carga','Barandas, puertas, anclajes');
+  var docRows =
+    rowItem(16,'SOAT vigente','A bordo y legible')
+    +rowItem(17,'Tecno-mecánica (RTM)','Revisión vigente')
+    +rowItem(18,'Tarjeta de propiedad','Original a bordo')
+    +rowItem(19,'Licencia de conducción','Vigente, categoría habilitada');
+
+  return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>FOR-PRE-001 Preoperacional</title><style>'
+  +'@page{size:letter;margin:12mm;}'
+  +'*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;}'
+  +'body{font-size:10px;color:#111;padding:8px;}'
+  +'.hdr{display:flex;align-items:center;gap:10px;border:2px solid #00A14B;border-radius:8px;padding:8px 12px;margin-bottom:8px;}'
+  +'.logo{width:44px;height:44px;background:#ABC81C;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Georgia,serif;font-style:italic;font-size:30px;flex-shrink:0;}'
+  +'.hdr-mid{flex:1;}'
+  +'.hdr-t1{font-size:13px;font-weight:800;}'
+  +'.hdr-t2{font-size:10px;color:#555;}'
+  +'.hdr-meta{text-align:right;font-size:9px;color:#333;}'
+  +'.hdr-meta strong{font-size:11px;}'
+  +'.datos{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-bottom:8px;}'
+  +'.dato{border:1px solid #999;border-radius:4px;padding:4px 7px;}'
+  +'.dato .lbl{font-size:7.5px;text-transform:uppercase;color:#666;font-weight:700;letter-spacing:.3px;}'
+  +'.dato .val{font-size:10px;font-weight:600;min-height:13px;}'
+  +'table{width:100%;border-collapse:collapse;margin-bottom:7px;}'
+  +'th{background:#00A14B;color:#fff;font-size:8px;padding:3px 5px;text-align:left;text-transform:uppercase;}'
+  +'th.c{text-align:center;width:26px;}'
+  +'td{border:1px solid #BBB;padding:3px 5px;vertical-align:top;}'
+  +'td.num{width:18px;text-align:center;font-weight:700;background:#F2F2F2;}'
+  +'td.item{font-size:9px;}'
+  +'td.item .hint{font-size:7.5px;color:#777;}'
+  +'td.chk{width:26px;text-align:center;font-size:12px;}'
+  +'td.obs{width:130px;}'
+  +'.sec-title{background:#E6F7EE;border-left:4px solid #00A14B;font-size:9.5px;font-weight:800;padding:3px 8px;margin:6px 0 3px;text-transform:uppercase;}'
+  +'.fotos{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:7px;}'
+  +'.foto-box{border:1px dashed #999;border-radius:4px;padding:5px 4px;text-align:center;font-size:7.5px;}'
+  +'.foto-box .fb-chk{font-size:13px;}'
+  +'.novedades{border:1px solid #999;border-radius:4px;padding:5px 8px;margin-bottom:7px;}'
+  +'.nov-line{border-bottom:1px solid #CCC;height:14px;margin-bottom:3px;}'
+  +'.firmas{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}'
+  +'.firma{text-align:center;}'
+  +'.firma-line{border-top:1.5px solid #111;margin-top:32px;padding-top:3px;font-size:8.5px;font-weight:700;}'
+  +'.firma-sub{font-size:7.5px;color:#666;}'
+  +'.gps-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:7px;}'
+  +'.footer{margin-top:8px;font-size:7px;color:#888;text-align:center;border-top:1px solid #DDD;padding-top:4px;}'
+  +'.legend{font-size:7.5px;color:#555;margin-bottom:4px;}'
+  +'</style></head><body>'
+  +'<div class="hdr">'
+  +'<div class="logo">f<span style="font-size:12px;font-style:normal">.</span></div>'
+  +'<div class="hdr-mid"><div class="hdr-t1">FALABELLA HOME DELIVERY</div>'
+  +'<div class="hdr-t2">Inspección Preoperacional de Vehículos · Transportes Nacional Home Delivery</div></div>'
+  +'<div class="hdr-meta"><strong>FOR-PRE-001</strong><br>Versión 1 · Contingencia<br>Página 1 de 1</div>'
+  +'</div>'
+  +'<div class="datos">'
+  +'<div class="dato"><div class="lbl">Fecha</div><div class="val">'+hoy+'</div></div>'
+  +'<div class="dato"><div class="lbl">Hora inicio</div><div class="val"></div></div>'
+  +'<div class="dato"><div class="lbl">Placa</div><div class="val">'+(placa||'')+'</div></div>'
+  +'<div class="dato"><div class="lbl">Km odómetro</div><div class="val"></div></div>'
+  +'<div class="dato" style="grid-column:span 2"><div class="lbl">Conductor (nombre completo)</div><div class="val">'+(cond||'')+'</div></div>'
+  +'<div class="dato"><div class="lbl">Cédula</div><div class="val"></div></div>'
+  +'<div class="dato"><div class="lbl">Turno</div><div class="val">☐ Mañana &nbsp;☐ Tarde &nbsp;☐ Noche</div></div>'
+  +'</div>'
+  +'<div class="legend"><strong>B</strong> = Buen estado · <strong>M</strong> = Malo / con falla (describir en observación) · <strong>NA</strong> = No aplica</div>'
+  +'<div class="sec-title">1. Motor y mecánica</div>'
+  +'<table><tr><th style="width:18px">#</th><th>Ítem de inspección</th><th class="c">B</th><th class="c">M</th><th class="c">NA</th><th>Observación</th></tr>'+motorRows+'</table>'
+  +'<div class="sec-title">2. Seguridad y carrocería</div>'
+  +'<table><tr><th style="width:18px">#</th><th>Ítem de inspección</th><th class="c">B</th><th class="c">M</th><th class="c">NA</th><th>Observación</th></tr>'+segRows+'</table>'
+  +'<div class="sec-title">3. Documentos</div>'
+  +'<table><tr><th style="width:18px">#</th><th>Ítem de inspección</th><th class="c">B</th><th class="c">M</th><th class="c">NA</th><th>Observación</th></tr>'+docRows+'</table>'
+  +'<div class="sec-title">4. Registro fotográfico (marcar las tomadas — conservar en el celular como evidencia)</div>'
+  +'<div class="fotos">'
+  +'<div class="foto-box"><div class="fb-chk">☐</div>Frente</div>'
+  +'<div class="foto-box"><div class="fb-chk">☐</div>Lateral izq.</div>'
+  +'<div class="foto-box"><div class="fb-chk">☐</div>Lateral der.</div>'
+  +'<div class="foto-box"><div class="fb-chk">☐</div>Trasera</div>'
+  +'<div class="foto-box"><div class="fb-chk">☐</div>Área carga</div>'
+  +'<div class="foto-box"><div class="fb-chk">☐</div>Odómetro</div>'
+  +'</div>'
+  +'<div class="sec-title">5. Ubicación del registro</div>'
+  +'<div class="gps-row">'
+  +'<div class="dato"><div class="lbl">Ciudad / municipio</div><div class="val"></div></div>'
+  +'<div class="dato"><div class="lbl">Dirección o punto de referencia</div><div class="val"></div></div>'
+  +'<div class="dato"><div class="lbl">Coordenadas GPS (si disponibles)</div><div class="val"></div></div>'
+  +'</div>'
+  +'<div class="sec-title">6. Novedades y observaciones generales</div>'
+  +'<div class="novedades"><div class="nov-line"></div><div class="nov-line"></div><div class="nov-line"></div><div class="nov-line"></div></div>'
+  +'<div style="font-size:8px;border:1px solid #999;border-radius:4px;padding:4px 8px;margin-bottom:4px">'
+  +'<strong>Concepto final:</strong> &nbsp;&nbsp;☐ APTO PARA OPERAR &nbsp;&nbsp;&nbsp;☐ APTO CON OBSERVACIONES &nbsp;&nbsp;&nbsp;☐ NO APTO — VEHÍCULO INMOVILIZADO'
+  +'</div>'
+  +'<div class="firmas">'
+  +'<div class="firma"><div class="firma-line">FIRMA DEL CONDUCTOR</div><div class="firma-sub">C.C. ______________________ · Declaro que la inspección fue realizada de forma objetiva y veraz</div></div>'
+  +'<div class="firma"><div class="firma-line">FIRMA COORDINADOR — TRANSPORTES NACIONAL HOME DELIVERY</div><div class="firma-sub">Recibido y verificado · Fecha transcripción al sistema: ____ / ____ / ______</div></div>'
+  +'</div>'
+  +'<div class="footer">FOR-PRE-001 · Formato de contingencia del sistema digital de preoperacionales · Falabella Home Delivery · Transcribir al panel de control una vez restablecido el servicio · Conservar físico mínimo 6 meses</div>'
+  +'</body></html>';
+}
+function printFormato(autoprint){
+  var copias=parseInt((document.getElementById('fmt-copias')||{value:'1'}).value)||1;
+  var full=buildFormatoHTML();
+  // Separar cabecera (head+estilos) del contenido del body
+  var headPart=full.split('<body>')[0]+'<body>';
+  var bodyPart=full.split('<body>')[1].replace('</body></html>','');
+  var out=headPart;
+  for(var i=0;i<copias;i++){
+    out+='<div class="copia">'+bodyPart+'</div>';
+    if(i<copias-1) out+='<div style="page-break-after:always"></div>';
+  }
+  out+='</body></html>';
+  var w=window.open('','_blank');
+  if(!w){toast('Permite las ventanas emergentes en tu navegador para generar el formato.');return;}
+  w.document.write(out);
+  w.document.close();
+  if(autoprint){ setTimeout(function(){ w.print(); },600); }
+  toast(autoprint?('Formato generado ('+copias+' copia'+(copias>1?'s':'')+') — se abre el diálogo de impresión.'):'Vista previa abierta en nueva pestaña.');
+}
+
+// ══════════ EXPORTAR A EXCEL (SheetJS) ══════════
+function getCoords(r){
+  if(r.gps && r.gps.lat) return r.gps.lat+', '+r.gps.lng;
+  if(r.gpsTexto && r.gpsTexto!=='Sin GPS' && r.gpsTexto.indexOf(',')>-1) return r.gpsTexto;
+  return '';
+}
+function sheetFromPreops(){
+  return preopsData.map(function(r){
+    var coords=getCoords(r);
+    return {
+      'Código':r.id,
+      'Fecha':r.fecha,
+      'Hora registro':r.timestamp?new Date(r.timestamp).toLocaleTimeString('es-CO'):'',
+      'Conductor':r.conductor,
+      'Placa':r.placa,
+      'Turno':r.turno,
+      'Km odómetro':r.km,
+      'Ítems OK':r.ok,
+      'Fallas':r.fallas,
+      'Pendientes':r.pendientes,
+      'Estado':r.estado==='ok'?'Sin novedad':r.estado==='falla'?'Con falla':'Incompleto',
+      'Observaciones':r.observaciones||'',
+      'Ubicación GPS (lat, lng)':coords||'Sin GPS',
+      'Ver en Google Maps':coords?'https://www.google.com/maps?q='+coords.replace(/\s/g,''):''
+    };
+  });
+}
+function sheetFromVehiculos(){
+  return DB.vehiculos.map(function(v){
+    return {'Placa':v.placa,'Marca':v.marca,'Modelo':v.modelo,'Año':v.anio,'Capacidad':v.cap,'Contrato Renting':v.contrato,'Vence Contrato':v.venc,'Km Actual':v.km,'Conductor Habitual':v.cond,'Vence SOAT':v.soat,'Vence RTM':v.rtm,'Estado':v.estado==='ok'?'Operativo':v.estado==='mant'?'En mantenimiento':v.estado==='bloq'?'Bloqueado':'Disponible'};
+  });
+}
+function sheetFromConductores(){
+  return DB.conductores.map(function(c){
+    return {'Nombre':c.nombre,'Cédula':c.cedula,'Teléfono':c.tel,'N° Licencia':c.nlic,'Categoría':c.cat,'Vence Licencia':c.vlic,'IPS Examen':c.ips,'Vence Examen Médico':c.vmed};
+  });
+}
+function sheetFromMantPrev(){
+  return DB.mantPrev.map(function(m){
+    return {'Placa':m.placa,'Tipo Vehículo':m.tipo,'Servicio':m.servicio,'Km Actual':m.kmAct,'Km Programado':m.kmProg,'Fecha Límite':m.fecha,'Taller':m.taller,'Costo Estimado COP':m.costo,'Estado':m.estado};
+  });
+}
+function sheetFromMantCorr(){
+  return DB.mantCorr.map(function(m){
+    return {'Fecha Reporte':m.fecha,'Placa':m.placa,'Avería':m.averia,'Reporta':m.reporta,'Prioridad':m.prioridad,'Taller':m.taller,'Fecha Entrega':m.entrega,'Costo COP':m.costo,'Estado':m.estado};
+  });
+}
+function sheetFromCombustible(){
+  return DB.combustible.map(function(c){
+    return {'Fecha':c.fecha,'Placa':c.placa,'Conductor':c.cond,'Estación':c.estacion,'Galones':c.galones,'Km Recorridos':c.km,'Rendimiento km/gal':c.rend,'Costo COP':c.costo};
+  });
+}
+var SHEET_SOURCES = {
+  preops:{fn:sheetFromPreops,name:'Preoperacionales',file:'Preoperacionales'},
+  vehiculos:{fn:sheetFromVehiculos,name:'Flota Vehículos',file:'Flota-Vehiculos'},
+  conductores:{fn:sheetFromConductores,name:'Conductores',file:'Conductores'},
+  mantPrev:{fn:sheetFromMantPrev,name:'Mant Preventivo',file:'Mantenimiento-Preventivo'},
+  mantCorr:{fn:sheetFromMantCorr,name:'Mant Correctivo',file:'Mantenimiento-Correctivo'},
+  combustible:{fn:sheetFromCombustible,name:'Combustible',file:'Control-Combustible'},
+  cumplimiento:{fn:sheetFromCumplimiento,name:'Cumplimiento',file:'Cumplimiento-Preoperacional'},
+  despachos:{fn:sheetFromDespachos,name:'Despachos',file:'Despachos-Rutas'},
+  novedadesRuta:{fn:sheetFromNovRuta,name:'Novedades Ruta',file:'Novedades-Ruta'},
+  cpk:{fn:sheetFromCPK,name:'Costo x Km',file:'Costo-Por-Km'},
+  rendimiento:{fn:sheetFromRendimiento,name:'Rendimiento',file:'Rendimiento-Combustible'},
+  vencimientos:{fn:sheetFromVencimientos,name:'Vencimientos',file:'Semaforo-Vencimientos'},
+  comparendos:{fn:sheetFromComparendos,name:'Comparendos',file:'Comparendos'},
+  actas:{fn:sheetFromActas,name:'Actas',file:'Actas-Entrega-Devolucion'},
+  alcohol:{fn:sheetFromAlcohol,name:'Alcoholimetrías',file:'Alcoholimetrias'}
+};
+function autoWidth(ws, data){
+  if(!data.length) return;
+  var keys=Object.keys(data[0]);
+  ws['!cols']=keys.map(function(k){
+    var maxLen=k.length;
+    data.forEach(function(row){var v=String(row[k]||'');if(v.length>maxLen)maxLen=v.length;});
+    return {wch:Math.min(maxLen+3,45)};
+  });
+}
+function exportExcel(key){
+  var src=SHEET_SOURCES[key];
+  var data=src.fn();
+  if(data.length===0){toast('No hay datos en '+src.name+' para exportar.');return;}
+  var wb=XLSX.utils.book_new();
+  var ws=XLSX.utils.json_to_sheet(data);
+  autoWidth(ws,data);
+  XLSX.utils.book_append_sheet(wb,ws,src.name);
+  XLSX.writeFile(wb,'FHD-'+src.file+'-'+new Date().toISOString().split('T')[0]+'.xlsx');
+  toast('Excel de '+src.name+' descargado.');
+}
+function exportInformeEjecutivo(){
+  var wb=XLSX.utils.book_new();
+  var fecha=new Date().toISOString().split('T')[0];
+  // Hoja resumen
+  var today=new Date().toISOString().split('T')[0];
+  var todayRecs=preopsData.filter(function(r){return r.fecha===today;});
+  var resumen=[
+    {'Indicador':'Vehículos en flota','Valor':DB.vehiculos.length},
+    {'Indicador':'Vehículos operativos','Valor':DB.vehiculos.filter(function(v){return v.estado==='ok';}).length},
+    {'Indicador':'Vehículos en mantenimiento','Valor':DB.vehiculos.filter(function(v){return v.estado==='mant';}).length},
+    {'Indicador':'Vehículos bloqueados','Valor':DB.vehiculos.filter(function(v){return v.estado==='bloq';}).length},
+    {'Indicador':'Conductores registrados','Valor':DB.conductores.length},
+    {'Indicador':'Preoperacionales totales','Valor':preopsData.length},
+    {'Indicador':'Preoperacionales hoy (OK)','Valor':todayRecs.filter(function(r){return r.estado==='ok';}).length},
+    {'Indicador':'Preoperacionales hoy (con fallas)','Valor':todayRecs.filter(function(r){return r.estado==='falla';}).length},
+    {'Indicador':'Mantenimientos preventivos activos','Valor':DB.mantPrev.length},
+    {'Indicador':'Averías registradas','Valor':DB.mantCorr.length},
+    {'Indicador':'Registros de combustible','Valor':DB.combustible.length},
+    {'Indicador':'Fecha del informe','Valor':fecha}
+  ];
+  var wsR=XLSX.utils.json_to_sheet(resumen);
+  autoWidth(wsR,resumen);
+  XLSX.utils.book_append_sheet(wb,wsR,'Resumen Ejecutivo');
+  // Hojas por módulo
+  Object.keys(SHEET_SOURCES).forEach(function(key){
+    var src=SHEET_SOURCES[key];
+    var data=src.fn();
+    if(data.length>0){
+      var ws=XLSX.utils.json_to_sheet(data);
+      autoWidth(ws,data);
+      XLSX.utils.book_append_sheet(wb,ws,src.name);
+    }
+  });
+  XLSX.writeFile(wb,'FHD-Informe-Ejecutivo-'+fecha+'.xlsx');
+  toast('Informe ejecutivo completo descargado en Excel.');
+}
+
+// ══════════ SELECTS DINÁMICOS ══════════
+function refreshSelects(){
+  // selects de PLACA
+  ['mp-placa','mc-placa','c-placa','dp-placa','nr-placa','cp-placa','ac-placa'].forEach(function(sid){
+    var sel=document.getElementById(sid); if(!sel) return;
+    var cur=sel.value;
+    sel.innerHTML='<option value="">Seleccionar...</option>';
+    DB.vehiculos.forEach(function(v){sel.innerHTML+='<option value="'+v.placa+'">'+v.placa+' — '+v.modelo+'</option>';});
+    if(cur) sel.value=cur;
+  });
+  // selects de CONDUCTOR (nombre completo)
+  ['nv-cond','c-cond','mc-cond','dp-cond','nr-cond','cp-cond','al-cond'].forEach(function(sid){
+    var sel=document.getElementById(sid); if(!sel) return;
+    var cur=sel.value;
+    sel.innerHTML='<option value="">Seleccionar...</option>';
+    DB.conductores.forEach(function(c){sel.innerHTML+='<option>'+c.nombre+'</option>';});
+    if(cur) sel.value=cur;
+  });
+}
+
+// ══════════ HELPERS DE FECHA ══════════
+function normPlaca(s){ return String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+function daysTo(dateStr){
+  if(!dateStr) return null;
+  var d=new Date(dateStr+'T00:00:00'); if(isNaN(d.getTime())) d=new Date(dateStr);
+  if(isNaN(d.getTime())) return null;
+  return Math.ceil((d-new Date())/(86400000));
+}
+function inLastDays(dateStr,n){
+  var d=new Date(dateStr+'T00:00:00'); if(isNaN(d.getTime())) d=new Date(dateStr);
+  if(isNaN(d.getTime())) return false;
+  var now=new Date();
+  return d>=new Date(now.getTime()-n*86400000) && d<=now;
+}
+function inThisMonth(dateStr){
+  var d=new Date(dateStr+'T00:00:00'); if(isNaN(d.getTime())) d=new Date(dateStr);
+  if(isNaN(d.getTime())) return false;
+  var n=new Date();
+  return d.getMonth()===n.getMonth() && d.getFullYear()===n.getFullYear();
+}
+function mesKey(){ var n=new Date(); return n.getFullYear()+'-'+('0'+(n.getMonth()+1)).slice(-2); }
+function mesLabel(){ return new Date().toLocaleDateString('es-CO',{month:'long',year:'numeric'}); }
+function fmtCOP(v){ return '$'+Math.round(v||0).toLocaleString('es-CO'); }
+
+// ══════════ 1. CUMPLIMIENTO DIARIO ══════════
+function getCumplimientoData(){
+  var today=new Date().toISOString().split('T')[0];
+  var hoyRecs=preopsData.filter(function(r){return r.fecha===today;});
+  return DB.vehiculos.map(function(v){
+    var rec=hoyRecs.find(function(r){return normPlaca(r.placa)===normPlaca(v.placa);});
+    return {v:v, rec:rec||null};
+  });
+}
+function renderCumplimiento(){
+  var data=getCumplimientoData();
+  var ok=data.filter(function(d){return d.rec;}).length;
+  var falta=data.length-ok;
+  document.getElementById('cum-ok').textContent=ok;
+  document.getElementById('cum-falta').textContent=falta;
+  document.getElementById('cum-pct').textContent=(data.length?Math.round(ok/data.length*100):0)+'%';
+  var tb=document.getElementById('cum-tbody'); tb.innerHTML='';
+  if(data.length===0){tb.innerHTML='<tr><td colspan="7" class="empty">Sin vehículos en la flota.</td></tr>';return;}
+  data.forEach(function(d){
+    var v=d.v, r=d.rec;
+    var stF=v.estado==='ok'?'Operativo':v.estado==='mant'?'En mantenimiento':v.estado==='bloq'?'Bloqueado':'Disponible';
+    var hora=r&&r.timestamp?new Date(r.timestamp).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}):'—';
+    var res=r?(r.estado==='ok'?'<span class="st st-ok">Sin novedad</span>':r.estado==='falla'?'<span class="st st-danger">Con falla</span>':'<span class="st st-warn">Incompleto</span>'):'—';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="placa">'+v.placa+'</span></td><td>'+v.marca+' '+v.modelo+'</td><td>'+v.cond+'</td>'
+      +'<td>'+stF+'</td>'
+      +'<td>'+(r?'<span class="st st-ok"><i class="ti ti-check"></i> Sí</span>':'<span class="st st-danger"><i class="ti ti-x"></i> No</span>')+'</td>'
+      +'<td>'+hora+'</td><td>'+res+'</td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromCumplimiento(){
+  return getCumplimientoData().map(function(d){
+    return {'Placa':d.v.placa,'Vehículo':d.v.marca+' '+d.v.modelo,'Conductor':d.v.cond,
+      'Preoperacional hoy':d.rec?'SÍ':'NO',
+      'Hora':d.rec&&d.rec.timestamp?new Date(d.rec.timestamp).toLocaleTimeString('es-CO'):'',
+      'Resultado':d.rec?(d.rec.estado==='ok'?'Sin novedad':d.rec.estado==='falla'?'Con falla':'Incompleto'):''};
+  });
+}
+
+// ══════════ 2. DESPACHOS ══════════
+function saveDespacho(){
+  var placa=document.getElementById('dp-placa').value;
+  if(!placa){toast('Selecciona la placa.');return;}
+  var now=new Date();
+  DB.despachos.unshift({
+    fecha:now.toISOString().split('T')[0],
+    placa:placa,
+    cond:document.getElementById('dp-cond').value,
+    ciudad:document.getElementById('dp-ciudad').value,
+    salida:now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    llegada:'',
+    asignadas:document.getElementById('dp-entregas').value||'0',
+    cumplidas:'',
+    estado:'En ruta'
+  });
+  saveDB(); renderDespachos();
+  document.getElementById('dp-ciudad').value=''; document.getElementById('dp-entregas').value='';
+  toast('Despacho registrado — vehículo en ruta.');
+}
+function finalizarDespacho(i){
+  var cump=prompt('¿Cuántas entregas se cumplieron? (asignadas: '+DB.despachos[i].asignadas+')', DB.despachos[i].asignadas);
+  if(cump===null) return;
+  DB.despachos[i].llegada=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+  DB.despachos[i].cumplidas=cump;
+  DB.despachos[i].estado='Finalizado';
+  saveDB(); renderDespachos();
+  toast('Despacho finalizado.');
+}
+function renderDespachos(){
+  refreshSelects();
+  var tb=document.getElementById('dp-tbody'); tb.innerHTML='';
+  if(DB.despachos.length===0){tb.innerHTML='<tr><td colspan="10" class="empty">Sin despachos registrados.</td></tr>';return;}
+  DB.despachos.forEach(function(d,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+d.fecha+'</td><td><span class="placa">'+d.placa+'</span></td><td>'+d.cond+'</td><td>'+d.ciudad+'</td>'
+      +'<td>'+d.salida+'</td><td>'+(d.llegada||'—')+'</td><td>'+d.asignadas+'</td><td>'+(d.cumplidas||'—')+'</td>'
+      +'<td><span class="st '+(d.estado==='Finalizado'?'st-ok':'st-info')+'">'+d.estado+'</span></td>'
+      +'<td><div class="row-actions">'
+      +(d.estado==='En ruta'?'<button class="btn btn-sm" style="color:var(--green)" title="Finalizar" onclick="finalizarDespacho('+i+')"><i class="ti ti-flag-check"></i></button>':'')
+      +'<button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.despachos.splice('+i+',1);saveDB();renderDespachos();})"><i class="ti ti-trash"></i></button></div></td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromDespachos(){
+  return DB.despachos.map(function(d){
+    return {'Fecha':d.fecha,'Placa':d.placa,'Conductor':d.cond,'Destino':d.ciudad,'Hora salida':d.salida,'Hora llegada':d.llegada,'Entregas asignadas':d.asignadas,'Entregas cumplidas':d.cumplidas,'% Cumplimiento':d.asignadas>0&&d.cumplidas!==''?Math.round(d.cumplidas/d.asignadas*100)+'%':'','Estado':d.estado};
+  });
+}
+
+// ══════════ 3. NOVEDADES EN RUTA ══════════
+function saveNovRuta(){
+  var placa=document.getElementById('nr-placa').value;
+  if(!placa){toast('Selecciona la placa.');return;}
+  var now=new Date();
+  DB.novedadesRuta.unshift({
+    fecha:now.toLocaleString('es-CO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),
+    placa:placa,
+    cond:document.getElementById('nr-cond').value,
+    tipo:document.getElementById('nr-tipo').value,
+    ubi:document.getElementById('nr-ubi').value,
+    desc:document.getElementById('nr-desc').value,
+    estado:'Abierta'
+  });
+  saveDB(); renderNovRuta(); updateBadges();
+  document.getElementById('nr-ubi').value=''; document.getElementById('nr-desc').value='';
+  toast('Novedad en ruta registrada.');
+}
+function cerrarNovRuta(i){
+  DB.novedadesRuta[i].estado='Cerrada';
+  saveDB(); renderNovRuta(); updateBadges();
+  toast('Novedad cerrada.');
+}
+function renderNovRuta(){
+  refreshSelects();
+  var tb=document.getElementById('nr-tbody'); tb.innerHTML='';
+  if(DB.novedadesRuta.length===0){tb.innerHTML='<tr><td colspan="8" class="empty">Sin novedades en ruta.</td></tr>';return;}
+  DB.novedadesRuta.forEach(function(n,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+n.fecha+'</td><td><span class="placa">'+n.placa+'</span></td><td>'+n.cond+'</td><td>'+n.tipo+'</td><td>'+n.ubi+'</td><td>'+n.desc+'</td>'
+      +'<td><span class="st '+(n.estado==='Abierta'?'st-danger':'st-ok')+'">'+n.estado+'</span></td>'
+      +'<td><div class="row-actions">'
+      +(n.estado==='Abierta'?'<button class="btn btn-sm" style="color:var(--green)" title="Cerrar" onclick="cerrarNovRuta('+i+')"><i class="ti ti-check"></i></button>':'')
+      +'<button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.novedadesRuta.splice('+i+',1);saveDB();renderNovRuta();updateBadges();})"><i class="ti ti-trash"></i></button></div></td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromNovRuta(){
+  return DB.novedadesRuta.map(function(n){
+    return {'Fecha/hora':n.fecha,'Placa':n.placa,'Conductor':n.cond,'Tipo':n.tipo,'Ubicación':n.ubi,'Descripción':n.desc,'Estado':n.estado};
+  });
+}
+
+// ══════════ 4. COSTO POR KM ══════════
+function getCPKData(){
+  return DB.vehiculos.map(function(v){
+    var comb=0, kmv=0;
+    DB.combustible.forEach(function(c){
+      if(c.placa===v.placa && inLastDays(c.fecha,30)){ comb+=parseFloat(c.costo)||0; kmv+=parseFloat(c.km)||0; }
+    });
+    var mp=0;
+    DB.mantPrev.forEach(function(m){
+      if(m.placa===v.placa && (m.estado==='Realizado'||m.estado==='Al día') && inLastDays(m.fecha,30)) mp+=parseFloat(m.costo)||0;
+    });
+    var mc=0;
+    DB.mantCorr.forEach(function(m){
+      if(m.placa===v.placa && inLastDays(m.fecha,30)) mc+=parseFloat(m.costo)||0;
+    });
+    var canon=parseFloat(v.canon)||0;
+    var total=canon+comb+mp+mc;
+    return {placa:v.placa,canon:canon,comb:comb,mp:mp,mc:mc,total:total,km:kmv,cpk:kmv>0?total/kmv:null};
+  });
+}
+function renderCPK(){
+  var data=getCPKData();
+  var tb=document.getElementById('cpk-tbody'); tb.innerHTML='';
+  if(data.length===0){tb.innerHTML='<tr><td colspan="8" class="empty">Sin vehículos.</td></tr>';return;}
+  data.sort(function(a,b){return (b.cpk||0)-(a.cpk||0);});
+  data.forEach(function(d){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="placa">'+d.placa+'</span></td>'
+      +'<td>'+fmtCOP(d.canon)+'</td><td>'+fmtCOP(d.comb)+'</td><td>'+fmtCOP(d.mp)+'</td><td>'+fmtCOP(d.mc)+'</td>'
+      +'<td><strong>'+fmtCOP(d.total)+'</strong></td>'
+      +'<td>'+Math.round(d.km).toLocaleString('es-CO')+' km</td>'
+      +'<td>'+(d.cpk!==null?'<strong style="color:'+(d.cpk>3000?'var(--danger)':d.cpk>2000?'var(--warn)':'var(--green)')+'">'+fmtCOP(d.cpk)+'/km</strong>':'<span class="st st-gray">Sin km</span>')+'</td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromCPK(){
+  return getCPKData().map(function(d){
+    return {'Placa':d.placa,'Canon renting mensual':d.canon,'Combustible 30 días':d.comb,'Mant. preventivo 30d':d.mp,'Mant. correctivo 30d':d.mc,'Costo total 30d':d.total,'Km recorridos 30d':d.km,'Costo por km':d.cpk!==null?Math.round(d.cpk):'Sin km registrados'};
+  });
+}
+
+// ══════════ 5. RENDIMIENTO COMBUSTIBLE ══════════
+function getRendimientoData(){
+  var por={};
+  DB.combustible.forEach(function(c){
+    if(!por[c.placa]) por[c.placa]={gal:0,km:0,cnt:0};
+    por[c.placa].gal+=parseFloat(c.galones)||0;
+    por[c.placa].km+=parseFloat(c.km)||0;
+    por[c.placa].cnt++;
+  });
+  var arr=Object.keys(por).map(function(pl){
+    var d=por[pl];
+    return {placa:pl,cnt:d.cnt,gal:d.gal,km:d.km,rend:d.gal>0?d.km/d.gal:0};
+  }).filter(function(d){return d.rend>0;});
+  var avg=arr.length?arr.reduce(function(s,d){return s+d.rend;},0)/arr.length:0;
+  arr.forEach(function(d){ d.delta=avg>0?(d.rend-avg)/avg*100:0; d.bajo=d.delta<-15; });
+  arr.sort(function(a,b){return b.rend-a.rend;});
+  return {arr:arr,avg:avg};
+}
+function renderRendimiento(){
+  var r=getRendimientoData();
+  document.getElementById('rend-flota').textContent=r.avg?r.avg.toFixed(1):'—';
+  document.getElementById('rend-bajo').textContent=r.arr.filter(function(d){return d.bajo;}).length;
+  var tb=document.getElementById('rend-tbody'); tb.innerHTML='';
+  if(r.arr.length===0){tb.innerHTML='<tr><td colspan="8" class="empty">Registra tanqueos en el módulo Combustible para calcular el rendimiento.</td></tr>';return;}
+  r.arr.forEach(function(d,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><strong>'+(i+1)+'</strong></td><td><span class="placa">'+d.placa+'</span></td>'
+      +'<td>'+d.cnt+'</td><td>'+d.gal.toFixed(1)+' gal</td><td>'+Math.round(d.km).toLocaleString('es-CO')+' km</td>'
+      +'<td><strong>'+d.rend.toFixed(1)+'</strong></td>'
+      +'<td style="color:'+(d.delta>=0?'var(--green)':'var(--danger)')+';font-weight:600">'+(d.delta>=0?'+':'')+d.delta.toFixed(1)+'%</td>'
+      +'<td>'+(d.bajo?'<span class="st st-danger"><i class="ti ti-alert-triangle"></i> Revisar</span>':'<span class="st st-ok">Normal</span>')+'</td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromRendimiento(){
+  var r=getRendimientoData();
+  return r.arr.map(function(d,i){
+    return {'Puesto':i+1,'Placa':d.placa,'Tanqueos':d.cnt,'Galones':Math.round(d.gal*10)/10,'Km':Math.round(d.km),'km/gal':Math.round(d.rend*10)/10,'Vs. promedio flota':(d.delta>=0?'+':'')+d.delta.toFixed(1)+'%','Alerta':d.bajo?'BAJO RENDIMIENTO — revisar':'Normal'};
+  });
+}
+
+// ══════════ 6. PRESUPUESTO ══════════
+function savePresupuesto(){
+  DB.presupuesto[mesKey()]={
+    comb:parseFloat(document.getElementById('pre-comb').value)||0,
+    mant:parseFloat(document.getElementById('pre-mant').value)||0
+  };
+  saveDB(); renderPresupuesto();
+  toast('Presupuesto del mes guardado.');
+}
+function renderPresupuesto(populateInputs){
+  if(populateInputs===undefined) populateInputs=true;
+  document.getElementById('pre-mes-lbl').textContent=mesLabel();
+  var pre=DB.presupuesto[mesKey()]||{comb:0,mant:0};
+  if(populateInputs){
+    document.getElementById('pre-comb').value=pre.comb||'';
+    document.getElementById('pre-mant').value=pre.mant||'';
+  }
+  var ejComb=0;
+  DB.combustible.forEach(function(c){ if(inThisMonth(c.fecha)) ejComb+=parseFloat(c.costo)||0; });
+  var ejMant=0;
+  DB.mantPrev.forEach(function(m){ if((m.estado==='Realizado'||m.estado==='Al día')&&inThisMonth(m.fecha)) ejMant+=parseFloat(m.costo)||0; });
+  DB.mantCorr.forEach(function(m){ if(inThisMonth(m.fecha)) ejMant+=parseFloat(m.costo)||0; });
+  var cont=document.getElementById('pre-bars'); cont.innerHTML='';
+  [['Combustible',ejComb,pre.comb],['Mantenimiento',ejMant,pre.mant]].forEach(function(row){
+    var pct=row[2]>0?Math.min(Math.round(row[1]/row[2]*100),999):0;
+    var color=pct>100?'var(--danger)':pct>85?'var(--warn)':'var(--green)';
+    var div=document.createElement('div');
+    div.style.marginBottom='14px';
+    div.innerHTML='<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><strong>'+row[0]+'</strong><span>'+fmtCOP(row[1])+' de '+fmtCOP(row[2])+' ('+(row[2]>0?pct+'%':'sin presupuesto')+')</span></div>'
+      +'<div class="prog-track" style="height:10px"><div class="prog-fill" style="width:'+Math.min(pct,100)+'%;background:'+color+'"></div></div>';
+    cont.appendChild(div);
+  });
+}
+
+// ══════════ 7. VENCIMIENTOS ══════════
+function getVencimientosData(){
+  var out=[];
+  DB.vehiculos.forEach(function(v){
+    out.push({doc:'SOAT',rel:'Vehículo '+v.placa,fecha:v.soat,dias:daysTo(v.soat)});
+    out.push({doc:'Revisión técnico-mecánica',rel:'Vehículo '+v.placa,fecha:v.rtm,dias:daysTo(v.rtm)});
+    out.push({doc:'Contrato renting',rel:'Vehículo '+v.placa,fecha:v.venc,dias:daysTo(v.venc)});
+  });
+  DB.conductores.forEach(function(c){
+    out.push({doc:'Licencia de conducción',rel:c.nombre,fecha:c.vlic,dias:daysTo(c.vlic)});
+    out.push({doc:'Examen médico',rel:c.nombre,fecha:c.vmed,dias:daysTo(c.vmed)});
+  });
+  out=out.filter(function(o){return o.dias!==null;});
+  out.sort(function(a,b){return a.dias-b.dias;});
+  return out;
+}
+function venEstado(d){
+  if(d<0) return ['VENCIDO','st-danger'];
+  if(d<=30) return ['Crítico ≤30d','st-danger'];
+  if(d<=60) return ['Próximo ≤60d','st-warn'];
+  if(d<=90) return ['Atención ≤90d','st-info'];
+  if(d<365) return ['Menos de 1 año','st-warn'];
+  return ['Al día (+1 año)','st-ok'];
+}
+function renderVencimientos(){
+  var data=getVencimientosData();
+  document.getElementById('ven-vencidos').textContent=data.filter(function(o){return o.dias<0;}).length;
+  document.getElementById('ven-30').textContent=data.filter(function(o){return o.dias>=0&&o.dias<=30;}).length;
+  document.getElementById('ven-60').textContent=data.filter(function(o){return o.dias>30&&o.dias<=60;}).length;
+  document.getElementById('ven-90').textContent=data.filter(function(o){return o.dias>60&&o.dias<=90;}).length;
+  var e365=document.getElementById('ven-365');
+  if(e365) e365.textContent=data.filter(function(o){return o.dias>90&&o.dias<365;}).length;
+  var tb=document.getElementById('ven-tbody'); tb.innerHTML='';
+  if(data.length===0){tb.innerHTML='<tr><td colspan="5" class="empty">Sin documentos con fecha registrada.</td></tr>';return;}
+  data.forEach(function(o){
+    var st=venEstado(o.dias);
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><strong>'+o.doc+'</strong></td><td>'+o.rel+'</td><td>'+o.fecha+'</td>'
+      +'<td style="font-weight:700;color:'+(o.dias<0?'var(--danger)':o.dias<=30?'var(--danger)':o.dias<=90?'var(--warn)':o.dias<365?'var(--warn)':'var(--gray-7)')+'">'+(o.dias<0?Math.abs(o.dias)+' días vencido':o.dias+' días')+'</td>'
+      +'<td><span class="st '+st[1]+'">'+st[0]+'</span></td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromVencimientos(){
+  return getVencimientosData().map(function(o){
+    return {'Documento':o.doc,'Asociado a':o.rel,'Fecha vencimiento':o.fecha,'Días restantes':o.dias,'Estado':venEstado(o.dias)[0]};
+  });
+}
+
+// ══════════ 8. COMPARENDOS ══════════
+function consultarExterno(fuente){
+  var placa=document.getElementById('cq-placa').value.trim().toUpperCase();
+  var urls={
+    simit:'https://www.fcm.org.co/simit/#/home-public',
+    runt:'https://www.runt.gov.co/consulta-ciudadana',
+    fenix:'https://www.movilidadbogota.gov.co/web/fenix'
+  };
+  window.open(urls[fuente],'_blank');
+  if(placa){
+    navigator.clipboard && navigator.clipboard.writeText(placa).catch(function(){});
+    toast('Placa "'+placa+'" copiada — pégala en el portal que se abrió (Ctrl+V). Estos portales piden captcha, por eso no se puede consultar automático desde aquí.');
+  } else {
+    toast('Se abrió el portal oficial. Escribe la placa o cédula manualmente allí (piden captcha, no se puede automatizar).');
+  }
+}
+function saveComparendo(){
+  var placa=document.getElementById('cp-placa').value;
+  if(!placa){toast('Selecciona la placa.');return;}
+  DB.comparendos.unshift({
+    fecha:document.getElementById('cp-fecha').value,
+    placa:placa,
+    cond:document.getElementById('cp-cond').value,
+    inf:document.getElementById('cp-inf').value,
+    valor:document.getElementById('cp-valor').value||'0',
+    estado:'Pendiente'
+  });
+  saveDB(); renderComparendos();
+  document.getElementById('cp-inf').value=''; document.getElementById('cp-valor').value='';
+  toast('Comparendo registrado.');
+}
+function togglePagado(i){
+  DB.comparendos[i].estado=DB.comparendos[i].estado==='Pagado'?'Pendiente':'Pagado';
+  saveDB(); renderComparendos();
+}
+function renderComparendos(){
+  refreshSelects();
+  var f=document.getElementById('cp-fecha'); if(f&&!f.value) f.value=new Date().toISOString().split('T')[0];
+  var tb=document.getElementById('cp-tbody'); tb.innerHTML='';
+  if(DB.comparendos.length===0){tb.innerHTML='<tr><td colspan="7" class="empty">Sin comparendos registrados. 🎉</td></tr>';return;}
+  DB.comparendos.forEach(function(c,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+c.fecha+'</td><td><span class="placa">'+c.placa+'</span></td><td>'+c.cond+'</td><td>'+c.inf+'</td>'
+      +'<td>'+fmtCOP(c.valor)+'</td>'
+      +'<td><span class="st '+(c.estado==='Pagado'?'st-ok':'st-danger')+'">'+c.estado+'</span></td>'
+      +'<td><div class="row-actions"><button class="btn btn-sm" style="color:var(--green)" title="Marcar pagado/pendiente" onclick="togglePagado('+i+')"><i class="ti ti-cash"></i></button>'
+      +'<button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.comparendos.splice('+i+',1);saveDB();renderComparendos();})"><i class="ti ti-trash"></i></button></div></td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromComparendos(){
+  return DB.comparendos.map(function(c){
+    return {'Fecha':c.fecha,'Placa':c.placa,'Conductor':c.cond,'Infracción':c.inf,'Valor COP':c.valor,'Estado':c.estado};
+  });
+}
+
+// ══════════ 9. ACTAS ══════════
+function saveActa(){
+  var placa=document.getElementById('ac-placa').value;
+  if(!placa){toast('Selecciona la placa.');return;}
+  DB.actas.unshift({
+    fecha:new Date().toISOString().split('T')[0],
+    tipo:document.getElementById('ac-tipo').value,
+    placa:placa,
+    entrega:document.getElementById('ac-entrega').value,
+    recibe:document.getElementById('ac-recibe').value,
+    km:document.getElementById('ac-km').value||'0',
+    obs:document.getElementById('ac-obs').value
+  });
+  saveDB(); renderActas();
+  ['ac-entrega','ac-recibe','ac-km','ac-obs'].forEach(function(id){document.getElementById(id).value='';});
+  toast('Acta generada. Usa el botón de imprimir para el documento firmable.');
+}
+function printActa(i){
+  var a=DB.actas[i];
+  var w=window.open('','_blank');
+  if(!w){toast('Permite ventanas emergentes.');return;}
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Acta '+a.placa+'</title>'
+    +'<style>@page{size:letter;margin:18mm}body{font-family:Arial;font-size:12px;color:#111;line-height:1.6}'
+    +'.hdr{display:flex;align-items:center;gap:12px;border-bottom:3px solid #00A14B;padding-bottom:10px;margin-bottom:16px}'
+    +'.logo{width:46px;height:46px;background:#ABC81C;border-radius:12px;color:#fff;font-family:Georgia,serif;font-style:italic;font-size:32px;display:flex;align-items:center;justify-content:center}'
+    +'h1{font-size:16px;margin:0}.sub{font-size:11px;color:#555}'
+    +'table{width:100%;border-collapse:collapse;margin:12px 0}td{border:1px solid #999;padding:7px 10px}'
+    +'td.l{background:#F2F2F2;font-weight:700;width:180px;font-size:10px;text-transform:uppercase}'
+    +'.obs{border:1px solid #999;min-height:70px;padding:8px;border-radius:4px;margin:8px 0}'
+    +'.firmas{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:60px;text-align:center}'
+    +'.fl{border-top:1.5px solid #111;padding-top:5px;font-size:10px;font-weight:700}</style></head><body>'
+    +'<div class="hdr"><div class="logo">f.</div><div><h1>ACTA DE '+a.tipo.toUpperCase()+'</h1>'
+    +'<div class="sub">Falabella Home Delivery · Transportes Nacional Home Delivery · FOR-ACT-001</div></div></div>'
+    +'<table>'
+    +'<tr><td class="l">Fecha</td><td>'+a.fecha+'</td></tr>'
+    +'<tr><td class="l">Tipo de acta</td><td>'+a.tipo+'</td></tr>'
+    +'<tr><td class="l">Placa del vehículo</td><td><strong>'+a.placa+'</strong></td></tr>'
+    +'<tr><td class="l">Kilometraje</td><td>'+parseInt(a.km).toLocaleString('es-CO')+' km</td></tr>'
+    +'<tr><td class="l">Entrega</td><td>'+a.entrega+'</td></tr>'
+    +'<tr><td class="l">Recibe</td><td>'+a.recibe+'</td></tr>'
+    +'</table>'
+    +'<strong style="font-size:11px">ESTADO DEL VEHÍCULO Y OBSERVACIONES:</strong>'
+    +'<div class="obs">'+(a.obs||'')+'</div>'
+    +'<p style="font-size:10px;color:#555">Las partes declaran haber verificado conjuntamente el estado del vehículo, niveles, documentos a bordo, herramientas y equipo de carretera al momento de esta acta.</p>'
+    +'<div class="firmas"><div><div class="fl">FIRMA QUIEN ENTREGA<br>'+a.entrega+'</div></div>'
+    +'<div><div class="fl">FIRMA QUIEN RECIBE<br>'+a.recibe+'</div></div></div>'
+    +'</body></html>');
+  w.document.close();
+  setTimeout(function(){w.print();},500);
+}
+function renderActas(){
+  refreshSelects();
+  var tb=document.getElementById('ac-tbody'); tb.innerHTML='';
+  if(DB.actas.length===0){tb.innerHTML='<tr><td colspan="7" class="empty">Sin actas generadas.</td></tr>';return;}
+  DB.actas.forEach(function(a,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+a.fecha+'</td><td>'+a.tipo+'</td><td><span class="placa">'+a.placa+'</span></td>'
+      +'<td>'+a.entrega+'</td><td>'+a.recibe+'</td><td>'+parseInt(a.km).toLocaleString('es-CO')+' km</td>'
+      +'<td><div class="row-actions"><button class="btn btn-sm" title="Imprimir acta" onclick="printActa('+i+')"><i class="ti ti-printer"></i></button>'
+      +'<button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.actas.splice('+i+',1);saveDB();renderActas();})"><i class="ti ti-trash"></i></button></div></td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromActas(){
+  return DB.actas.map(function(a){
+    return {'Fecha':a.fecha,'Tipo':a.tipo,'Placa':a.placa,'Entrega':a.entrega,'Recibe':a.recibe,'Km':a.km,'Observaciones':a.obs};
+  });
+}
+
+// ══════════ 10. PESV ══════════
+function savePESV(){
+  var kmMes=0;
+  DB.combustible.forEach(function(c){ if(inThisMonth(c.fecha)) kmMes+=parseFloat(c.km)||0; });
+  DB.pesv[mesKey()]={
+    km:Math.round(kmMes),
+    acc:parseInt(document.getElementById('pesv-in-acc').value)||0,
+    capp:parseInt(document.getElementById('pesv-in-capp').value)||0,
+    capr:parseInt(document.getElementById('pesv-in-capr').value)||0
+  };
+  saveDB(); renderPESV();
+  toast('Indicadores PESV del mes guardados.');
+}
+function renderPESV(populateInputs){
+  if(populateInputs===undefined) populateInputs=true;
+  document.getElementById('pesv-mes-lbl').textContent=mesLabel();
+  var kmMes=0;
+  DB.combustible.forEach(function(c){ if(inThisMonth(c.fecha)) kmMes+=parseFloat(c.km)||0; });
+  var cur=DB.pesv[mesKey()]||{acc:0,capp:0,capr:0,km:Math.round(kmMes)};
+  document.getElementById('pesv-km').textContent=Math.round(kmMes).toLocaleString('es-CO');
+  document.getElementById('pesv-acc').textContent=cur.acc;
+  document.getElementById('pesv-indice').textContent=kmMes>0?(cur.acc/(kmMes/100000)).toFixed(1):'0';
+  document.getElementById('pesv-cap').textContent=(cur.capp>0?Math.round(cur.capr/cur.capp*100):0)+'%';
+  if(populateInputs){
+    document.getElementById('pesv-in-acc').value=cur.acc||'';
+    document.getElementById('pesv-in-capp').value=cur.capp||'';
+    document.getElementById('pesv-in-capr').value=cur.capr||'';
+  }
+  var tb=document.getElementById('pesv-tbody'); tb.innerHTML='';
+  var meses=Object.keys(DB.pesv).sort().reverse();
+  if(meses.length===0){tb.innerHTML='<tr><td colspan="5" class="empty">Guarda el primer mes para iniciar el histórico.</td></tr>';return;}
+  meses.forEach(function(m){
+    var d=DB.pesv[m];
+    var idx=d.km>0?(d.acc/(d.km/100000)).toFixed(1):'0';
+    var cap=d.capp>0?Math.round(d.capr/d.capp*100):0;
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><strong>'+m+'</strong></td><td>'+d.km.toLocaleString('es-CO')+' km</td><td>'+d.acc+'</td><td>'+idx+'</td>'
+      +'<td><span class="st '+(cap>=100?'st-ok':cap>=70?'st-warn':'st-danger')+'">'+d.capr+'/'+d.capp+' ('+cap+'%)</span></td>';
+    tb.appendChild(tr);
+  });
+}
+
+// ══════════ 11. ALCOHOLIMETRÍAS ══════════
+function saveAlcohol(){
+  var cond=document.getElementById('al-cond').value;
+  if(!cond){toast('Selecciona el conductor.');return;}
+  var res=document.getElementById('al-res').value;
+  var now=new Date();
+  DB.alcohol.unshift({
+    fecha:now.toLocaleString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+    cond:cond,
+    res:res,
+    grado:document.getElementById('al-grado').value||'0.0',
+    resp:document.getElementById('al-resp').value,
+    obs:document.getElementById('al-obs').value
+  });
+  if(res==='Positiva'){
+    DB.alertas.unshift({tipo:'crit',titulo:'⚠️ Alcoholimetría POSITIVA — '+cond,desc:'Prueba positiva ('+(document.getElementById('al-grado').value||'—')+' mg/L). Conductor debe ser retirado de la operación de inmediato y activar protocolo disciplinario.'});
+    renderAlertas();
+  }
+  saveDB(); renderAlcohol(); updateBadges();
+  ['al-grado','al-resp','al-obs'].forEach(function(id){document.getElementById(id).value='';});
+  toast(res==='Positiva'?'⚠️ Prueba POSITIVA registrada — alerta crítica generada.':'Prueba negativa registrada.');
+}
+function renderAlcohol(){
+  refreshSelects();
+  var tb=document.getElementById('al-tbody'); tb.innerHTML='';
+  if(DB.alcohol.length===0){tb.innerHTML='<tr><td colspan="7" class="empty">Sin pruebas registradas.</td></tr>';return;}
+  DB.alcohol.forEach(function(a,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+a.fecha+'</td><td><strong>'+a.cond+'</strong></td>'
+      +'<td><span class="st '+(a.res==='Negativa'?'st-ok':'st-danger')+'">'+a.res+'</span></td>'
+      +'<td>'+a.grado+' mg/L</td><td>'+a.resp+'</td><td>'+(a.obs||'—')+'</td>'
+      +'<td><button class="btn btn-sm" style="color:var(--danger)" onclick="confirmDelete(function(){DB.alcohol.splice('+i+',1);saveDB();renderAlcohol();})"><i class="ti ti-trash"></i></button></td>';
+    tb.appendChild(tr);
+  });
+}
+function sheetFromAlcohol(){
+  return DB.alcohol.map(function(a){
+    return {'Fecha/hora':a.fecha,'Conductor':a.cond,'Resultado':a.res,'Grado mg/L':a.grado,'Responsable':a.resp,'Observaciones':a.obs};
+  });
+}
+
+// ══════════ MODALES ══════════
+function openModal(id){ document.getElementById('m-'+id.replace('m-','')).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
+});
+
+// ══════════ CONFIRM DELETE ══════════
+function confirmDelete(cb){
+  confirmCb=cb;
+  document.getElementById('confirm-box').classList.add('open');
+  document.getElementById('confirm-ok-btn').onclick=function(){cb();closeConfirm();};
+}
+function closeConfirm(){ document.getElementById('confirm-box').classList.remove('open'); }
+
+// ══════════ TOAST ══════════
+function toast(msg){
+  var el=document.getElementById('toast-el');
+  document.getElementById('toast-msg').textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.classList.remove('show');},3200);
+}
+
+// ══════════ INIT ══════════
+window.onload=function(){
+  loadDB();
+  document.getElementById('conn-txt').textContent = API_URL ? 'Conectado a Google Sheets' : 'Modo local — configura Google Sheets';
+  var d=new Date();
+  document.getElementById('top-date').textContent=d.toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  // fecha defaults
+  var today=new Date(); today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+  ['mc-fecha','nov-fecha'].forEach(function(id){var el=document.getElementById(id);if(el)el.value=today.toISOString().split('T')[0];});
+  var cdt=document.getElementById('c-dt');
+  if(cdt)cdt.value=today.toISOString().slice(0,16);
+  loadPreops();
+  renderVehiculos();
+  renderPersonal();
+  renderAlertas();
+  renderNovedades();
+  updateConsumoSemanal();
+  renderProgramaMant();
+  refreshSelects();
+  updateBadges();
+  refreshCondSelect();
+  setInterval(function(){ loadPreops(true); },15000);
+};
+</script>
+</body>
+</html>
