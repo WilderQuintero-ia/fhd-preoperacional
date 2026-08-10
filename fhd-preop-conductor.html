@@ -1149,7 +1149,18 @@ function saveToStorage(record){
   }catch(e){return false;}
 }
 
+var _envioEnCurso=false;
 function submitForm(){
+  // Protección contra envíos duplicados: si el conductor toca el botón
+  // varias veces mientras sube (por ansiedad al ver que tarda), cada toque
+  // ANTES disparaba un envío independiente y completo por su cuenta —
+  // ahora el segundo toque simplemente se ignora mientras el primero
+  // sigue en curso.
+  if(_envioEnCurso) return;
+  _envioEnCurso=true;
+  var btnFinal=document.getElementById('bnx');
+  if(btnFinal){ btnFinal.disabled=true; btnFinal.style.opacity='.6'; btnFinal.style.pointerEvents='none'; }
+
   document.getElementById('saving-txt').textContent='Guardando registro y fotos...';
   document.getElementById('saving').classList.add('active');
 
@@ -1265,13 +1276,13 @@ function submitForm(){
 
     function subirUnArchivo(tipo, indice, contenidoBase64){
       return new Promise(function(resolve, reject){
-        var intento=0, MAX=4;
+        var intento=0, MAX=6;
         function intentar(){
           intento++;
           var xhrA=new XMLHttpRequest();
           xhrA.open('POST', API_URL, true);
           xhrA.setRequestHeader('Content-Type','text/plain;charset=utf-8');
-          xhrA.timeout=30000;
+          xhrA.timeout=45000;
           xhrA.onload=function(){
             if(xhrA.status<200||xhrA.status>=300){ reintentarOFallar(); return; }
             try{
