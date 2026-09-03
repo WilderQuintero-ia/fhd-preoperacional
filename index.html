@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Preoperacionales — Falabella Home Delivery</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap">
+<link rel="icon" href="icons/favicon-32.png">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F5F5F5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+  .logo{font-family:'Poppins',sans-serif;font-size:30px;font-weight:700;letter-spacing:1.5px;color:#303848;text-align:center;}
+  .dots{display:flex;justify-content:center;gap:6px;margin:10px 0 6px;}
+  .dots span{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .sub{text-align:center;color:#666;font-size:13.5px;margin-bottom:6px;}
+  .brand{text-align:center;color:#74BC1C;font-weight:700;font-size:13px;letter-spacing:.3px;margin-bottom:40px;}
+  .cards{display:flex;gap:20px;max-width:760px;width:100%;flex-wrap:wrap;justify-content:center;}
+  .card{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:32px 28px;flex:1;min-width:260px;max-width:340px;text-decoration:none;color:inherit;transition:transform .15s, box-shadow .15s;display:block;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.12);}
+  .card-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px;}
+  .card.panel .card-ico{background:#F0F8E4;}
+  .card.conductor .card-ico{background:#E1F0FA;}
+  .card h2{font-size:17px;color:#24280F;margin-bottom:8px;}
+  .card p{font-size:13px;color:#777;line-height:1.5;margin-bottom:16px;}
+  .card .go{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;}
+  .card.panel .go{color:#5C9616;}
+  .card.conductor .go{color:#0277BD;}
+  footer{margin-top:40px;font-size:11px;color:#999;text-align:center;}
+</style>
+</head>
+<body>
+
+  <div class="logo">FALABELLA
+    <div class="dots">
+      <span style="background:#DADADA"></span><span style="background:#FF4D82"></span><span style="background:#5C8DFF"></span><span style="background:#74BC1C"></span>
+    </div>
+  </div>
+  <div class="sub">Home Delivery — Transportes Nacional</div>
+  <div class="brand">Sistema de Preoperacionales</div>
+
+  <div class="cards">
+    <a href="fhd-panel-control.html" class="card panel">
+      <div class="card-ico">🖥️</div>
+      <h2>Panel de Control</h2>
+      <p>Para coordinadores y administradores. Vehículos, mantenimientos, combustible, reportes y toda la gestión de flota.</p>
+      <div class="go">Entrar al panel →</div>
+    </a>
+    <a href="fhd-preop-conductor.html" class="card conductor">
+      <div class="card-ico">📱</div>
+      <h2>Preoperacional — Conductor</h2>
+      <p>Para conductores. Diligencia el chequeo diario del vehículo desde el celular: fotos, video, documentos y firma.</p>
+      <div class="go">Abrir formulario →</div>
+    </a>
+  </div>
+
+  <footer>Transportes Nacional Home Delivery · Este enlace es el punto de entrada oficial — guárdalo como favorito ⭐</footer>
+
+</body>
+</html>
