@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#74BC1C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FHD Renting">
+<meta name="mobile-web-app-capable" content="yes">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Inspección de renting — Falabella Home Delivery</title>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"></noscript>
+<style>
+:root{--green:#74BC1C;--green-d:#5C9616;--green-l:#F0F8E4;--dark:#303848;--gray-7:#374151;--gray-5:#6B7280;--gray-3:#D1D5DB;--gray-1:#F3F4F6;--white:#FFFFFF;--danger:#DC2626;--danger-l:#FEE2E2;--warn:#D97706;--warn-l:#FEF3C7;--r:12px;--r-sm:8px;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+html{font-size:16px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gray-1);color:var(--dark);min-height:100vh;max-width:480px;margin:0 auto;}
+
+.header{background:var(--green);color:white;padding:16px 20px 18px;position:sticky;top:0;z-index:50;}
+.header-brand{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;opacity:.75;margin-bottom:2px;}
+.header-title{font-size:20px;font-weight:700;}
+.header-sub{font-size:12px;opacity:.8;margin-top:2px;}
+
+.stepper{background:var(--green-d);padding:10px 20px 12px;position:sticky;top:76px;z-index:49;}
+.stepper-track{height:4px;background:rgba(255,255,255,.25);border-radius:2px;overflow:hidden;}
+.stepper-fill{height:100%;background:white;border-radius:2px;transition:width .4s ease;}
+.stepper-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.sl{font-size:10px;color:rgba(255,255,255,.55);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.sl.active{color:white;}
+
+.step{display:none;padding:18px 16px 110px;animation:fi .2s ease;}
+.step.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.step-eyebrow{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px;}
+.step-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:3px;}
+.step-sub{font-size:13px;color:var(--gray-5);margin-bottom:18px;}
+
+.card{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.field{margin-bottom:14px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px;border-radius:var(--r-sm);border:1.5px solid var(--gray-3);background:var(--white);font-size:16px;font-family:inherit;color:var(--dark);-webkit-appearance:none;transition:border-color .15s;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236B7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(0,161,75,.12);}
+.field textarea{resize:none;min-height:80px;}
+.field-hint{font-size:11.5px;color:var(--gray-5);margin-top:5px;}
+.doc-alert{margin-top:8px;padding:9px 12px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;line-height:1.4;display:flex;align-items:flex-start;gap:7px;}
+.fecha-triple{display:grid;grid-template-columns:1fr 1.4fr 1.2fr;gap:7px;}
+.fecha-triple select{width:100%;padding:12px 8px;border-radius:var(--r-sm);border:1.5px solid var(--gray-3);background:var(--white);font-size:15px;font-family:inherit;color:var(--dark);-webkit-appearance:none;text-align:center;}
+.fecha-triple select:focus{outline:none;border-color:var(--green);}
+.doc-alert.ok{background:#F0F8E4;color:#5C9616;}
+.doc-alert.warn{background:#FFF3E0;color:#92400E;}
+.doc-alert.danger{background:#FDECEA;color:#C0392B;}
+.field.error input,.field.error select{border-color:var(--danger);}
+
+.sec-label{font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--gray-3);}
+
+.score-wrap{background:var(--white);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.score-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+.score-num{font-size:26px;font-weight:800;color:var(--green);}
+.score-of{font-size:13px;color:var(--gray-5);}
+.s-track{height:7px;background:var(--gray-1);border-radius:4px;overflow:hidden;}
+.s-fill{height:100%;border-radius:4px;transition:width .35s,background .35s;}
+.s-msg{font-size:12px;color:var(--gray-5);margin-top:5px;}
+
+.cl{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:center;background:var(--white);border-radius:var(--r);border:1.5px solid var(--gray-3);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05);min-height:62px;}
+.ci.ok{border-color:var(--green);background:var(--green-l);}
+.ci.fail{border-color:var(--danger);background:var(--danger-l);}
+.ci-left{flex:1;padding:12px 14px;cursor:pointer;user-select:none;}
+.ci-name{font-size:15px;font-weight:600;color:var(--dark);}
+.ci.ok .ci-name{color:var(--green-d);}
+.ci.fail .ci-name{color:var(--danger);}
+.ci-hint{font-size:12px;color:var(--gray-5);margin-top:2px;}
+.ci-btns{display:flex;flex-shrink:0;}
+.cbtn{width:56px;min-height:62px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;line-height:1;border-left:1px solid var(--gray-3);}
+.ci.ok .cbtn.ob{background:var(--green);color:white;}
+.ci.fail .cbtn.fb{background:var(--danger);color:white;}
+.cbtn.ob{color:var(--gray-3);}
+.cbtn.fb{color:var(--gray-3);}
+.ci-note{display:none;padding:0 12px 10px;}
+.ci.fail .ci-note{display:block;}
+.ci-note input{width:100%;padding:8px 10px;font-size:14px;border-radius:6px;border:1px solid var(--danger);background:white;color:var(--dark);font-family:inherit;}
+.ci-note input:focus{outline:none;}
+
+/* ── FOTOS ── */
+.foto-header{background:var(--white);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.foto-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.foto-counter{font-size:26px;font-weight:800;color:var(--green);}
+.foto-counter-of{font-size:13px;color:var(--gray-5);}
+.foto-req-bar{height:7px;background:var(--gray-1);border-radius:4px;overflow:hidden;}
+.foto-req-fill{height:100%;border-radius:4px;transition:width .35s,background .35s;background:var(--green);}
+.foto-req-msg{font-size:12px;margin-top:5px;}
+
+.foto-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.foto-slot{border-radius:var(--r);overflow:hidden;position:relative;aspect-ratio:4/3;background:var(--gray-1);border:2px dashed var(--gray-3);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.foto-slot.captured{border:2px solid var(--green);background:#000;}
+.foto-slot.required-missing{border:2px dashed var(--danger);background:var(--danger-l);}
+.foto-slot:active{opacity:.85;}
+.foto-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.foto-slot-icon{font-size:28px;color:var(--gray-3);z-index:1;}
+.foto-slot.required-missing .foto-slot-icon{color:var(--danger);}
+.foto-slot-label{font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;z-index:1;text-align:center;padding:0 6px;}
+.foto-slot.required-missing .foto-slot-label{color:var(--danger);}
+.foto-slot.captured .foto-slot-label{display:none;}
+.foto-badge{position:absolute;top:6px;left:6px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;z-index:2;}
+.foto-badge-req{background:var(--danger);}
+.foto-delete{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:white;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3;}
+.foto-watermark-info{background:var(--dark);color:white;font-size:10px;font-weight:600;padding:3px 8px;border-radius:4px;position:absolute;bottom:6px;left:6px;right:6px;text-align:center;z-index:2;opacity:.85;}
+
+.banner{border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.banner.warn{background:var(--warn-l);color:#92400E;}
+.banner.danger{background:var(--danger-l);color:#991B1B;}
+.banner.ok-b{background:var(--green-l);color:var(--green-d);}
+.banner.info-b{background:#E0F2FE;color:#075985;}
+.banner i{font-size:17px;flex-shrink:0;margin-top:1px;}
+
+.gps-bar{background:var(--green-l);border-radius:var(--r-sm);padding:8px 12px;font-size:12px;color:var(--green-d);display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.gps-bar i{font-size:16px;}
+.gps-bar.warn{background:var(--warn-l);color:#92400E;}
+.gps-bar.error{background:var(--danger-l);color:#991B1B;}
+
+.firma-wrap{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.firma-lbl{font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;}
+#fcanvas{width:100%;height:150px;border:1.5px dashed var(--gray-3);border-radius:var(--r-sm);display:block;background:var(--gray-1);touch-action:none;cursor:crosshair;}
+#fcanvas.signed{border-style:solid;border-color:var(--green);background:white;}
+.firma-hint{font-size:12px;color:var(--gray-5);margin-top:5px;text-align:center;}
+.btn-cf{background:none;border:none;color:var(--danger);font-size:12px;font-family:inherit;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:4px;margin-top:3px;}
+
+.res-grid{display:flex;gap:8px;margin-top:10px;}
+.res-box{flex:1;border-radius:10px;padding:11px;text-align:center;}
+.res-num{font-size:24px;font-weight:800;}
+.res-lbl{font-size:10px;font-weight:700;}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:white;border-top:1px solid var(--gray-3);padding:12px 16px env(safe-area-inset-bottom);display:flex;gap:10px;z-index:100;}
+.btn-back{flex:1;padding:14px;border-radius:var(--r);border:1.5px solid var(--gray-3);background:white;font-size:15px;font-weight:700;color:var(--gray-7);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-next{flex:2;padding:14px;border-radius:var(--r);border:none;background:var(--green);font-size:15px;font-weight:700;color:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-next:active{background:var(--green-d);}
+.btn-next i,.btn-back i{font-size:18px;}
+
+.success{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:32px 20px;text-align:center;}
+.success.active{display:flex;}
+.sico{width:76px;height:76px;border-radius:50%;background:var(--green-l);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.sico i{font-size:38px;color:var(--green);}
+.stitle{font-size:24px;font-weight:800;margin-bottom:8px;}
+.ssub{font-size:15px;color:var(--gray-5);line-height:1.5;}
+.scode{background:var(--dark);color:white;font-size:22px;font-weight:800;letter-spacing:3px;padding:12px 28px;border-radius:var(--r);margin:18px 0;font-family:monospace;}
+.btn-nuevo{margin-top:20px;background:var(--green);color:white;border:none;padding:16px 32px;border-radius:var(--r);font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;}
+
+.saving-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.saving-overlay.active{display:flex;}
+.saving-spinner{width:48px;height:48px;border:4px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;}
+.saving-txt{color:white;font-size:16px;font-weight:600;text-align:center;padding:0 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Hidden canvas for watermark processing */
+#wm-canvas{display:none;}
+input[type=file]{display:none;}
+/* Checkboxes personalizados — los nativos a veces se ven diminutos o no
+   responden bien en iOS Safari dentro de contenedores flex. Este estilo
+   los reemplaza visualmente por una casilla propia, grande y con
+   confirmación clara (✓) al marcarla, para que nunca quede duda de si
+   el toque sí registró. */
+input[type=checkbox].chk-grande{
+  -webkit-appearance:none; appearance:none;
+  width:26px; height:26px; min-width:26px;
+  border:2px solid var(--gray-3); border-radius:7px;
+  background:#fff; cursor:pointer; flex-shrink:0;
+  position:relative; margin:0;
+}
+input[type=checkbox].chk-grande:checked{
+  background:var(--green); border-color:var(--green);
+}
+input[type=checkbox].chk-grande:checked::after{
+  content:'✓'; position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:17px; font-weight:800;
+}
+label.chk-label{display:flex; align-items:center; gap:10px; cursor:pointer; -webkit-tap-highlight-color:rgba(0,0,0,.06);}
+/* ── APTITUD PARA CONDUCIR (declaración previa a la inspección) ── */
+.apt-q{background:var(--white);border:1.5px solid var(--gray-3);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .15s,background .15s;}
+.apt-q.ok{border-color:var(--green);}
+.apt-q.bad,.apt-q.error{border-color:var(--danger);background:var(--danger-l);}
+.apt-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;}
+.apt-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--gray-1);color:var(--gray-7);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.apt-tema{font-size:10.5px;font-weight:800;color:var(--gray-5);text-transform:uppercase;letter-spacing:.5px;}
+.apt-txt{font-size:15px;font-weight:700;color:var(--dark);line-height:1.35;margin-top:1px;}
+.apt-hint{font-size:12px;color:var(--gray-5);margin-top:3px;line-height:1.4;}
+.apt-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.apt-btn{min-height:50px;border-radius:var(--r-sm);border:2px solid var(--gray-3);background:var(--white);color:var(--gray-7);font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.apt-btn:active{opacity:.85;}
+.apt-btn.sel-ok{background:var(--green);border-color:var(--green);color:#fff;}
+.apt-btn.sel-bad{background:var(--danger);border-color:var(--danger);color:#fff;}
+
+/* ── INSPECCIÓN DE RENTING ── */
+.op-card{border-radius:var(--r);padding:14px 16px;margin-bottom:12px;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12);}
+.op-card.recibo{background:var(--green-d);}
+.op-card.entrega{background:var(--dark);}
+.op-card.alerta{background:var(--warn);}
+.op-card.manual{background:var(--gray-7);}
+.op-tag{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;opacity:.85;}
+.op-name{font-size:22px;font-weight:800;line-height:1.15;margin:2px 0 6px;}
+.op-sub{font-size:13px;line-height:1.5;opacity:.97;}
+.op-sub strong{font-weight:800;}
+.op-datos{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.op-chip{background:rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:700;}
+.est-card{border-radius:var(--r);padding:13px 15px;margin-bottom:12px;font-size:13px;line-height:1.5;display:flex;gap:10px;align-items:flex-start;}
+.est-card i{font-size:20px;flex-shrink:0;margin-top:1px;}
+.est-card.gris{background:var(--gray-1);color:var(--gray-7);border:1.5px dashed var(--gray-3);}
+.est-card.rojo{background:var(--danger-l);color:#991B1B;border:1.5px solid #FCA5A5;}
+.est-card.ambar{background:var(--warn-l);color:#92400E;border:1.5px solid #FCD34D;}
+.est-card .est-t{font-weight:800;font-size:14px;margin-bottom:2px;}
+.est-acciones{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.btn-mini{padding:10px 14px;border-radius:var(--r-sm);border:2px solid var(--gray-3);background:#fff;color:var(--gray-7);font-size:13.5px;font-weight:800;font-family:inherit;cursor:pointer;}
+.btn-mini.sel{background:var(--green);border-color:var(--green);color:#fff;}
+.btn-mini.sel-e{background:var(--dark);border-color:var(--dark);color:#fff;}
+.btn-mini.pri{background:var(--dark);border-color:var(--dark);color:#fff;}
+.btn-op{width:100%;text-align:left;padding:13px 14px;border-radius:var(--r);border:2px solid var(--gray-3);background:#fff;color:var(--dark);font-family:inherit;cursor:pointer;margin-top:8px;display:block;}
+.btn-op b{display:block;font-size:14.5px;}
+.btn-op span{font-size:12px;color:var(--gray-5);}
+.btn-op.sel{border-color:var(--green);background:var(--green-l);}
+.btn-op.sel-e{border-color:var(--dark);background:#EEF0F4;}
+.confirma-otro{background:rgba(255,255,255,.14);border-radius:var(--r-sm);padding:10px 12px;margin-top:10px;}
+.confirma-otro label{color:#fff;font-size:12.5px;line-height:1.45;font-weight:600;}
+.spin-mini{width:18px;height:18px;border:3px solid var(--gray-3);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;margin-top:2px;}
+
+.cmp-card{border-left:5px solid var(--dark);}
+.cmp-tit{font-size:11px;font-weight:800;color:var(--gray-5);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.cmp-fila{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:5px 0;border-bottom:1px solid var(--gray-1);}
+.cmp-fila:last-child{border-bottom:none;}
+.cmp-fila .k{color:var(--gray-5);}
+.cmp-fila .v{font-weight:700;text-align:right;}
+.cmp-fila .v.mal{color:var(--danger);}
+.cmp-fila .v.bien{color:var(--green-d);}
+
+.el-row{display:flex;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--gray-3);border-radius:var(--r);padding:9px 10px 9px 13px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .15s,background .15s;}
+.el-row.si{border-color:var(--green);background:var(--green-l);}
+.el-row.no{border-color:var(--danger);background:var(--danger-l);}
+.el-row.error{border-color:var(--danger);}
+.el-info{flex:1;min-width:0;}
+.el-name{font-size:14.5px;font-weight:700;color:var(--dark);}
+.el-prev{font-size:11.5px;color:var(--gray-5);margin-top:1px;}
+.el-prev.falta{color:var(--danger);font-weight:800;}
+.el-btns{display:flex;gap:6px;flex-shrink:0;}
+.el-btn{min-width:54px;min-height:46px;border-radius:var(--r-sm);border:2px solid var(--gray-3);background:var(--white);color:var(--gray-7);font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;}
+.el-btn:active{opacity:.85;}
+.el-btn.sel-si{background:var(--green);border-color:var(--green);color:#fff;}
+.el-btn.sel-no{background:var(--danger);border-color:var(--danger);color:#fff;}
+.dn-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.dn-btn{min-height:50px;border-radius:var(--r-sm);border:2px solid var(--gray-3);background:var(--white);color:var(--gray-7);font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;}
+.dn-btn.sel-no{background:var(--green);border-color:var(--green);color:#fff;}
+.dn-btn.sel-si{background:var(--danger);border-color:var(--danger);color:#fff;}
+.field.error .dn-btns .dn-btn{border-color:var(--danger);}
+.res-op{border-radius:var(--r-sm);padding:9px 12px;color:#fff;font-weight:800;font-size:14px;margin-bottom:10px;}
+.res-op.recibo{background:var(--green-d);}
+.res-op.entrega{background:var(--dark);}
+.res-op.manual{background:var(--gray-7);}
+.res-linea{font-size:13px;color:var(--gray-7);line-height:1.6;margin-top:8px;}
+.res-linea b{color:var(--dark);}
+.rech-card{width:100%;background:var(--danger-l);border:2px solid #DC2626;border-radius:var(--r);padding:16px;margin:14px 0;text-align:left;}
+.rech-card .t{font-weight:800;color:#991B1B;font-size:16px;margin-bottom:6px;}
+.rech-card .m{color:#7F1D1D;font-size:14px;line-height:1.55;}
+.btn-sec{margin-top:10px;background:var(--white);color:var(--dark);border:2px solid var(--dark);padding:14px 32px;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;}
+</style>
+</head>
+<body>
+
+<div id="js-bloqueado-banner" style="background:#7C2D12;color:#FFF5F0;padding:16px;font-size:14px;font-weight:700;line-height:1.6;text-align:center;">
+  🚫 ESTA PÁGINA NO ESTÁ FUNCIONANDO CORRECTAMENTE<br>
+  <span style="font-weight:400;font-size:13px">Estás abriendo el archivo descargado, no el enlace oficial. Así la página no puede funcionar (no carga fecha, no avanza, no toma fotos ni GPS).<br><br>
+  <strong>Solución:</strong> abre Chrome o Safari y entra al enlace que empieza con <strong>https://</strong> que te compartió tu coordinador.</span>
+</div>
+<script>
+/* Si el JavaScript SÍ funciona, este aviso desaparece de inmediato.
+   Si el conductor alcanza a verlo, es porque el archivo se abrió mal
+   (descargado / vista previa) y nada de la página va a funcionar. */
+document.getElementById('js-bloqueado-banner').style.display='none';
+</script>
+
+<div id="insecure-banner" style="display:none;background:#7C2D12;color:#FFF5F0;padding:12px 16px;font-size:13px;font-weight:600;line-height:1.5;text-align:center;">
+  ⚠️ Estás viendo una versión que NO permitirá tomar fotos ni usar GPS. Abre el enlace oficial que empieza con <strong>https://</strong> (por WhatsApp), no un archivo descargado.
+</div>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <div>
+      <div style="font-family:'Poppins',sans-serif;font-size:19px;font-weight:700;line-height:1;letter-spacing:1.5px;color:#fff;">FALABELLA</div>
+      <div style="display:flex;gap:4px;margin-top:6px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#DADADA;display:inline-block"></span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#FF4D82;display:inline-block"></span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#5C8DFF;display:inline-block"></span>
+        <span style="width:6px;height:6px;border-radius:50%;background:#fff;display:inline-block"></span>
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.85);margin-top:5px;">Home Delivery</div>
+    </div>
+  </div>
+  <div style="font-size:15px;font-weight:700;opacity:.95;margin-bottom:1px;" id="h-titulo">Inspección de vehículo de renting</div>
+  <div class="header-sub" id="hdate"></div>
+  <div id="bodega-badge" style="display:none;margin-top:6px;background:rgba(255,255,255,.2);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700"></div>
+</div>
+
+<div class="stepper">
+  <div class="stepper-track"><div class="stepper-fill" id="sfill" style="width:16.6%"></div></div>
+  <div class="stepper-labels">
+    <span class="sl active" id="sl1">Vehículo</span>
+    <span class="sl" id="sl2">Estado</span>
+    <span class="sl" id="sl3">Fotos</span>
+    <span class="sl" id="sl4">Video</span>
+    <span class="sl" id="sl5">Docs</span>
+    <span class="sl" id="sl6">Firma</span>
+  </div>
+</div>
+
+<!-- ════ PASO 1 — VEHÍCULO Y OPERACIÓN ════ -->
+<div id="step1" class="step active">
+  <div class="step-eyebrow">Paso 1 de 6</div>
+  <div class="step-title">Vehículo y conductor</div>
+  <div class="step-sub">Escribe tu cédula y la placa: el sistema te dice si te toca el <strong>recibo</strong> (al iniciar la operación) o la <strong>entrega</strong> (al terminarla).</div>
+  <div class="card">
+    <div class="field" id="f-conductor">
+      <label>Tu nombre completo</label>
+      <input type="text" id="conductor" placeholder="Escribe tu nombre y apellidos" autocomplete="name" autocapitalize="words">
+    </div>
+    <div class="field" id="f-cedula">
+      <label>Número de cédula</label>
+      <input type="text" id="cedula" placeholder="Ej. 1020304050" inputmode="numeric" maxlength="12" autocomplete="off">
+    </div>
+    <div class="field" id="f-placa">
+      <label>Placa del vehículo</label>
+      <input type="text" id="placa" placeholder="Ej. ABC123 (sin guion ni espacios)" maxlength="6" style="text-transform:uppercase;font-weight:700;letter-spacing:1px;font-size:18px;" autocomplete="off">
+    </div>
+  </div>
+
+  <div id="rent-estado" role="status" aria-live="polite"></div>
+  <div id="id-bloqueada" class="est-card gris" style="display:none"><i class="ti ti-lock"></i><div>La placa y la cédula quedaron fijas para esta inspección, para que las fotos y el registro sean del mismo vehículo. <div class="est-acciones"><button type="button" class="btn-mini" onclick="empezarDeNuevo()">Empezar de nuevo con otro vehículo</button></div></div></div>
+
+  <div class="card">
+    <div class="field" id="f-tipo-vehiculo">
+      <label>Tipología de vehículo</label>
+      <select id="tipo-vehiculo">
+        <option value="">Selecciona el tipo...</option>
+        <option value="panel">Panel (furgón cerrado)</option>
+        <option value="carry">Carry</option>
+        <option value="nhr">NHR</option>
+        <option value="turbo">Turbo</option>
+        <option value="turboed">Turbo ED</option>
+        <option value="sencillo">Sencillo</option>
+        <option value="moto">Moto</option>
+        <option value="minimula">Minimula</option>
+        <option value="tracto">Tracto camión</option>
+      </select>
+    </div>
+    <div class="field" id="f-km">
+      <label>Kilómetros del odómetro</label>
+      <input type="number" id="km" placeholder="Ej. 48250" inputmode="numeric">
+      <div class="field-hint" id="km-hint"></div>
+    </div>
+    <div class="field" id="f-comb">
+      <label>Nivel de combustible</label>
+      <select id="rec-nivel-comb">
+        <option value="">Selecciona...</option>
+        <option value="Lleno">Lleno</option>
+        <option value="3/4">3/4</option>
+        <option value="1/2">1/2</option>
+        <option value="1/4">1/4</option>
+        <option value="Reserva">Reserva</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Fecha de la inspección</label>
+      <div id="fecha-display" style="padding:14px 16px;border-radius:var(--r-sm);background:var(--green-l,#F0F8E4);color:var(--green-d,#5C9616);font-weight:800;font-size:17px;border:2px solid var(--green,#74BC1C);text-align:center;">—</div>
+      <input type="hidden" id="fecha">
+      <script>
+      /* La fecha se escribe AQUÍ MISMO, en el instante en que el navegador
+         lee esta línea del HTML. No espera a que cargue nada más ni depende
+         de ninguna función — es imposible que se quede en "Cargando". */
+      (function(){
+        try{
+          var _d = new Date();
+          var _iso = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).format(_d);
+          document.getElementById('fecha').value = _iso;
+          document.getElementById('fecha-display').textContent =
+            _d.toLocaleDateString('es-CO',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+        }catch(_e){
+          /* Respaldo sin Intl, por si el celular es muy antiguo */
+          var _f = new Date();
+          var _dd = ('0'+_f.getDate()).slice(-2), _mm = ('0'+(_f.getMonth()+1)).slice(-2);
+          document.getElementById('fecha').value = _f.getFullYear()+'-'+_mm+'-'+_dd;
+          document.getElementById('fecha-display').textContent = _dd+'/'+_mm+'/'+_f.getFullYear();
+        }
+      })();
+      </script>
+      <div class="field-hint">✓ Se toma automáticamente la fecha de hoy — no se puede modificar.</div>
+    </div>
+  </div>
+  <div class="banner warn"><i class="ti ti-alert-triangle"></i><span>Esta inspección pide: elementos del vehículo, 6 fotos con marca de agua (fecha, hora y GPS), un video de 20 segundos y tu firma.</span></div>
+</div>
+
+<!-- ════ PASO 2 — ESTADO Y ELEMENTOS ════ -->
+<div id="step2" class="step">
+  <div class="step-eyebrow">Paso 2 de 6</div>
+  <div class="step-title" id="s2-titulo">Estado y elementos</div>
+  <div class="step-sub" id="s2-sub">Marca si el vehículo trae cada elemento.</div>
+
+  <div class="card cmp-card" id="cmp-card" style="display:none">
+    <div class="cmp-tit">Comparativo con el recibo</div>
+    <div id="cmp-body"></div>
+  </div>
+
+  <div class="sec-label" style="margin-top:6px" id="el-etiqueta">Elementos del vehículo</div>
+  <div id="el-lista"></div>
+
+  <div class="sec-label" id="dn-etiqueta">Daños o novedades</div>
+  <div class="card">
+    <div class="field" id="f-danos-nuevos" style="display:none">
+      <label>¿Hay daños o novedades NUEVOS de tu operación?</label>
+      <div class="dn-btns" role="radiogroup" aria-label="Daños nuevos">
+        <button type="button" class="dn-btn" id="dn-no" role="radio" aria-checked="false" onclick="responderDanosNuevos('no')">No, ninguno</button>
+        <button type="button" class="dn-btn" id="dn-si" role="radio" aria-checked="false" onclick="responderDanosNuevos('si')">Sí, hay</button>
+      </div>
+    </div>
+    <div class="field" id="f-danos">
+      <label id="danos-label">Daños o novedades que ya tiene el vehículo (rayones, golpes, faltantes)</label>
+      <textarea id="rec-danos" rows="3" placeholder="Describe cualquier daño o novedad que ya tenía el vehículo al recibirlo. Si no hay ninguno, escribe 'Ninguno'."></textarea>
+    </div>
+    <div class="field">
+      <label>Estado de limpieza y aseo del vehículo</label>
+      <select id="limpieza">
+        <option value="Bueno">Bueno — limpio por dentro y por fuera</option>
+        <option value="Regular">Regular — necesita lavado pronto</option>
+        <option value="Malo">Malo — sucio, requiere lavado urgente</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Otras observaciones (opcional)</label>
+      <textarea id="obs" placeholder="Cualquier otra novedad que quieras dejar registrada..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PASO 3 — FOTOS OBLIGATORIAS ════ -->
+<div id="step3" class="step">
+  <div class="step-eyebrow">Paso 3 de 6</div>
+  <div class="step-title">Fotos del vehículo</div>
+  <div class="step-sub">6 fotos obligatorias. Cada foto lleva marca de agua automática con fecha, hora y ubicación GPS.</div>
+
+  <div id="gps-status" class="gps-bar warn" onclick="initGPS()" style="cursor:pointer">
+    <span style="font-size:16px">📍</span>
+    <span id="gps-txt" style="flex:1">Obteniendo ubicación GPS... (obligatorio para las fotos)</span>
+    <span style="font-size:11px;font-weight:700;text-decoration:underline;white-space:nowrap">🔄 Reintentar</span>
+  </div>
+
+  <div class="foto-header">
+    <div class="foto-progress">
+      <span><span class="foto-counter" id="foto-cnt">0</span><span class="foto-counter-of"> / 6 fotos</span></span>
+      <span style="font-size:12px;color:var(--gray-5)" id="foto-pct-lbl">0%</span>
+    </div>
+    <div class="foto-req-bar"><div class="foto-req-fill" id="foto-bar" style="width:0%"></div></div>
+    <div class="foto-req-msg" id="foto-msg" style="color:var(--danger);font-weight:600">Faltan 6 fotos obligatorias para continuar.</div>
+  </div>
+
+  <div class="banner info-b"><i class="ti ti-info-circle"></i><span>Toca cada recuadro para abrir la cámara. La marca de agua se aplica automáticamente sobre la foto.</span></div>
+
+  <div class="foto-grid" id="foto-grid">
+    <!-- generado por JS -->
+  </div>
+
+  <!-- Canvas oculto para marca de agua -->
+  <canvas id="wm-canvas"></canvas>
+  <!-- Inputs de archivo ocultos -->
+  <div id="file-inputs"></div>
+</div>
+
+<!-- ════ PASO 4 — VIDEO DEL VEHÍCULO ════ -->
+<div id="step4" class="step">
+  <div class="step-eyebrow">Paso 4 de 6</div>
+  <div class="step-title" id="s4-titulo">Video del vehículo</div>
+  <div class="step-sub" id="s4-sub">Graba un video de 20 segundos mostrando el estado general del vehículo (recorre alrededor).</div>
+
+  <div class="banner info-b"><i class="ti ti-info-circle"></i><span>El video dura 20 segundos y se detiene solo — no necesitas cronometrar nada. Mantén esta pantalla abierta hasta que termine; si se interrumpe, hay que grabarlo de nuevo.</span></div>
+
+  <div id="video-wrap" style="background:#000;border-radius:var(--r);overflow:hidden;position:relative;aspect-ratio:4/3;margin-bottom:14px;display:flex;align-items:center;justify-content:center;">
+    <video id="video-live" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;display:none;"></video>
+    <video id="video-playback" controls playsinline style="width:100%;height:100%;object-fit:cover;display:none;"></video>
+    <div id="video-placeholder" style="color:rgba(255,255,255,.6);text-align:center;padding:20px;">
+      <i class="ti ti-video" style="font-size:44px;display:block;margin-bottom:8px;"></i>
+      Toca "Iniciar cámara" para comenzar
+    </div>
+    <div id="video-timer" style="display:none;position:absolute;top:12px;right:12px;background:rgba(220,38,38,.9);color:#fff;font-weight:700;font-size:13px;padding:4px 10px;border-radius:20px;">
+      <span style="display:inline-block;width:8px;height:8px;background:#fff;border-radius:50%;margin-right:6px;animation:pulse 1s infinite;"></span><span id="video-timer-txt">20</span>s
+    </div>
+  </div>
+
+  <div id="video-controls" style="display:flex;gap:10px;">
+    <button type="button" class="btn-nuevo" id="video-btn-init" style="flex:1;background:var(--dark)" onclick="iniciarCamaraVideo()"><i class="ti ti-camera" style="margin-right:6px"></i>Iniciar cámara</button>
+  </div>
+  <div id="video-controls-record" style="display:none;gap:10px;">
+    <button type="button" class="btn-nuevo" id="video-btn-record" style="flex:1;background:var(--danger)" onclick="iniciarGrabacionVideo()"><i class="ti ti-player-record" style="margin-right:6px"></i>Grabar (20s)</button>
+  </div>
+  <div id="video-controls-redo" style="display:none;gap:10px;">
+    <button type="button" class="btn-nuevo" style="flex:1;background:var(--gray-5)" onclick="rehacerVideo()"><i class="ti ti-refresh" style="margin-right:6px"></i>Grabar de nuevo</button>
+  </div>
+  <div id="video-status" style="margin-top:10px;font-size:13px;font-weight:600;color:var(--danger);">⚠️ Falta grabar el video obligatorio.</div>
+
+  <!-- Alternativa para navegadores sin soporte de grabación en vivo -->
+  <div id="video-fallback" style="display:none;margin-top:14px;">
+    <div class="banner warn"><i class="ti ti-alert-triangle"></i><span>Tu navegador no permite grabar en vivo aquí. Usa el botón para grabar con la cámara nativa del celular.</span></div>
+    <input type="file" id="video-file-input" accept="video/*" capture="environment" style="display:none" onchange="procesarVideoArchivo(event)">
+    <button type="button" class="btn-nuevo" style="background:var(--dark)" onclick="document.getElementById('video-file-input').click()"><i class="ti ti-video" style="margin-right:6px"></i>Grabar con la cámara</button>
+  </div>
+</div>
+
+<!-- ════ PASO 5 — DOCUMENTOS ════ -->
+<div id="step5" class="step">
+  <div class="step-eyebrow">Paso 5 de 6</div>
+  <div class="step-title">Documentos</div>
+  <div class="step-sub" id="s5-sub">Verifica que los documentos estén a bordo y vigentes. Los 3 campos de fecha son obligatorios.</div>
+  <div id="docs-fechas">
+    <div class="banner warn" style="margin-bottom:12px"><i class="ti ti-alert-triangle"></i><span><strong>Importante:</strong> la vigencia de estos 3 documentos no debe ser inferior a 1 año. Si falta menos de un año para el vencimiento, gestiona la renovación cuanto antes.</span></div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="field" id="f-doc-soat">
+        <label>Fecha de vencimiento del SOAT <span style="color:#DC2626">*</span></label>
+        <div class="fecha-triple">
+          <select id="doc-soat-dia" onchange="syncFechaTriple('doc-soat')"></select>
+          <select id="doc-soat-mes" onchange="syncFechaTriple('doc-soat')"></select>
+          <select id="doc-soat-anio" onchange="syncFechaTriple('doc-soat')"></select>
+        </div>
+        <input type="hidden" id="doc-soat">
+        <div class="field-hint">La vigencia no debe ser inferior a 1 año desde hoy.</div>
+        <div id="alert-soat" class="doc-alert" style="display:none"></div>
+      </div>
+      <div class="field" id="f-doc-rtm">
+        <label>Fecha de vencimiento de la Tecno-mecánica (RTM) <span style="color:#DC2626">*</span></label>
+        <div class="fecha-triple">
+          <select id="doc-rtm-dia" onchange="syncFechaTriple('doc-rtm')"></select>
+          <select id="doc-rtm-mes" onchange="syncFechaTriple('doc-rtm')"></select>
+          <select id="doc-rtm-anio" onchange="syncFechaTriple('doc-rtm')"></select>
+        </div>
+        <input type="hidden" id="doc-rtm">
+        <div class="field-hint">La vigencia no debe ser inferior a 1 año desde hoy.</div>
+        <div id="alert-rtm" class="doc-alert" style="display:none"></div>
+      </div>
+      <div class="field" id="f-doc-lic" style="margin-bottom:0">
+        <label>Fecha de vencimiento de tu Licencia de conducción <span style="color:#DC2626">*</span></label>
+        <div class="fecha-triple">
+          <select id="doc-lic-dia" onchange="syncFechaTriple('doc-lic')"></select>
+          <select id="doc-lic-mes" onchange="syncFechaTriple('doc-lic')"></select>
+          <select id="doc-lic-anio" onchange="syncFechaTriple('doc-lic')"></select>
+        </div>
+        <input type="hidden" id="doc-lic">
+        <div class="field-hint">La vigencia no debe ser inferior a 1 año desde hoy.</div>
+        <div id="alert-lic" class="doc-alert" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cl" id="cl-d" style="margin-bottom:16px"></div>
+</div>
+
+<!-- ════ PASO 6 — FIRMA ════ -->
+<div id="step6" class="step">
+  <div class="step-eyebrow">Paso 6 de 6</div>
+  <div class="step-title">Firma y envío</div>
+  <div class="step-sub" id="s6-sub">Revisa el resumen y firma para registrar la inspección.</div>
+  <div class="card">
+    <div id="r-op" class="res-op recibo">—</div>
+    <div style="font-size:15px;font-weight:700" id="r-cond">—</div>
+    <div style="font-size:13px;color:var(--gray-5);margin-top:2px" id="r-meta">—</div>
+    <div class="res-grid">
+      <div class="res-box" style="background:var(--green-l)"><div class="res-num" style="color:var(--green)" id="r-ok">0</div><div class="res-lbl" style="color:var(--green-d)">Elementos</div></div>
+      <div class="res-box" style="background:var(--danger-l)"><div class="res-num" style="color:var(--danger)" id="r-fail">0</div><div class="res-lbl" style="color:#991B1B">Faltantes</div></div>
+      <div class="res-box" style="background:var(--green-l)"><div class="res-num" style="color:var(--green)" id="r-fotos">0</div><div class="res-lbl" style="color:var(--green-d)">Fotos</div></div>
+      <div class="res-box" style="background:var(--gray-1)"><div class="res-num" style="color:var(--gray-7)" id="r-docs">0</div><div class="res-lbl" style="color:var(--gray-5)">Docs con falla</div></div>
+    </div>
+    <div id="r-lineas" class="res-linea"></div>
+    <div id="r-alert" style="margin-top:10px"></div>
+  </div>
+
+  <!-- Miniaturas de fotos en resumen -->
+  <div class="card" id="fotos-resumen-card">
+    <div style="font-size:11px;font-weight:700;color:var(--gray-5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Fotos capturadas</div>
+    <div id="fotos-resumen-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
+  </div>
+
+  <div class="card" style="border:1.5px solid #FCA5A5;background:#FEF2F2">
+    <div style="font-size:12px;font-weight:700;color:#991B1B;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px">⚠️ Declaración de veracidad</div>
+    <div style="font-size:13px;color:#7F1D1D;line-height:1.5">Al firmar, declaro bajo mi responsabilidad que la inspección fue realizada personalmente, que la información, los elementos, el kilometraje, las fotos, el video y las fechas de documentos consignados son <strong>reales y verificables</strong>, y que reportar datos falsos constituye falta grave sujeta a las medidas disciplinarias de la compañía.</div>
+  </div>
+  <div class="firma-wrap">
+    <div class="firma-lbl">Firma del conductor</div>
+    <canvas id="fcanvas" width="440" height="150"></canvas>
+    <div class="firma-hint" id="fhint">Dibuja tu firma con el dedo</div>
+    <button class="btn-cf" onclick="clearFirma()"><i class="ti ti-refresh" style="font-size:13px"></i>Borrar firma</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="success">
+  <div class="sico"><i class="ti ti-circle-check"></i></div>
+  <div class="stitle" id="ok-titulo">¡Inspección registrada!</div>
+  <div class="ssub" id="ok-sub">La inspección y las 6 fotos fueron registradas exitosamente. El panel de control fue actualizado.</div>
+  <div class="scode" id="scode">—</div>
+  <div style="font-size:12px;color:var(--gray-5);margin-bottom:16px" id="smeta">—</div>
+  <div id="ok-siguiente" style="width:100%;background:var(--green-l);border-radius:var(--r);padding:14px;margin-bottom:12px;text-align:left"></div>
+  <div style="width:100%;background:var(--dark);border-radius:var(--r);padding:14px;margin-bottom:12px">
+    <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Fotos registradas con marca de agua</div>
+    <div id="success-fotos" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px"></div>
+  </div>
+  <button class="btn-nuevo" id="btn-ir-preop" style="display:none" onclick="irAPreoperacional()"><i class="ti ti-clipboard-check" style="margin-right:6px"></i>Hacer mi preoperacional ahora</button>
+  <button class="btn-sec" onclick="location.reload()"><i class="ti ti-plus" style="margin-right:6px"></i>Nueva inspección</button>
+</div>
+
+<!-- RECHAZADA POR EL SISTEMA -->
+<div class="success" id="rechazo">
+  <div class="sico" style="background:var(--danger-l)"><i class="ti ti-circle-x" style="color:var(--danger)"></i></div>
+  <div class="stitle" id="rech-titulo">No se registró la inspección</div>
+  <div class="rech-card"><div class="t" id="rech-t">—</div><div class="m" id="rech-m">—</div></div>
+  <div style="font-size:13px;color:var(--gray-5);line-height:1.55;width:100%;text-align:left" id="rech-ayuda">Tu información no se guardó. Vuelve a empezar y revisa el estado del vehículo; si crees que es un error, avisa a tu coordinador.</div>
+  <button class="btn-nuevo" onclick="location.reload()"><i class="ti ti-refresh" style="margin-right:6px"></i>Volver a empezar</button>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar" id="bbar">
+  <button class="btn-back" id="bbk" onclick="prevStep()" style="display:none"><i class="ti ti-arrow-left"></i>Atrás</button>
+  <button class="btn-next" id="bnx" onclick="nextStep()">Continuar <i class="ti ti-arrow-right"></i></button>
+</div>
+
+<!-- SAVING -->
+<div class="saving-overlay" id="saving">
+  <div class="saving-spinner"></div>
+  <div class="saving-txt" id="saving-txt">Aplicando marca de agua a las fotos...</div>
+  <div style="width:80%;max-width:280px;height:8px;background:rgba(255,255,255,.25);border-radius:6px;margin-top:16px;overflow:hidden;display:none" id="saving-bar-track">
+    <div id="saving-bar-fill" style="height:100%;width:0%;background:#8DC63F;border-radius:6px;transition:width .2s"></div>
+  </div>
+  <div id="saving-pct" style="color:rgba(255,255,255,.8);font-size:12px;margin-top:6px;display:none">0%</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// ⚙️ CONFIGURACIÓN OBLIGATORIA — PEGA AQUÍ TU URL DE GOOGLE
+// Es la MISMA URL (la que termina en /exec) que usan el preoperacional
+// diario y el panel de control. Ejemplo:
+// var API_URL = 'https://script.google.com/macros/s/ABC123.../exec';
+var API_URL = 'https://script.google.com/macros/s/AKfycbwjiumARkgmcSAHCdOEbNJhSPFC1jWj32zhl-wAmkniAcnYlTGwV9pU4UmiN1JQ2Kw/exec';
+// ══════════════════════════════════════════════════════════
+
+// ═══ INSPECCIÓN DE VEHÍCULOS DE RENTING (Falabella.com) ═══
+// Página aparte del preoperacional diario. El conductor la usa DOS veces por
+// operación: al INICIARLA (RECIBO del vehículo) y al TERMINARLA (ENTREGA).
+// Qué inspección toca NO lo elige él: lo decide el sistema según el último
+// evento registrado para esa placa (ver estadoRenting en el script de Google):
+//   sin operación abierta → RECIBO · operación abierta → ENTREGA.
+// El script de Google vuelve a validar la secuencia al guardar, así que
+// aunque alguien manipule esta página no puede entregar sin recibir ni
+// recibir dos veces seguidas el mismo vehículo.
+
+var STORAGE_KEY = 'fhd_inspecciones_v1';
+var PASO_FINAL = 6;     // Firma y envío
+var TOTAL_PASOS = 6;
+var FOTOS_REQUERIDAS = 6;
+var HORAS_MAX_DEFAULT = 16;
+var ARCHIVO_PREOP = 'fhd-preop-conductor.html'; // preoperacional diario (misma carpeta)
+var VERSION_MIN_SCRIPT = 18;                    // versión mínima del script de Google (v18)
+
+var FOTO_SLOTS = [
+  {id:'f0', label:'Frente del vehículo',    icon:'ti-camera',   desc:'Parte delantera completa'},
+  {id:'f1', label:'Lateral izquierdo',       icon:'ti-camera',   desc:'Lado conductor'},
+  {id:'f2', label:'Lateral derecho',         icon:'ti-camera',   desc:'Lado pasajero'},
+  {id:'f3', label:'Parte trasera',           icon:'ti-camera',   desc:'Cola del vehículo'},
+  {id:'f4', label:'Área de carga',           icon:'ti-package',  desc:'Interior plataforma/furgón'},
+  {id:'f5', label:'Tablero / odómetro',      icon:'ti-dashboard',desc:'Kilometraje visible'}
+];
+var DOC_ITEMS = [
+  {name:'SOAT vigente',           hint:'A bordo, legible y dentro de vigencia.',icon:'ti-file-check'},
+  {name:'Tecno-mecánica (RTM)',   hint:'Revisión técnico-mecánica vigente.',   icon:'ti-file-certificate'},
+  {name:'Tarjeta de propiedad',   hint:'Documento original a bordo.',          icon:'ti-id'},
+  {name:'Licencia de conducción', hint:'Vigente y categoría habilitada.',      icon:'ti-id-badge'}
+];
+
+var ELEMENTOS = ['Llanta de repuesto','Gato y cruceta','Kit de carretera','Extintor','Botiquín','2 juegos de llaves','Manual del vehículo','Tarjeta de propiedad'];
+
+var states   = {d:new Array(4).fill(0)};
+var notesTxt = {d:new Array(4).fill('')};
+var fotosData = new Array(FOTOS_REQUERIDAS).fill(null); // base64 con marca de agua
+var elResp = [];          // 'si' | 'no' por cada elemento (mismo orden que ELEMENTOS)
+var danosNuevos = '';     // solo ENTREGA: '' | 'si' | 'no'
+var mostrarErroresEl = false;
+
+var currentStep = 1;
+
+var firmaSigned = false, fCtx, fDrawing=false, fLX, fLY;
+var gpsData = {lat:null, lng:null, address:'Ubicación no disponible'};
+var gpsReady = false;
+
+// ─── VIDEO (20 segundos, recibo y entrega) ───
+var videoBlob = null;            // el archivo final grabado, listo para subir
+var videoStream = null;
+var videoRecorder = null;
+var videoTimerInterval = null;
+var videoInicioMs = 0;           // reloj monótono (ms) al arrancar la grabación
+var videoCompletoPorTiempo = false; // true = la grabación llegó sola a los 20 s
+var videoArchivoToken = 0;       // para ignorar revisiones de archivo ya vencidas
+var VIDEO_MAX_SEG = 20;          // duración exacta del video
+// Solo para navegadores sin grabación en vivo: la cámara nativa del celular no se puede cortar sola,
+// así que se acepta un video que dure cerca de 20 s.
+var VIDEO_ARCHIVO_MIN_SEG = 18;
+var VIDEO_ARCHIVO_MAX_SEG = 25;
+
+function videoAhoraMs(){
+  // reloj monótono: no lo afectan los cambios de hora automáticos del celular
+  return (window.performance && performance.now) ? performance.now() : Date.now();
+}
+function iniciarCamaraVideo(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder==='undefined'){
+    // Navegador sin soporte de grabación en vivo (algunos Android viejos) —
+    // se usa la cámara nativa del celular como alternativa.
+    document.getElementById('video-controls').style.display='none';
+    document.getElementById('video-placeholder').style.display='none';
+    document.getElementById('video-fallback').style.display='block';
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({
+    video:{facingMode:{ideal:'environment'}, width:{ideal:640}, height:{ideal:480}},
+    audio:false
+  }).then(function(stream){
+    videoStream=stream;
+    var liveEl=document.getElementById('video-live');
+    liveEl.srcObject=stream;
+    liveEl.style.display='block';
+    document.getElementById('video-placeholder').style.display='none';
+    document.getElementById('video-controls').style.display='none';
+    document.getElementById('video-controls-record').style.display='flex';
+  }).catch(function(err){
+    console.warn('No se pudo acceder a la cámara para video:', err);
+    document.getElementById('video-controls').style.display='none';
+    document.getElementById('video-placeholder').style.display='none';
+    document.getElementById('video-fallback').style.display='block';
+  });
+}
+function iniciarGrabacionVideo(){
+  if(!videoStream) return;
+  if(videoRecorder && videoRecorder.state==='recording') return;
+  var chunks=[];
+  videoCompletoPorTiempo=false;
+  var mimeType='video/webm;codecs=vp8';
+  if(!MediaRecorder.isTypeSupported(mimeType)) mimeType='video/webm';
+  if(!MediaRecorder.isTypeSupported(mimeType)) mimeType=''; // deja que el navegador elija
+  var rec;
+  try{
+    rec=new MediaRecorder(videoStream, mimeType?{mimeType:mimeType, videoBitsPerSecond:450000}:{videoBitsPerSecond:450000});
+  }catch(e){
+    rec=new MediaRecorder(videoStream);
+  }
+  videoRecorder=rec;
+  rec.ondataavailable=function(e){ if(e.data && e.data.size>0) chunks.push(e.data); };
+  rec.onstop=function(){
+    clearInterval(videoTimerInterval);
+    var seg=(videoAhoraMs()-videoInicioMs)/1000;
+    if(videoStream){ videoStream.getTracks().forEach(function(t){t.stop();}); videoStream=null; }
+    // Si se detuvo antes de los 20 s (se cerró la cámara, llegó una llamada,
+    // se cambió de aplicación…) el video no cumple y hay que repetirlo.
+    if(!videoCompletoPorTiempo){
+      videoInterrumpido('La grabación se interrumpió a los '+Math.max(0,Math.round(seg))+' s y el video debe durar '+VIDEO_MAX_SEG+' segundos. Toca "Iniciar cámara" y grábalo de nuevo sin salir de esta pantalla.');
+      return;
+    }
+    var blob=new Blob(chunks, {type:rec.mimeType||'video/webm'});
+    if(!blob.size){
+      videoInterrumpido('No se pudo guardar el video. Toca "Iniciar cámara" y grábalo de nuevo.');
+      return;
+    }
+    videoBlob=blob;
+    mostrarVideoGrabado();
+  };
+  rec.start();
+  videoInicioMs=videoAhoraMs();
+  document.getElementById('video-controls-record').style.display='none';
+  document.getElementById('video-timer').style.display='block';
+  var txt=document.getElementById('video-timer-txt');
+  txt.textContent=VIDEO_MAX_SEG;
+  clearInterval(videoTimerInterval);
+  // Se mide con reloj (no contando ticks) para que dure 20 s exactos aunque
+  // el celular atrase el temporizador.
+  videoTimerInterval=setInterval(function(){
+    var transcurrido=(videoAhoraMs()-videoInicioMs)/1000;
+    var restante=Math.max(0, Math.ceil(VIDEO_MAX_SEG-transcurrido));
+    if(String(restante)!==txt.textContent) txt.textContent=restante;
+    if(transcurrido>=VIDEO_MAX_SEG){
+      clearInterval(videoTimerInterval);
+      videoCompletoPorTiempo=true;
+      if(rec.state==='recording') rec.stop();
+    }
+  },250);
+}
+function mostrarVideoGrabado(){
+  clearInterval(videoTimerInterval);
+  document.getElementById('video-timer').style.display='none';
+  document.getElementById('video-live').style.display='none';
+  var pb=document.getElementById('video-playback');
+  pb.src=URL.createObjectURL(videoBlob);
+  pb.style.display='block';
+  document.getElementById('video-controls-redo').style.display='flex';
+  document.getElementById('video-status').innerHTML='✅ Video de '+VIDEO_MAX_SEG+' segundos grabado ('+(videoBlob.size/1024/1024).toFixed(1)+' MB)';
+  document.getElementById('video-status').style.color='var(--green-d)';
+}
+// La grabación no llegó a buen término: se descarta y se vuelve a ofrecer
+// "Iniciar cámara" con el motivo a la vista.
+
+function videoInterrumpido(msg){
+  videoBlob=null;
+  var set=function(id,disp){ var el=document.getElementById(id); if(el) el.style.display=disp; };
+  set('video-timer','none'); set('video-live','none'); set('video-playback','none');
+  set('video-placeholder','flex'); set('video-controls','flex');
+  set('video-controls-record','none'); set('video-controls-redo','none');
+  var st=document.getElementById('video-status');
+  if(st){ st.innerHTML='⚠️ '+msg; st.style.color='var(--danger)'; }
+}
+function rehacerVideo(){
+  videoBlob=null;
+  document.getElementById('video-playback').style.display='none';
+  document.getElementById('video-placeholder').style.display='flex';
+  document.getElementById('video-controls-redo').style.display='none';
+  document.getElementById('video-controls').style.display='flex';
+  document.getElementById('video-status').innerHTML='⚠️ Falta grabar el video obligatorio.';
+  document.getElementById('video-status').style.color='var(--danger)';
+  var fi=document.getElementById('video-file-input'); if(fi) fi.value='';
+}
+// Descarta por completo el video (grabación, cámara abierta y archivo elegido)
+
+function limpiarVideo(){
+  clearInterval(videoTimerInterval);
+  videoArchivoToken++;          // cancela cualquier revisión de archivo en curso
+  videoCompletoPorTiempo=false;
+  try{ if(videoRecorder && videoRecorder.state==='recording'){ videoRecorder.onstop=null; videoRecorder.stop(); } }catch(e){}
+  videoRecorder=null;
+  if(videoStream){ try{ videoStream.getTracks().forEach(function(t){t.stop();}); }catch(e){} videoStream=null; }
+  videoBlob=null;
+  var set=function(id,disp){ var el=document.getElementById(id); if(el) el.style.display=disp; };
+  set('video-live','none'); set('video-playback','none'); set('video-timer','none');
+  set('video-placeholder','flex'); set('video-controls','flex');
+  set('video-controls-record','none'); set('video-controls-redo','none'); set('video-fallback','none');
+  var tt=document.getElementById('video-timer-txt'); if(tt) tt.textContent=VIDEO_MAX_SEG;
+  var pb=document.getElementById('video-playback'); if(pb){ try{ pb.removeAttribute('src'); pb.load(); }catch(e){} }
+  var fi=document.getElementById('video-file-input'); if(fi) fi.value='';
+  var st=document.getElementById('video-status');
+  if(st){ st.innerHTML='⚠️ Falta grabar el video obligatorio.'; st.style.color='var(--danger)'; }
+}
+// Alternativa para navegadores sin MediaRecorder: usa el archivo que
+// entregue la app nativa de cámara del celular. Esa app no se puede cortar
+// sola a los 20 s, así que se revisa la duración con los datos del archivo.
+
+function procesarVideoArchivo(ev){
+  var input=ev.target;
+  var file=input.files[0];
+  if(!file) return;
+  if(file.size > 30*1024*1024){
+    alert('El video pesa más de 30 MB. En la cámara del celular baja la calidad de video (por ejemplo a 720p) y grábalo de nuevo, de '+VIDEO_MAX_SEG+' segundos.');
+    input.value='';
+    return;
+  }
+  var token=++videoArchivoToken;
+  var url=URL.createObjectURL(file);
+  var probe=document.createElement('video');
+  var terminado=false;
+  var espera=null;
+  var fin=function(dur){
+    if(terminado) return;
+    terminado=true;
+    clearTimeout(espera);
+    probe.onloadedmetadata=null; probe.onerror=null;
+    try{ probe.removeAttribute('src'); probe.load(); }catch(e){}
+    URL.revokeObjectURL(url);
+    if(token!==videoArchivoToken) return; // lo cancelaron (cambió de modo o eligió otro archivo)
+    // Si el celular no deja leer la duración se acepta el video: es mejor que bloquear al conductor.
+    if(isFinite(dur) && (dur<VIDEO_ARCHIVO_MIN_SEG || dur>VIDEO_ARCHIVO_MAX_SEG)){
+      alert('Tu video dura '+Math.round(dur)+' segundos y debe durar '+VIDEO_MAX_SEG+' (se acepta entre '+VIDEO_ARCHIVO_MIN_SEG+' y '+VIDEO_ARCHIVO_MAX_SEG+'). Grábalo de nuevo.');
+      input.value='';
+      return;
+    }
+    aceptarVideoArchivo(file);
+  };
+  espera=setTimeout(function(){ fin(NaN); },5000);
+  probe.preload='metadata';
+  probe.onloadedmetadata=function(){ fin(probe.duration); };
+  probe.onerror=function(){ fin(NaN); };
+  probe.src=url;
+}
+function aceptarVideoArchivo(file){
+  videoBlob=file;
+  var pb=document.getElementById('video-playback');
+  pb.src=URL.createObjectURL(videoBlob);
+  pb.style.display='block';
+  document.getElementById('video-placeholder').style.display='none';
+  document.getElementById('video-fallback').style.display='none';
+  document.getElementById('video-controls-redo').style.display='flex';
+  document.getElementById('video-status').innerHTML='✅ Video seleccionado ('+(videoBlob.size/1024/1024).toFixed(1)+' MB)';
+  document.getElementById('video-status').style.color='var(--green-d)';
+}
+
+// ─── GPS ───
+function initGPS(){
+  // El GPS del navegador SOLO funciona si la página se abrió por https://
+  // (o localhost). Si el conductor abrió el archivo descargado directamente
+  // desde el celular (file://) o por un enlace http:// sin cifrar, el
+  // navegador bloquea el GPS por completo aunque la ubicación del celular
+  // esté encendida. Detectamos esto primero para dar el mensaje correcto.
+  if(!window.isSecureContext){
+    setGPSStatus('error','⚠️ Esta página no se abrió desde el enlace oficial (https://). El GPS no puede activarse así. Cierra esto y abre el enlace que te compartieron por WhatsApp — debe empezar con https://');
+    gpsReady = false;
+    return;
+  }
+  if(!navigator.geolocation){
+    setGPSStatus('error','GPS no disponible en este dispositivo/navegador.');
+    return;
+  }
+  setGPSStatus('warn','Obteniendo ubicación GPS...');
+  navigator.geolocation.getCurrentPosition(
+    function(pos){ onGPSSuccess(pos); },
+    function(err){
+      // Primer intento (alta precisión) falló o hizo timeout.
+      // Reintentar automáticamente con precisión normal y más tiempo,
+      // que funciona mucho mejor en interiores/bodegas con señal débil.
+      setGPSStatus('warn','Señal débil, reintentando ubicación...');
+      navigator.geolocation.getCurrentPosition(
+        function(pos){ onGPSSuccess(pos); },
+        function(err2){ handleGPSError(err2); },
+        {enableHighAccuracy:false, timeout:20000, maximumAge:120000}
+      );
+    },
+    {enableHighAccuracy:true, timeout:8000, maximumAge:0}
+  );
+}
+function handleGPSError(err){
+  gpsData.address = 'Ubicación no autorizada';
+  gpsReady = false;
+  // err.code: 1=PERMISSION_DENIED, 2=POSITION_UNAVAILABLE, 3=TIMEOUT
+  if(err && err.code===1){
+    setGPSStatus('error','🚫 Chrome bloqueó la ubicación para ESTA página (aunque el GPS del celular esté encendido). Toca el 🔒 o ⓘ junto a la dirección arriba → Permisos del sitio → Ubicación → Permitir. Si no aparece esa opción: Ajustes del celular → Apps → Chrome → Permisos → Ubicación → Permitir. Luego toca aquí para reintentar.');
+  } else if(err && err.code===2){
+    setGPSStatus('error','📡 No se pudo determinar la ubicación (sin señal GPS/red). Sal a un lugar con mejor señal y toca aquí para reintentar.');
+  } else {
+    setGPSStatus('error','⏱ Se agotó el tiempo esperando el GPS. Toca aquí para reintentar.');
+  }
+}
+function onGPSSuccess(pos){
+  gpsData.lat  = pos.coords.latitude.toFixed(5);
+  gpsData.lng  = pos.coords.longitude.toFixed(5);
+  gpsData.address = 'GPS: '+gpsData.lat+', '+gpsData.lng;
+  gpsReady = true;
+  setGPSStatus('ok','GPS activo · '+gpsData.lat+', '+gpsData.lng);
+}
+function setGPSStatus(type, msg){
+  var el = document.getElementById('gps-status');
+  var txt = document.getElementById('gps-txt');
+  el.className = 'gps-bar '+(type==='ok'?'':type==='warn'?'warn':'error');
+  var ico = type==='ok'?'✅':type==='warn'?'📍':'⚠️';
+  var icoEl = el.querySelector('span');
+  if(icoEl) icoEl.textContent = ico;
+  txt.textContent = msg;
+}
+
+// ─── CHECKLIST DE DOCUMENTOS ───
+function buildCL(containerId, items, group){
+  var el = document.getElementById(containerId);
+  el.innerHTML='';
+  items.forEach(function(item,i){
+    var div=document.createElement('div');
+    div.className='ci'; div.id='ci-'+group+'-'+i;
+    div.innerHTML='<div class="ci-left" onclick="cycleC(\''+group+'\','+i+')">'
+      +'<div class="ci-name"><i class="ti '+item.icon+'" style="font-size:15px;margin-right:6px"></i>'+item.name+'</div>'
+      +'<div class="ci-hint">'+item.hint+'</div></div>'
+      +'<div class="ci-btns">'
+      +'<button class="cbtn ob" onclick="setC(\''+group+'\','+i+',1)" aria-label="Bien">&#10003;</button>'
+      +'<button class="cbtn fb" onclick="setC(\''+group+'\','+i+',2)" aria-label="Falla">&#10005;</button>'
+      +'</div>';
+    var note=document.createElement('div');
+    note.className='ci-note'; note.id='cn-'+group+'-'+i;
+    note.innerHTML='<input placeholder="Describe la falla..." oninput="notesTxt[\''+group+'\']['+i+']=this.value">';
+    el.appendChild(div); el.appendChild(note);
+  });
+}
+function cycleC(g,i){ setC(g,i,(states[g][i]+1)%3); }
+// Los 4 documentos son esenciales: si el conductor marca FALLA se avisa de inmediato.
+function setC(g,i,v){
+  states[g][i]=v;
+  var ci=document.getElementById('ci-'+g+'-'+i);
+  var cn=document.getElementById('cn-'+g+'-'+i);
+  ci.className='ci'+(v===1?' ok':v===2?' fail':'');
+  cn.style.display=v===2?'block':'none';
+  if(v===2){
+    alert('🚨 VEHÍCULO NO APTO PARA OPERAR\n\n"'+DOC_ITEMS[i].name+'" es un requisito ESENCIAL para la operación y presenta falla.\n\nDebes notificar de inmediato a tu coordinador de transporte. No podrás avanzar en esta inspección hasta confirmar el aviso.');
+  }
+}
+
+// ─── FOTOS ───
+function buildFotoGrid(){
+  var grid=document.getElementById('foto-grid');
+  var inputs=document.getElementById('file-inputs');
+  grid.innerHTML=''; inputs.innerHTML='';
+  FOTO_SLOTS.forEach(function(slot,i){
+    // slot visual
+    var div=document.createElement('div');
+    div.className='foto-slot required-missing'; div.id='slot-'+i;
+    div.innerHTML='<span class="foto-badge foto-badge-req">Obligatoria</span>'
+      +'<i class="ti '+slot.icon+' foto-slot-icon"></i>'
+      +'<span class="foto-slot-label">'+slot.label+'</span>';
+    div.onclick=function(){
+      if(!gpsReady){
+        initGPS();
+        alert('⚠️ GPS OBLIGATORIO\n\nPara tomar las fotos debes activar la ubicación de tu celular y permitir el acceso cuando el navegador lo pida.\n\nLas fotos deben quedar con marca de agua de fecha, hora y coordenadas GPS.');
+        return;
+      }
+      // Refrescar coordenadas justo antes de la foto
+      navigator.geolocation.getCurrentPosition(function(p){
+        gpsData.lat=p.coords.latitude.toFixed(5);
+        gpsData.lng=p.coords.longitude.toFixed(5);
+      },function(){},{maximumAge:30000,timeout:5000});
+      document.getElementById('input-foto-'+i).click();
+    };
+    grid.appendChild(div);
+    // input file
+    var inp=document.createElement('input');
+    inp.type='file'; inp.accept='image/*'; inp.capture='environment';
+    inp.id='input-foto-'+i;
+    inp.onchange=function(e){ handleFotoCapture(e,i); };
+    inputs.appendChild(inp);
+  });
+}
+
+// ─── MARCA DE AGUA ───
+function applyWatermark(imgSrc, slotIdx, callback){
+  var canvas=document.getElementById('wm-canvas');
+  var ctx=canvas.getContext('2d');
+  var img=new Image();
+  img.onload=function(){
+    // Redimensionar a máx 1100px de ancho — suficiente para verse nítida
+    // en el panel, pero notablemente más liviana para subir rápido.
+    var scale=Math.min(1, 1100/img.naturalWidth);
+    var W=Math.round(img.naturalWidth*scale), H=Math.round(img.naturalHeight*scale);
+    canvas.width=W; canvas.height=H;
+    ctx.drawImage(img,0,0,W,H);
+
+    // El tamaño del texto sale del ANCHO de la foto y la franja se calcula a partir de él
+    // (4 renglones + márgenes): así la información cabe completa en fotos horizontales y verticales.
+    var fBase=Math.max(14, W*0.026);
+    var linea=fBase*1.32;                          // alto de cada renglón
+    var barH=Math.round(linea*4+fBase*0.7);        // franja inferior
+    var top=H-barH;
+    ctx.fillStyle='rgba(0,0,0,0.72)';
+    ctx.fillRect(0,top,W,barH);
+    var yL=function(n){ return top+fBase*0.35+linea*n; }; // parte baja del renglón n (1 a 4)
+
+    var now=new Date();
+    var fecha=now.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var hora=now.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    var gps=gpsReady?('GPS: '+gpsData.lat+', '+gpsData.lng):'Sin GPS autorizado';
+    var placa=document.getElementById('placa').value.trim()||'???';
+    var cond=document.getElementById('conductor').value||'???';
+    var x0=W*0.022, x1=W-W*0.022;
+    ctx.textBaseline='bottom';
+    ctx.textAlign='left';
+
+    // Empresa
+    ctx.font='bold '+Math.round(fBase*1.1)+'px Arial';
+    ctx.fillStyle='#74BC1C';
+    ctx.fillText('FALABELLA HOME DELIVERY', x0, yL(1));
+
+    // Fecha y hora
+    ctx.font='bold '+Math.round(fBase)+'px Arial';
+    ctx.fillStyle='#FFFFFF';
+    ctx.fillText('📅 '+fecha+'  ⏱ '+hora, x0, yL(2));
+
+    // GPS
+    ctx.font=Math.round(fBase*0.9)+'px Arial';
+    ctx.fillStyle='#4ADE80';
+    ctx.fillText('📍 '+gps, x0, yL(3));
+
+    // Vehículo y conductor
+    ctx.fillStyle='#CBD5E1';
+    ctx.fillText('🚛 '+placa+'  👤 '+cond, x0, yL(4));
+
+    // Columna derecha: etiqueta de la foto y número de foto
+    ctx.textAlign='right';
+    ctx.font='bold '+Math.round(fBase*0.85)+'px Arial';
+    ctx.fillStyle='#FCD34D';
+    ctx.fillText(FOTO_SLOTS[slotIdx].label.toUpperCase(), x1, yL(1));
+    ctx.font='bold '+Math.round(fBase*0.8)+'px Arial';
+    ctx.fillStyle='rgba(255,255,255,0.55)';
+    ctx.fillText('FOTO '+(slotIdx+1)+'/'+FOTOS_REQUERIDAS, x1, yL(2));
+    // Tipo de inspección de renting (recibo o entrega)
+    if(OP){
+      ctx.font='bold '+Math.round(fBase*0.8)+'px Arial';
+      ctx.fillStyle=OP==='ENTREGA'?'#93C5FD':'#86EFAC';
+      ctx.fillText('RENTING · '+OP, x1, yL(3));
+    }
+    ctx.textAlign='left';
+
+    callback(canvas.toDataURL('image/jpeg',0.75));
+  };
+  img.src=imgSrc;
+}
+
+function handleFotoCapture(e, idx){
+  var file=e.target.files[0];
+  if(!file) return;
+  if(!gpsReady){
+    e.target.value='';
+    initGPS();
+    alert('⚠️ La foto no se guardó. Activa el GPS primero — es obligatorio para la marca de agua.');
+    return;
+  }
+
+  // mostrar overlay de procesamiento
+  document.getElementById('saving-txt').textContent='Procesando foto '+(idx+1)+' de '+FOTOS_REQUERIDAS+'...';
+  document.getElementById('saving').classList.add('active');
+
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    applyWatermark(ev.target.result, idx, function(dataUrl){
+      fotosData[idx]=dataUrl;
+      renderSlot(idx, dataUrl);
+      updateFotoProgress();
+      document.getElementById('saving').classList.remove('active');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function renderSlot(idx, dataUrl){
+  var slot=document.getElementById('slot-'+idx);
+  slot.className='foto-slot captured';
+  slot.innerHTML='<img src="'+dataUrl+'" alt="Foto '+(idx+1)+'">'
+    +'<span class="foto-badge">✓ Capturada</span>'
+    +'<button class="foto-delete" onclick="deleteSlot(event,'+idx+')" aria-label="Eliminar foto">&#10005;</button>'
+    +'<div class="foto-watermark-info">Marca de agua aplicada</div>';
+  // Re-asignar click para retomar foto
+  slot.onclick=null;
+}
+function deleteSlot(e, idx){
+  e.stopPropagation();
+  fotosData[idx]=null;
+  var slot=document.getElementById('slot-'+idx);
+  slot.className='foto-slot required-missing';
+  slot.innerHTML='<span class="foto-badge foto-badge-req">Obligatoria</span>'
+    +'<i class="ti '+FOTO_SLOTS[idx].icon+' foto-slot-icon"></i>'
+    +'<span class="foto-slot-label">'+FOTO_SLOTS[idx].label+'</span>';
+  slot.onclick=function(){
+    if(!gpsReady){
+      initGPS();
+      alert('⚠️ GPS OBLIGATORIO\n\nActiva la ubicación de tu celular para tomar las fotos.');
+      return;
+    }
+    document.getElementById('input-foto-'+idx).click();
+  };
+  // Reset input
+  document.getElementById('input-foto-'+idx).value='';
+  updateFotoProgress();
+}
+function updateFotoProgress(){
+  var captured=fotosData.filter(function(f){return f!==null;}).length;
+  var pct=Math.round(captured/FOTOS_REQUERIDAS*100);
+  document.getElementById('foto-cnt').textContent=captured;
+  document.getElementById('foto-pct-lbl').textContent=pct+'%';
+  document.getElementById('foto-bar').style.width=pct+'%';
+  document.getElementById('foto-bar').style.background=captured===FOTOS_REQUERIDAS?'var(--green)':captured>=4?'var(--warn)':'var(--danger)';
+  var msg=document.getElementById('foto-msg');
+  if(captured===FOTOS_REQUERIDAS){
+    msg.textContent='✓ Todas las fotos capturadas con marca de agua. Puedes continuar.';
+    msg.style.color='var(--green)';
+  } else {
+    var faltan=FOTOS_REQUERIDAS-captured;
+    msg.textContent='Faltan '+faltan+' foto'+(faltan===1?'':'s')+' obligatoria'+(faltan===1?'':'s')+' para continuar.';
+    msg.style.color='var(--danger)';
+  }
+}
+
+// ─── FIRMA ───
+function initFirma(){
+  var c=document.getElementById('fcanvas');
+  c.width=c.offsetWidth||440;
+  fCtx=c.getContext('2d');
+  fCtx.strokeStyle='#111827'; fCtx.lineWidth=2.5; fCtx.lineCap='round'; fCtx.lineJoin='round';
+  function pos(ev){ var r=c.getBoundingClientRect(); var t=ev.touches?ev.touches[0]:ev; return{x:t.clientX-r.left,y:t.clientY-r.top}; }
+  c.addEventListener('touchstart',function(e){e.preventDefault();fDrawing=true;var p=pos(e);fLX=p.x;fLY=p.y;},{passive:false});
+  c.addEventListener('touchmove',function(e){e.preventDefault();if(!fDrawing)return;var p=pos(e);fCtx.beginPath();fCtx.moveTo(fLX,fLY);fCtx.lineTo(p.x,p.y);fCtx.stroke();fLX=p.x;fLY=p.y;firmaSigned=true;c.classList.add('signed');document.getElementById('fhint').textContent='Firma registrada ✓';},{passive:false});
+  c.addEventListener('touchend',function(){fDrawing=false;});
+  c.addEventListener('mousedown',function(e){fDrawing=true;var p=pos(e);fLX=p.x;fLY=p.y;});
+  c.addEventListener('mousemove',function(e){if(!fDrawing)return;var p=pos(e);fCtx.beginPath();fCtx.moveTo(fLX,fLY);fCtx.lineTo(p.x,p.y);fCtx.stroke();fLX=p.x;fLY=p.y;firmaSigned=true;document.getElementById('fcanvas').classList.add('signed');document.getElementById('fhint').textContent='Firma registrada ✓';});
+  c.addEventListener('mouseup',function(){fDrawing=false;});
+}
+function clearFirma(){
+  var c=document.getElementById('fcanvas'); fCtx.clearRect(0,0,c.width,c.height);
+  firmaSigned=false; c.classList.remove('signed'); document.getElementById('fhint').textContent='Dibuja tu firma con el dedo';
+}
+
+// ═══════════════════════════════════════════════════════════
+// ESTADO DEL VEHÍCULO (qué inspección toca)
+// ═══════════════════════════════════════════════════════════
+var OP = '';               // 'RECIBO' | 'ENTREGA' | '' (todavía sin determinar)
+var VERIF = '';            // 'ok' = el sistema confirmó el estado · 'sin-respuesta' = no se pudo verificar
+var CONSULTA = { n:0, estado:'idle', clave:'', claveEnCurso:'', res:null, cbs:[], timer:null };
+var opManual = '';         // elección del conductor cuando el sistema no decide solo
+var confirmaOtroOk = false;
+
+function placaVal(){ return document.getElementById('placa').value.replace(/[^A-Za-z0-9]/g,'').toUpperCase(); }
+function cedulaVal(){ return document.getElementById('cedula').value.replace(/\D/g,''); }
+function claveActual(){ return placaVal()+'|'+cedulaVal(); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtKm(n){ var x=Number(n); return isFinite(x)?x.toLocaleString('es-CO'):'—'; }
+function fmtFechaHora(ms){
+  try{ return new Date(ms).toLocaleString('es-CO',{timeZone:'America/Bogota',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(',',''); }
+  catch(e){ return ''; }
+}
+function fmtHace(h){
+  var x=Number(h); if(!isFinite(x)) return '';
+  if(x<1) return 'hace '+Math.max(1,Math.round(x*60))+' min';
+  return 'hace '+x.toFixed(1).replace('.',',')+' h';
+}
+function nombreOp(op){ return op==='RECIBO'?'Recibo del vehículo':op==='ENTREGA'?'Entrega del vehículo':''; }
+function subOp(op){ return op==='RECIBO'?'Inicio de operación':op==='ENTREGA'?'Fin de operación':''; }
+
+// GET al script de Google: ?action=estadoRenting&placa=…&cedula=…
+function pedirEstado(placa, cedula, intentos, cb){
+  var intento=0;
+  function ir(){
+    intento++;
+    var xhr=new XMLHttpRequest();
+    var url=API_URL+(API_URL.indexOf('?')>-1?'&':'?')+'action=estadoRenting&placa='+encodeURIComponent(placa)+'&cedula='+encodeURIComponent(cedula||'')+'&_ts='+Date.now();
+    xhr.open('GET', url, true);
+    xhr.timeout=12000;
+    var terminado=false;
+    function falla(det){
+      if(terminado) return; terminado=true;
+      if(intento<intentos){ setTimeout(ir, 800); } else { cb(new Error(det||'sin respuesta'), null); }
+    }
+    xhr.onload=function(){
+      if(terminado) return;
+      if(xhr.status<200||xhr.status>=300){ falla('HTTP '+xhr.status); return; }
+      var res=null;
+      try{ res=JSON.parse(xhr.responseText); }catch(e){ falla('respuesta inválida'); return; }
+      terminado=true; cb(null, res);
+    };
+    xhr.onerror=function(){ falla('conexión'); };
+    xhr.ontimeout=function(){ falla('tiempo agotado'); };
+    xhr.send();
+  }
+  ir();
+}
+
+// ¿La respuesta viene de un script v18 o superior?
+function versionScriptOk(res){
+  if(!res || Array.isArray(res) || typeof res!=='object' || res.ok!==true) return false;
+  var m=/^v(\d+)/.exec(String(res.version||''));
+  return !!m && parseInt(m[1],10)>=VERSION_MIN_SCRIPT;
+}
+
+function programarConsulta(){
+  clearTimeout(CONSULTA.timer);
+  var placa=placaVal();
+  if(placa.length<5){ reiniciarEstado(); return; }
+  CONSULTA.timer=setTimeout(function(){ consultarEstado(); }, 600);
+}
+
+function reiniciarEstado(){
+  CONSULTA.n++;                 // invalida cualquier consulta en vuelo
+  CONSULTA.estado='idle'; CONSULTA.clave=''; CONSULTA.claveEnCurso=''; CONSULTA.res=null;
+  OP=''; VERIF=''; opManual=''; confirmaOtroOk=false;
+  renderEstado(); actualizarTextos();
+}
+
+// Consulta el estado de la placa actual. cb(listo): listo=true si ya hay un estado utilizable.
+function consultarEstado(cb){
+  clearTimeout(CONSULTA.timer);
+  var placa=placaVal(), ced=cedulaVal(), clave=placa+'|'+ced;
+  if(cb) CONSULTA.cbs.push(cb);
+  if(placa.length<5){ reiniciarEstado(); vaciarCbs(false); return; }
+  if(!API_URL){
+    // Modo de prueba local: no hay nube que consultar, el conductor elige.
+    CONSULTA.estado='local'; CONSULTA.clave=clave; CONSULTA.res=null; VERIF='sin-respuesta';
+    renderEstado(); actualizarTextos(); vaciarCbs(true); return;
+  }
+  if(CONSULTA.estado==='cargando' && CONSULTA.claveEnCurso===clave) return; // ya viene en camino
+  var n=++CONSULTA.n;
+  CONSULTA.estado='cargando'; CONSULTA.claveEnCurso=clave;
+  renderEstado();
+  pedirEstado(placa, ced, 2, function(err, res){
+    if(n!==CONSULTA.n) return; // el conductor ya cambió la placa o la cédula
+    CONSULTA.claveEnCurso='';
+    CONSULTA.clave=clave;
+    if(err){
+      CONSULTA.estado='error'; CONSULTA.res=null; VERIF='sin-respuesta'; OP='';
+    } else if(Array.isArray(res) || (res && res.ok===true && !versionScriptOk(res))){
+      CONSULTA.estado='script-viejo'; CONSULTA.res=null; VERIF=''; OP='';
+    } else if(!versionScriptOk(res)){
+      CONSULTA.estado='error'; CONSULTA.res=null; VERIF='sin-respuesta'; OP='';
+    } else if(res.renting===false){
+      CONSULTA.estado='no-flota'; CONSULTA.res=res; VERIF=''; OP='';
+    } else {
+      CONSULTA.estado='ok'; CONSULTA.res=res; VERIF='ok';
+      aplicarRespuesta(res);
+    }
+    renderEstado(); actualizarTextos();
+    vaciarCbs(CONSULTA.estado==='ok' || CONSULTA.estado==='error' || CONSULTA.estado==='local');
+  });
+}
+function vaciarCbs(listo){
+  var cbs=CONSULTA.cbs; CONSULTA.cbs=[];
+  cbs.forEach(function(f){ try{ f(listo); }catch(e){ console.error(e); } });
+}
+
+// Decide qué inspección toca según lo que respondió el sistema.
+function aplicarRespuesta(res){
+  confirmaOtroOk=false;
+  var vencida = res.abierta && res.recibo && res.recibo.vencida;
+  if(vencida){
+    // recibo olvidado (más de HORAS_MAX): el conductor decide si entrega ese vehículo o lo recibe de nuevo
+    if(opManual!=='RECIBO' && opManual!=='ENTREGA') opManual='';
+    OP=opManual;
+  } else {
+    // Primera vez que la placa aparece en el sistema (vehículo que ya venía operando antes de
+    // usar estas inspecciones): el conductor puede dejar su ENTREGA sin recibo previo.
+    var primera=(!res.abierta && !res.ultima);
+    var queEntrega=(primera && opManual==='ENTREGA');
+    opManual=queEntrega?'ENTREGA':'';
+    OP=(res.siguiente==='ENTREGA' || queEntrega)?'ENTREGA':'RECIBO';
+  }
+  // Tipología: si el vehículo está registrado en el panel, se propone la suya
+  try{
+    var sel=document.getElementById('tipo-vehiculo');
+    var t=res.vehiculo && res.vehiculo.tipo;
+    if(t && !sel.value){
+      for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===t){ sel.value=t; break; } }
+    }
+  }catch(e){}
+}
+
+function elegirOp(op){
+  opManual=op; OP=op; confirmaOtroOk=false;
+  renderEstado(); actualizarTextos();
+}
+function marcarConfirmaOtro(chk){ confirmaOtroOk=!!chk.checked; }
+
+function chipsRecibo(rc){
+  if(!rc) return '';
+  var h='<div class="op-datos">';
+  if(rc.ts) h+='<span class="op-chip">Recibido '+esc(fmtFechaHora(rc.ts))+'</span>';
+  if(rc.horas!=null) h+='<span class="op-chip">'+esc(fmtHace(rc.horas))+'</span>';
+  if(rc.km!=null) h+='<span class="op-chip">Km '+esc(fmtKm(rc.km))+'</span>';
+  if(rc.combustible) h+='<span class="op-chip">Combustible '+esc(rc.combustible)+'</span>';
+  return h+'</div>';
+}
+function vehiculoLinea(res){
+  var v=res && res.vehiculo; if(!v) return '';
+  var t=[v.marca, v.modelo].filter(function(x){return x;}).join(' ');
+  return t?('<div class="op-chip" style="display:inline-block;margin-bottom:8px;background:rgba(255,255,255,.22)">'+esc(t)+(v.bodega?' · '+esc(v.bodega):'')+'</div>'):'';
+}
+
+function renderEstado(){
+  var box=document.getElementById('rent-estado');
+  if(!box) return;
+  var e=CONSULTA.estado, res=CONSULTA.res, h='';
+  if(e==='idle'){
+    h='';
+  } else if(e==='cargando'){
+    h='<div class="est-card gris"><div class="spin-mini"></div><div><div class="est-t">Verificando el vehículo…</div>Consultando si te toca el recibo o la entrega.</div></div>';
+  } else if(e==='no-flota'){
+    h='<div class="est-card rojo"><i class="ti ti-circle-x"></i><div><div class="est-t">La placa '+esc(placaVal())+' no está en la flota de renting</div>'
+      +'Esta página es solo para los vehículos de renting de Falabella.com. Revisa que la placa esté bien escrita. Si es correcta, avisa a tu coordinador para que registre el vehículo en el panel. '
+      +'Si el vehículo no es de renting, haz el <a href="'+esc(urlPreop())+'" style="color:#991B1B;font-weight:800">preoperacional diario</a>.</div></div>';
+  } else if(e==='script-viejo'){
+    h='<div class="est-card rojo"><i class="ti ti-alert-octagon"></i><div><div class="est-t">El sistema no está actualizado</div>'
+      +'Avisa a tu coordinador: falta actualizar el script de Google a la versión v18 (Implementar → Administrar implementaciones → Nueva versión). No registres la inspección hasta que lo corrijan.</div></div>';
+  } else if(e==='error' || e==='local'){
+    h='<div class="est-card ambar"><i class="ti ti-wifi-off"></i><div><div class="est-t">'+(e==='local'?'Modo de prueba (sin conexión a la nube)':'No se pudo verificar el estado del vehículo')+'</div>'
+      +(e==='local'?'Esta página no tiene configurada la URL de Google: lo que registres queda solo en este celular.':'Sin señal o sistema lento. Puedes volver a intentarlo o, si no hay manera, continuar: el sistema lo validará al enviar y puede rechazar la inspección si no corresponde.')
+      +'<div style="margin-top:8px;font-weight:700">Elige la inspección que vas a hacer:</div>'
+      +'<div class="est-acciones">'
+      +'<button type="button" class="btn-mini'+(opManual==='RECIBO'?' sel':'')+'" onclick="elegirOp(\'RECIBO\')">Recibo (inicio)</button>'
+      +'<button type="button" class="btn-mini'+(opManual==='ENTREGA'?' sel-e':'')+'" onclick="elegirOp(\'ENTREGA\')">Entrega (fin)</button>'
+      +(e==='error'?'<button type="button" class="btn-mini pri" onclick="consultarEstado()">Reintentar</button>':'')
+      +'</div></div></div>';
+  } else if(e==='ok' && res){
+    var rc=res.recibo;
+    var avisoVeh='';
+    if(res.vehiculo && (res.vehiculo.estado==='mant' || res.vehiculo.estado==='bloq')){
+      avisoVeh='<div class="est-card ambar" style="margin-top:0"><i class="ti ti-alert-triangle"></i><div>En el panel este vehículo figura como <strong>'+(res.vehiculo.estado==='mant'?'en mantenimiento':'bloqueado')+'</strong>. Si vas a operarlo, confírmalo antes con tu coordinador.</div></div>';
+    }
+    var sinFlota=(res.registro!=='ok')?'<div class="est-card ambar" style="margin-top:0"><i class="ti ti-info-circle"></i><div>El panel todavía no tiene la flota de renting cargada: no se pudo comprobar que esta placa sea de renting.</div></div>':'';
+    if(res.abierta && rc && rc.vencida){
+      h='<div class="op-card alerta"><div class="op-tag">Recibo sin entrega</div><div class="op-name">Operación abierta '+esc(fmtHace(rc.horas))+'</div>'
+        +'<div class="op-sub">Este vehículo quedó recibido por <strong>'+esc(rc.esMio?'ti':rc.conductor||'otro conductor')+'</strong> y nunca se entregó (pasaron más de '+esc(res.horasMax||HORAS_MAX_DEFAULT)+' horas). ¿Qué vas a hacer?</div>'
+        +chipsRecibo(rc)+'</div>'
+        +'<button type="button" class="btn-op'+(OP==='ENTREGA'?' sel-e':'')+'" onclick="elegirOp(\'ENTREGA\')"><b>Entrego el vehículo</b><span>Cierro esa operación que quedó abierta.</span></button>'
+        +'<button type="button" class="btn-op'+(OP==='RECIBO'?' sel':'')+'" onclick="elegirOp(\'RECIBO\')"><b>Recibo el vehículo</b><span>Empiezo mi operación; la anterior queda marcada «sin entrega».</span></button>'
+        +'<div style="height:12px"></div>';
+    } else if(OP==='ENTREGA' && rc){
+      var otro=(rc.esMio===false);
+      h='<div class="op-card entrega"><div class="op-tag">Te toca · '+esc(subOp('ENTREGA'))+'</div><div class="op-name">'+esc(nombreOp('ENTREGA'))+'</div>'
+        +vehiculoLinea(res)
+        +'<div class="op-sub">'+(otro?'Este vehículo lo recibió <strong>'+esc(rc.conductor||'otro conductor')+'</strong>.':'Lo recibiste tú. Al terminar tu operación se entrega con esta inspección.')+'</div>'
+        +chipsRecibo(rc)
+        +(otro?'<div class="confirma-otro"><label class="chk-label"><input type="checkbox" class="chk-grande" id="chk-otro" onchange="marcarConfirmaOtro(this)"'+(confirmaOtroOk?' checked':'')+'><span>Confirmo que estoy entregando este vehículo y que '+esc(rc.conductor||'el otro conductor')+' ya no lo tiene.</span></label></div>':'')
+        +'</div>'+avisoVeh+sinFlota;
+    } else if(OP==='ENTREGA'){
+      // Placa sin ningún registro previo: se acepta la entrega y queda marcada «sin recibo previo»
+      h='<div class="op-card entrega"><div class="op-tag">Entrega · sin recibo previo</div><div class="op-name">'+esc(nombreOp('ENTREGA'))+'</div>'
+        +vehiculoLinea(res)
+        +'<div class="op-sub">Esta placa todavía no tiene ningún registro en el sistema: tu entrega se guardará marcada «sin recibo previo». <strong>Desde ahora cada operación empieza con un RECIBO.</strong></div>'
+        +'</div>'
+        +'<button type="button" class="btn-op" onclick="elegirOp(\'RECIBO\')"><b>No, voy a recibir el vehículo</b><span>Volver al recibo (inicio de operación).</span></button>'
+        +'<div style="height:12px"></div>'+avisoVeh+sinFlota;
+    } else if(OP==='RECIBO'){
+      h='<div class="op-card recibo"><div class="op-tag">Te toca · '+esc(subOp('RECIBO'))+'</div><div class="op-name">'+esc(nombreOp('RECIBO'))+'</div>'
+        +vehiculoLinea(res)
+        +'<div class="op-sub">Vas a recibir este vehículo para tu operación. <strong>Al terminarla debes hacer la ENTREGA</strong> en este mismo enlace.</div>'
+        +'</div>';
+      if(!res.abierta && !res.ultima){
+        h+='<button type="button" class="btn-op" onclick="elegirOp(\'ENTREGA\')"><b>Este vehículo ya estaba en operación</b><span>Es el primer registro de esta placa en el sistema y voy a ENTREGARLO (sin recibo previo).</span></button><div style="height:12px"></div>';
+      }
+      h+=avisoVeh+sinFlota;
+    }
+  }
+  box.innerHTML=h;
+  var chk=document.getElementById('chk-otro'); if(chk) chk.checked=confirmaOtroOk;
+}
+
+function urlPreop(extra){
+  var q=[];
+  if(BODEGA_ACTUAL) q.push('bodega='+encodeURIComponent(BODEGA_ACTUAL));
+  return ARCHIVO_PREOP+(q.length?('?'+q.join('&')):'');
+}
+
+// Textos que cambian según la inspección (recibo / entrega)
+function actualizarTextos(){
+  var op=OP;
+  var eb=function(id,txt){ var el=document.querySelector('#'+id+' .step-eyebrow'); if(el) el.textContent=txt; };
+  var suf=op?(' — '+nombreOp(op)):'';
+  for(var i=1;i<=TOTAL_PASOS;i++) eb('step'+i,'Paso '+i+' de '+TOTAL_PASOS+suf);
+  var set=function(id,txt){ var el=document.getElementById(id); if(el) el.textContent=txt; };
+  var ent=(op==='ENTREGA');
+  set('h-titulo', op?('Inspección de renting — '+nombreOp(op)):'Inspección de vehículo de renting');
+  set('s2-titulo', ent?'Estado del vehículo al entregarlo':'Estado del vehículo al recibirlo');
+  set('s2-sub', ent?'Marca qué elementos entregas con el vehículo y declara si hay daños nuevos.':'Marca qué elementos trae el vehículo y describe los daños que ya tiene.');
+  set('el-etiqueta', ent?'Elementos que entregas con el vehículo':'Elementos con los que recibes el vehículo');
+  set('dn-etiqueta', ent?'Daños o novedades de tu operación':'Daños o novedades al recibir');
+  set('s4-titulo', ent?'Video de entrega del vehículo':'Video de recibo del vehículo');
+  set('s4-sub', ent?'Graba 20 segundos mostrando el estado en que ENTREGAS el vehículo (recorre alrededor).':'Graba 20 segundos mostrando el estado en que RECIBES el vehículo (recorre alrededor).');
+  set('s5-sub', ent?'Confirma que los documentos del vehículo van a bordo y se entregan con él.':'Verifica que los documentos estén a bordo y vigentes. Los 3 campos de fecha son obligatorios.');
+  set('s6-sub', ent?'Revisa el resumen y firma para cerrar tu operación.':'Revisa el resumen y firma para registrar el recibo del vehículo.');
+  var df=document.getElementById('docs-fechas'); if(df) df.style.display=ent?'none':'block';
+  var fdn=document.getElementById('f-danos-nuevos'); if(fdn) fdn.style.display=ent?'block':'none';
+  var fd=document.getElementById('f-danos'); if(fd) fd.style.display=(ent && danosNuevos!=='si')?'none':'block';
+  var dl=document.getElementById('danos-label');
+  if(dl) dl.textContent=ent?'Describe los daños o novedades nuevos':'Daños o novedades que ya tiene el vehículo (rayones, golpes, faltantes)';
+  var dt=document.getElementById('rec-danos');
+  if(dt) dt.placeholder=ent?'Describe qué pasó y dónde está el daño...':"Describe cualquier daño o novedad que ya tenía el vehículo al recibirlo. Si no hay ninguno, escribe 'Ninguno'.";
+  var kh=document.getElementById('km-hint');
+  if(kh){
+    var rc=CONSULTA.res && CONSULTA.res.recibo, ul=CONSULTA.res && CONSULTA.res.ultima;
+    kh.textContent = (ent && rc && rc.km!=null) ? ('Al recibir marcaba '+fmtKm(rc.km)+' km. El odómetro no puede bajar.')
+                   : (!ent && ul && ul.km!=null) ? ('La última operación terminó en '+fmtKm(ul.km)+' km. El odómetro no puede bajar.') : '';
+  }
+  buildElementos();
+  actualizarDanosNuevosUI();
+  actualizarComparativo();
+}
+
+// ─── ELEMENTOS DEL VEHÍCULO (Sí / No) ───
+function buildElementos(){
+  var cont=document.getElementById('el-lista'); if(!cont) return;
+  var rc=CONSULTA.res && CONSULTA.res.recibo, prev=(OP==='ENTREGA' && rc && rc.elementos)?rc.elementos:null;
+  var html='';
+  ELEMENTOS.forEach(function(nombre,i){
+    var r=elResp[i]||'';
+    var cls='el-row'+(r==='si'?' si':r==='no'?' no':(mostrarErroresEl?' error':''));
+    var nota='';
+    if(prev && prev[nombre]!==undefined){
+      var tenia=prev[nombre]?true:false;
+      var falta=(tenia && r==='no');
+      nota='<div class="el-prev'+(falta?' falta':'')+'">'+(falta?'⚠️ FALTANTE — lo recibiste con el vehículo':('Al recibir: '+(tenia?'sí lo traía':'no lo traía')))+'</div>';
+    }
+    html+='<div class="'+cls+'" id="el-'+i+'"><div class="el-info"><div class="el-name">'+esc(nombre)+'</div>'+nota+'</div>'
+      +'<div class="el-btns" role="radiogroup" aria-label="'+esc(nombre)+'">'
+      +'<button type="button" class="el-btn'+(r==='si'?' sel-si':'')+'" role="radio" aria-checked="'+(r==='si')+'" onclick="responderElemento('+i+',\'si\')">Sí</button>'
+      +'<button type="button" class="el-btn'+(r==='no'?' sel-no':'')+'" role="radio" aria-checked="'+(r==='no')+'" onclick="responderElemento('+i+',\'no\')">No</button>'
+      +'</div></div>';
+  });
+  cont.innerHTML=html;
+}
+function responderElemento(i,v){
+  elResp[i]=v; buildElementos(); actualizarComparativo();
+}
+function elementosSinResponder(){
+  var f=[]; ELEMENTOS.forEach(function(n,i){ if(!elResp[i]) f.push(i); }); return f;
+}
+function elementosMarcados(){ return ELEMENTOS.filter(function(n,i){ return elResp[i]==='si'; }); }
+function elementosFaltantes(){ return ELEMENTOS.filter(function(n,i){ return elResp[i]==='no'; }); }
+// Elementos que se recibieron con el vehículo y ahora NO se entregan
+function faltantesVsRecibo(){
+  var rc=CONSULTA.res && CONSULTA.res.recibo; if(OP!=='ENTREGA' || !rc || !rc.elementos) return [];
+  return ELEMENTOS.filter(function(n,i){ return rc.elementos[n] && elResp[i]==='no'; });
+}
+
+function responderDanosNuevos(v){
+  danosNuevos=v; actualizarDanosNuevosUI();
+  var fd=document.getElementById('f-danos'); if(fd) fd.style.display=(OP==='ENTREGA' && v!=='si')?'none':'block';
+  actualizarComparativo();
+}
+function actualizarDanosNuevosUI(){
+  var n=document.getElementById('dn-no'), s=document.getElementById('dn-si');
+  if(n){ n.className='dn-btn'+(danosNuevos==='no'?' sel-no':''); n.setAttribute('aria-checked',danosNuevos==='no'?'true':'false'); }
+  if(s){ s.className='dn-btn'+(danosNuevos==='si'?' sel-si':''); s.setAttribute('aria-checked',danosNuevos==='si'?'true':'false'); }
+}
+
+// Comparativo con el recibo (solo en la entrega)
+function actualizarComparativo(){
+  var card=document.getElementById('cmp-card'), body=document.getElementById('cmp-body');
+  if(!card||!body) return;
+  var rc=CONSULTA.res && CONSULTA.res.recibo;
+  if(OP!=='ENTREGA' || !rc){ card.style.display='none'; return; }
+  card.style.display='block';
+  var fila=function(k,v,cls){ return '<div class="cmp-fila"><span class="k">'+esc(k)+'</span><span class="v'+(cls?' '+cls:'')+'">'+v+'</span></div>'; };
+  var h='';
+  h+=fila('Recibido', esc(fmtFechaHora(rc.ts))+' · '+esc(rc.conductor||'—')+(rc.esMio?' (tú)':''));
+  var kmAhora=parseFloat(document.getElementById('km').value);
+  if(rc.km!=null){
+    var rec=!isNaN(kmAhora)?(kmAhora-rc.km):null;
+    h+=fila('Kilometraje', esc(fmtKm(rc.km))+' → '+(!isNaN(kmAhora)?esc(fmtKm(kmAhora)):'—'), rec!==null && rec<0?'mal':'');
+    if(rec!==null) h+=fila('Recorrido de la operación', rec<0?'⚠️ el odómetro bajó':esc(fmtKm(rec))+' km', rec<0?'mal':'bien');
+  }
+  var combAhora=document.getElementById('rec-nivel-comb').value;
+  if(rc.combustible) h+=fila('Combustible', esc(rc.combustible)+' → '+(combAhora?esc(combAhora):'—'));
+  if(rc.limpieza) h+=fila('Limpieza al recibir', esc(rc.limpieza));
+  h+=fila('Daños al recibir', esc(rc.danos||(rc.manual?'(recibo registrado por el coordinador)':'Ninguno')));
+  var falt=faltantesVsRecibo();
+  if(falt.length) h+=fila('Faltantes', esc(falt.join(', ')), 'mal');
+  if(danosNuevos==='si') h+=fila('Daños nuevos', 'Sí — descríbelos abajo', 'mal');
+  if(rc.manual) h+='<div class="field-hint" style="margin-top:6px">El recibo de este vehículo lo registró el coordinador: no hay inventario anterior con qué comparar.</div>';
+  body.innerHTML=h;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESUMEN
+// ═══════════════════════════════════════════════════════════
+function buildResumen(){
+  var cond=document.getElementById('conductor').value;
+  var placa=placaVal();
+  var km=document.getElementById('km').value;
+  var turno=calcularTurno();
+  var ent=(OP==='ENTREGA');
+  var ro=document.getElementById('r-op');
+  ro.className='res-op '+(ent?'entrega':'recibo');
+  ro.textContent=(OP?nombreOp(OP)+' · '+subOp(OP):'Inspección');
+  document.getElementById('r-cond').textContent=cond;
+  document.getElementById('r-meta').textContent=placa+' · '+turno+' · Km '+fmtKm(km);
+  var falt=elementosFaltantes().length;
+  var docsFalla=states.d.filter(function(v){return v===2;}).length;
+  document.getElementById('r-ok').textContent=elementosMarcados().length;
+  document.getElementById('r-fail').textContent=falt;
+  document.getElementById('r-fotos').textContent=fotosData.filter(function(f){return f!==null;}).length;
+  document.getElementById('r-docs').textContent=docsFalla;
+  var l=[];
+  l.push('Combustible: <b>'+esc(document.getElementById('rec-nivel-comb').value||'—')+'</b>');
+  var rc=CONSULTA.res && CONSULTA.res.recibo;
+  if(ent && rc && rc.km!=null){
+    var rec=parseFloat(km)-rc.km;
+    l.push('Recorrido de la operación: <b>'+(isNaN(rec)?'—':rec<0?'⚠️ el odómetro bajó':fmtKm(rec)+' km')+'</b>');
+  }
+  var fvr=faltantesVsRecibo();
+  if(ent) l.push('Daños nuevos: <b>'+(danosNuevos==='si'?'Sí':'No')+'</b>');
+  l.push('Video: <b>'+(videoBlob?'grabado ✓':'—')+'</b>');
+  document.getElementById('r-lineas').innerHTML=l.join('<br>');
+  var al=document.getElementById('r-alert'), av=[];
+  if(ent && fvr.length) av.push('<div class="banner danger"><i class="ti ti-alert-circle"></i><span><strong>Faltan elementos que recibiste:</strong> '+esc(fvr.join(', '))+'. Se notificará al coordinador.</span></div>');
+  if(ent && danosNuevos==='si') av.push('<div class="banner danger"><i class="ti ti-alert-circle"></i><span><strong>Reportas daños nuevos.</strong> Se notificará al coordinador.</span></div>');
+  if(docsFalla>0) av.push('<div class="banner danger"><i class="ti ti-alert-circle"></i><span><strong>'+docsFalla+' documento'+(docsFalla>1?'s':'')+' con falla.</strong> Notificación al Jefe de Transporte.</span></div>');
+  if(!av.length) av.push('<div class="banner ok-b"><i class="ti ti-circle-check"></i><span><strong>Todo en orden.</strong> Sin faltantes ni novedades.</span></div>');
+  if(VERIF!=='ok') av.push('<div class="banner warn"><i class="ti ti-wifi-off"></i><span>No se pudo verificar el estado del vehículo antes de empezar: el sistema lo validará al enviar.</span></div>');
+  al.innerHTML=av.join('');
+  var fg=document.getElementById('fotos-resumen-grid');
+  fg.innerHTML='';
+  fotosData.forEach(function(f,i){
+    var div=document.createElement('div');
+    div.style.cssText='border-radius:6px;overflow:hidden;aspect-ratio:4/3;background:#000;position:relative;';
+    if(f){ div.innerHTML='<img src="'+f+'" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:9px;color:#fff;font-weight:700;padding:2px 4px;text-align:center">'+FOTO_SLOTS[i].label+'</div>'; }
+    else { div.style.background='var(--gray-1)'; div.style.display='flex'; div.style.alignItems='center'; div.style.justifyContent='center'; div.innerHTML='<span style="font-size:10px;color:var(--gray-5)">Sin foto</span>'; }
+    fg.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════════════════════════
+function nextStep(){
+  try{
+    if(!window.__fhdIniciado){ try{ iniciarApp(); }catch(e){ console.warn('iniciarApp desde nextStep:', e); } }
+    if(currentStep===1){
+      // El paso 1 necesita el estado del vehículo: si todavía no se consultó (o la placa/cédula
+      // cambiaron) se consulta ahora y se continúa cuando responda.
+      if(!validarCamposPaso1()) return;
+      var clave=claveActual();
+      if((CONSULTA.estado==='ok' || CONSULTA.estado==='no-flota' || CONSULTA.estado==='script-viejo') && CONSULTA.clave===clave){ continuarPaso1(); return; }
+      if(CONSULTA.estado==='error' && CONSULTA.clave===clave){ continuarPaso1(); return; }
+      if(CONSULTA.estado==='local'){ continuarPaso1(); return; }
+      mostrarSaving('Verificando el vehículo…');
+      consultarEstado(function(){ ocultarSaving(); continuarPaso1(); });
+      return;
+    }
+    if(!validateStep()) return;
+    if(currentStep===PASO_FINAL){ submitForm(); return; }
+    currentStep++;
+    if(currentStep===3 && !gpsReady) initGPS(); // GPS obligatorio al llegar a fotos
+    if(currentStep===PASO_FINAL) buildResumen();
+    showStep();
+  }catch(err){
+    alert('⚠️ Ocurrió un error técnico al intentar continuar:\n\n'+(err&&err.message?err.message:err)+'\n\nPor favor toma una captura de este mensaje completo y compártela para poder corregirlo.');
+    console.error('Error en nextStep (paso '+currentStep+'):', err);
+  }
+}
+function mostrarSaving(txt){ var s=document.getElementById('saving'); document.getElementById('saving-txt').textContent=txt; s.classList.add('active'); }
+function ocultarSaving(){ document.getElementById('saving').classList.remove('active'); }
+function prevStep(){ if(currentStep>1){ currentStep--; showStep(); } }
+function actualizarIndicadorPasos(){
+  document.getElementById('sfill').style.width=(currentStep/TOTAL_PASOS*100)+'%';
+}
+function showStep(){
+  for(var i=1;i<=TOTAL_PASOS;i++){
+    document.getElementById('step'+i).classList.toggle('active',i===currentStep);
+    document.getElementById('sl'+i).classList.toggle('active',i<=currentStep);
+  }
+  actualizarIndicadorPasos();
+  document.getElementById('bbk').style.display=currentStep>1?'flex':'none';
+  document.getElementById('bnx').innerHTML=currentStep===PASO_FINAL?'<i class="ti ti-send"></i> Enviar inspección':'Continuar <i class="ti ti-arrow-right"></i>';
+  if(currentStep===2){ buildElementos(); actualizarComparativo(); }
+  window.scrollTo(0,0);
+}
+
+// Campos obligatorios del paso 1 (no depende de la red)
+function validarCamposPaso1(){
+  var ok=true, faltan=[];
+  var etiquetas={conductor:'Nombre completo',cedula:'Cédula',placa:'Placa del vehículo',km:'Kilómetros del odómetro','tipo-vehiculo':'Tipología de vehículo','rec-nivel-comb':'Nivel de combustible'};
+  var campoFila={conductor:'f-conductor',cedula:'f-cedula',placa:'f-placa',km:'f-km','tipo-vehiculo':'f-tipo-vehiculo','rec-nivel-comb':'f-comb'};
+  ['conductor','cedula','placa','km','tipo-vehiculo','rec-nivel-comb'].forEach(function(id){
+    var el=document.getElementById(id), fi=document.getElementById(campoFila[id]);
+    if(!el.value.trim()){ if(fi) fi.classList.add('error'); ok=false; faltan.push(etiquetas[id]); }
+    else if(fi){ fi.classList.remove('error'); }
+  });
+  var cedulaV=document.getElementById('cedula').value.trim();
+  if(cedulaV && cedulaV.replace(/\D/g,'').length<5){ document.getElementById('f-cedula').classList.add('error'); alert('Ingresa un número de cédula válido.'); return false; }
+  var placaV=document.getElementById('placa').value.trim();
+  if(placaV && placaV.length<5){ document.getElementById('f-placa').classList.add('error'); alert('La placa debe tener el formato ABC123.'); return false; }
+  var nombreV=document.getElementById('conductor').value.trim();
+  if(nombreV && nombreV.split(' ').length<2){ document.getElementById('f-conductor').classList.add('error'); alert('Escribe tu nombre completo (nombre y apellido).'); return false; }
+  if(!ok){ alert('Faltan estos campos obligatorios:\n\n• '+faltan.join('\n• ')+'\n\nCompletalos para poder continuar.'); return false; }
+  return true;
+}
+
+// Segunda parte del paso 1: ya se conoce (o no se pudo conocer) el estado del vehículo
+function continuarPaso1(){
+  var e=CONSULTA.estado, res=CONSULTA.res;
+  if(e==='no-flota'){ alert('La placa '+placaVal()+' no está en la flota de renting.\n\nRevisa la placa. Si es correcta, avisa a tu coordinador para que registre el vehículo en el panel.'); return; }
+  if(e==='script-viejo'){ alert('El sistema no está actualizado (falta el script v18 de Google). Avisa a tu coordinador: no se puede registrar la inspección todavía.'); return; }
+  if(e==='error' && !OP){ alert('No se pudo verificar el estado del vehículo.\n\nVuelve a intentarlo (botón «Reintentar») o elige la inspección que vas a hacer: Recibo o Entrega.'); return; }
+  if(e==='local' && !OP){ alert('Elige la inspección que vas a hacer: Recibo o Entrega.'); return; }
+  if(!OP){ alert('Elige qué vas a hacer con este vehículo: «Entrego el vehículo» o «Recibo el vehículo».'); return; }
+  var rc=res && res.recibo;
+  if(OP==='ENTREGA' && rc && rc.esMio===false && !confirmaOtroOk){
+    alert('Este vehículo lo recibió '+(rc.conductor||'otro conductor')+'.\n\nSi lo estás entregando tú, marca la casilla de confirmación para continuar.');
+    return;
+  }
+  // El odómetro nunca debe bajar: se avisa, pero no se bloquea (un error de digitación anterior no puede dejar el vehículo parado)
+  var kmV=parseFloat(document.getElementById('km').value);
+  var kmRef=null, refTxt='';
+  if(OP==='ENTREGA' && rc && rc.km!=null){ kmRef=rc.km; refTxt='el del recibo'; }
+  else if(OP==='RECIBO' && res && res.ultima && res.ultima.km!=null){ kmRef=res.ultima.km; refTxt='el de la última operación'; }
+  if(kmRef!==null && !isNaN(kmV) && kmV<kmRef){
+    if(!confirm('⚠️ El kilometraje que escribiste ('+fmtKm(kmV)+') es MENOR que '+refTxt+' ('+fmtKm(kmRef)+').\n\nEl odómetro no puede bajar. ¿Confirmas que el odómetro marca '+fmtKm(kmV)+'? Si te equivocaste al escribir, toca Cancelar y corrígelo.')) return;
+  }
+  bloquearIdentidad(true);
+  currentStep=2;
+  showStep();
+}
+
+// Una vez que el conductor pasó del paso 1, la placa y la cédula ya no se cambian: así las fotos, el
+// video y el registro son del mismo vehículo. Para cambiar de vehículo se empieza de nuevo.
+function bloquearIdentidad(bloquear){
+  var p=document.getElementById('placa'), c=document.getElementById('cedula');
+  if(p) p.readOnly=bloquear;
+  if(c) c.readOnly=bloquear;
+  var av=document.getElementById('id-bloqueada'); if(av) av.style.display=bloquear?'flex':'none';
+}
+function empezarDeNuevo(){
+  if(confirm('Se borrará lo que ya capturaste (elementos, fotos y video) y empezarás desde cero con otro vehículo. ¿Continuar?')) location.reload();
+}
+
+function validateStep(){
+  if(currentStep===2){
+    var faltan=elementosSinResponder();
+    if(faltan.length){
+      mostrarErroresEl=true; buildElementos();
+      alert('Debes responder Sí o No en TODOS los elementos del vehículo. Faltan '+faltan.length+' por responder.');
+      var prim=document.getElementById('el-'+faltan[0]); if(prim && prim.scrollIntoView) prim.scrollIntoView({block:'center'});
+      return false;
+    }
+    var ent=(OP==='ENTREGA');
+    var txt=document.getElementById('rec-danos').value.trim();
+    if(ent){
+      if(!danosNuevos){
+        document.getElementById('f-danos-nuevos').classList.add('error');
+        alert('Indica si hay daños o novedades NUEVOS de tu operación (Sí o No).');
+        return false;
+      }
+      document.getElementById('f-danos-nuevos').classList.remove('error');
+      if(danosNuevos==='si' && txt.length<5){
+        document.getElementById('f-danos').classList.add('error');
+        alert('Describe los daños o novedades nuevos (mínimo unas palabras).');
+        return false;
+      }
+      document.getElementById('f-danos').classList.remove('error');
+      var fv=faltantesVsRecibo();
+      if(fv.length && !confirm('🚨 FALTAN ELEMENTOS QUE RECIBISTE CON EL VEHÍCULO\n\n• '+fv.join('\n• ')+'\n\nSe notificará al coordinador. ¿Confirmas que NO se entregan con el vehículo?')) return false;
+    } else {
+      if(txt.length<3){
+        document.getElementById('f-danos').classList.add('error');
+        alert("Describe los daños o novedades que ya tiene el vehículo. Si no hay ninguno, escribe 'Ninguno'.");
+        return false;
+      }
+      document.getElementById('f-danos').classList.remove('error');
+    }
+    return true;
+  }
+  if(currentStep===3){
+    var captured=fotosData.filter(function(f){return f!==null;}).length;
+    if(captured<FOTOS_REQUERIDAS){
+      alert('Debes tomar las '+FOTOS_REQUERIDAS+' fotos obligatorias del vehículo antes de continuar. Faltan '+(FOTOS_REQUERIDAS-captured)+'.');
+      return false;
+    }
+    return true;
+  }
+  if(currentStep===4){
+    if(!videoBlob){ alert('Debes grabar el video obligatorio del vehículo antes de continuar.'); return false; }
+    return true;
+  }
+  if(currentStep===5){
+    if(OP==='RECIBO'){
+      var ok5=true;
+      [['doc-soat','f-doc-soat'],['doc-rtm','f-doc-rtm'],['doc-lic','f-doc-lic']].forEach(function(pair){
+        var el=document.getElementById(pair[0]), fi=document.getElementById(pair[1]);
+        if(!el.value){ fi.classList.add('error'); ok5=false; } else { fi.classList.remove('error'); }
+      });
+      if(!ok5){ alert('Debes indicar las 3 fechas de vencimiento: SOAT, Tecno-mecánica y Licencia de conducción. Son obligatorias para completar el recibo.'); return false; }
+    }
+    var pendD=states.d.filter(function(v){return v===0;}).length;
+    if(pendD>0){ alert('Debes revisar TODOS los ítems de Documentos antes de continuar. Faltan '+pendD+' por marcar (✓ Bien o ✗ Falla).'); return false; }
+    var fallasD=states.d.map(function(v,i){return v===2?DOC_ITEMS[i].name:null;}).filter(Boolean);
+    if(fallasD.length>0){
+      var confirmaD=confirm('🚨 VEHÍCULO NO APTO PARA OPERAR\n\nDocumento(s) esencial(es) con falla:\n• '+fallasD.join('\n• ')+'\n\nEsto debe reportarse de inmediato a tu coordinador de transporte.\n\n¿Confirmas que darás aviso a tu coordinador y continuarás solo para dejar constancia de la novedad?');
+      if(!confirmaD) return false;
+    }
+    return true;
+  }
+  if(currentStep===PASO_FINAL && !firmaSigned){ alert('Por favor firma la inspección antes de enviar.'); return false; }
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ENVÍO
+// ═══════════════════════════════════════════════════════════
+function saveToStorage(record){
+  try{
+    var ex=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+    ex.unshift(record);
+    if(ex.length>100)ex=ex.slice(0,100);
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(ex));
+    return true;
+  }catch(e){return false;}
+}
+
+var _envioEnCurso=false;
+function liberarEnvio(){
+  _envioEnCurso=false;
+  var b=document.getElementById('bnx'); if(b){ b.disabled=false; b.style.opacity=''; b.style.pointerEvents=''; }
+}
+function submitForm(){
+  // Protección contra envíos duplicados: si el conductor toca el botón varias veces
+  // mientras sube, el segundo toque se ignora mientras el primero sigue en curso.
+  if(_envioEnCurso) return;
+  _envioEnCurso=true;
+  var btnFinal=document.getElementById('bnx');
+  if(btnFinal){ btnFinal.disabled=true; btnFinal.style.opacity='.6'; btnFinal.style.pointerEvents='none'; }
+  mostrarSaving('Verificando que la inspección todavía corresponda…');
+  if(!API_URL){ prepararYEnviar(); return; }
+  // Antes de subir fotos y video se confirma que el estado del vehículo no cambió (otro conductor
+  // pudo recibirlo o entregarlo mientras tanto): así no se suben archivos que el sistema va a rechazar.
+  pedirEstado(placaVal(), cedulaVal(), 2, function(err, res){
+    if(!err && versionScriptOk(res) && res.renting!==false){
+      VERIF='ok'; // el estado se acaba de verificar con el sistema
+      var esperada = res.abierta ? 'ENTREGA' : 'RECIBO';
+      var vencida = res.abierta && res.recibo && res.recibo.vencida;
+      var primeraVez = (!res.abierta && !res.ultima && OP==='ENTREGA'); // entrega sin recibo previo (placa sin historial)
+      if(!vencida && !primeraVez && esperada!==OP){
+        ocultarSaving(); liberarEnvio();
+        mostrarRechazo({rechazo:OP==='RECIBO'?'RECIBO_ABIERTO':'SIN_RECIBO', error:OP==='RECIBO'
+          ? 'El vehículo '+placaVal()+' ya figura recibido y todavía no se ha entregado. Primero debe registrarse su ENTREGA.'
+          : 'El vehículo '+placaVal()+' ya no tiene un recibo abierto (alguien más pudo haberlo entregado). Primero debe registrarse el RECIBO.'});
+        return;
+      }
+    }
+    // si no se pudo consultar, se continúa: el script valida de todas formas al guardar
+    prepararYEnviar();
+  });
+}
+
+function mostrarRechazo(res){
+  var titulos={RECIBO_ABIERTO:'El vehículo ya está recibido',SIN_RECIBO:'No hay un recibo abierto',PLACA_NO_RENTING:'Placa fuera de la flota de renting',DATOS:'Faltan datos'};
+  document.getElementById('rech-t').textContent=titulos[res.rechazo]||'El sistema no aceptó la inspección';
+  document.getElementById('rech-m').textContent=res.error||'La inspección no corresponde al estado actual del vehículo.';
+  document.querySelector('.header').style.display='none';
+  document.querySelector('.stepper').style.display='none';
+  document.getElementById('bbar').style.display='none';
+  for(var i=1;i<=TOTAL_PASOS;i++) document.getElementById('step'+i).style.display='none';
+  document.getElementById('success').classList.remove('active');
+  document.getElementById('rechazo').classList.add('active');
+  document.getElementById('rechazo').style.display='flex';
+  window.scrollTo(0,0);
+}
+
+function prepararYEnviar(){
+  mostrarSaving('Guardando registro y fotos...');
+  var ent=(OP==='ENTREGA');
+  var cond  =document.getElementById('conductor').value;
+  var cedula=document.getElementById('cedula').value.trim();
+  var placa =document.getElementById('placa').value.trim();
+  var km    =document.getElementById('km').value;
+  var turno =calcularTurno();
+  var fecha =document.getElementById('fecha').value;
+  var obs   =document.getElementById('obs').value;
+  var firmaData = firmaSigned ? document.getElementById('fcanvas').toDataURL('image/png') : null;
+
+  // Los documentos VENCIDOS se cuentan como fallas reales (igual que en el preoperacional diario)
+  function diasHastaVal(fechaStr){
+    if(!fechaStr) return null;
+    var d=new Date(fechaStr+'T00:00:00');
+    if(isNaN(d.getTime())) return null;
+    return Math.ceil((d-new Date())/(1000*60*60*24));
+  }
+  var docsVencidosNombres=[];
+  if(!ent){
+    [['SOAT',document.getElementById('doc-soat').value,0],
+     ['Tecno-mecánica (RTM)',document.getElementById('doc-rtm').value,1],
+     ['Licencia de conducción',document.getElementById('doc-lic').value,3]].forEach(function(trio){
+      var dias=diasHastaVal(trio[1]);
+      if(dias!==null && dias<0){
+        docsVencidosNombres.push(trio[0]+' (vencido hace '+Math.abs(dias)+' días)');
+        states.d[trio[2]]=2;
+      }
+    });
+  }
+  var obsDocsVenc = docsVencidosNombres.length>0 ? '⚠️ DOCUMENTOS VENCIDOS: '+docsVencidosNombres.join(', ')+'.' : '';
+
+  var all    =states.d.slice();
+  var okCnt  =all.filter(function(v){return v===1;}).length;
+  var failCnt=all.filter(function(v){return v===2;}).length;
+  var pendCnt=all.filter(function(v){return v===0;}).length;
+  var code   ='FHD-'+(BODEGA_ABREV?BODEGA_ABREV+'-':'')+Date.now().toString(36).toUpperCase().slice(-6);
+
+  var ITEMS_ALL=DOC_ITEMS.map(function(x,i){return{name:x.name,grupo:'Documentos',estado:states.d[i],nota:notesTxt.d[i]};});
+
+  var dictElem={}; ELEMENTOS.forEach(function(n,i){ dictElem[n]=(elResp[i]==='si')?1:0; });
+  var danosTxt=document.getElementById('rec-danos').value.trim();
+  var danosFinal = ent ? (danosNuevos==='si'?danosTxt:'Ninguno nuevo') : danosTxt;
+  var combustible=document.getElementById('rec-nivel-comb').value;
+  var tipoOpTxt = ent ? 'Finalización operación' : 'Inicio operación';
+
+  var record={
+    id:code, timestamp:new Date().toISOString(), fecha:fecha,
+    conductor:cond, cedula:cedula, placa:placa, turno:turno, km:km,
+    ok:okCnt, fallas:failCnt, pendientes:pendCnt,
+    observaciones:'', items:ITEMS_ALL,
+    estado:failCnt>0?'falla':pendCnt>0?'incompleto':'ok',
+    esRecepcion:true, // el panel reconoce las inspecciones de renting por este encabezado/ bandera
+    fotos:fotosData.map(function(f,i){return{idx:i,label:FOTO_SLOTS[i].label,data:f};}),
+    gps:gpsData,
+    docs: ent ? {soatVence:'',rtmVence:'',licVence:''} : { soatVence:document.getElementById('doc-soat').value, rtmVence:document.getElementById('doc-rtm').value, licVence:document.getElementById('doc-lic').value },
+    limpieza:document.getElementById('limpieza').value,
+    ultMant:{ fecha:'', tipo:'' },
+    bodega: BODEGA_ACTUAL,
+    tipoVehiculo: document.getElementById('tipo-vehiculo').value,
+    aptitud: null, // la inspección de renting no pregunta la aptitud del conductor
+    firma: firmaData,
+    recepcion:{
+      tipoOperacion:tipoOpTxt, kmEntrega:km, nivelCombustible:combustible,
+      elementos:elementosMarcados(), danosPreexistentes:danosFinal
+    },
+    renting:{
+      op:OP, combustible:combustible, elementos:dictElem, danos:danosFinal,
+      verif:(VERIF==='ok'?'ok':'sin-respuesta')
+    }
+  };
+  if(ent) record.renting.danosNuevos=(danosNuevos==='si');
+
+  var rc=CONSULTA.res && CONSULTA.res.recibo;
+  var faltV=faltantesVsRecibo();
+  var resumenTxt='🏢 VEHÍCULO DE FALABELLA.COM — '+(ent?'ENTREGA (FIN DE OPERACIÓN)':'RECIBO (INICIO DE OPERACIÓN)')+'\n'
+    +'Km del odómetro: '+(km||'—')+'\n'
+    +'Nivel de combustible: '+(combustible||'—')+'\n'
+    +'Elementos: '+(elementosMarcados().length?'con '+elementosMarcados().join(', '):'ninguno')+(elementosFaltantes().length?'; SIN: '+elementosFaltantes().join(', '):'')+'\n'
+    +(ent?('Daños/novedades nuevos: '+(danosNuevos==='si'?danosTxt:'Ninguno')):('Daños/novedades preexistentes: '+(danosTxt||'Ninguno registrado')));
+  if(ent && rc && rc.km!=null){ var recorrido=parseFloat(km)-rc.km; if(!isNaN(recorrido)) resumenTxt+='\nRecorrido de la operación: '+(recorrido<0?'odómetro menor al del recibo':recorrido+' km'); }
+  if(faltV.length) resumenTxt+='\n🚨 FALTANTES respecto al recibo: '+faltV.join(', ')+'.';
+  record.observaciones=resumenTxt+(obsDocsVenc?'\n\n'+obsDocsVenc:'')+(obs?'\n\n'+obs:'');
+
+  function finishOk(online, errorDetail){
+    ocultarSaving();
+    document.querySelector('.header').style.display='none';
+    document.querySelector('.stepper').style.display='none';
+    document.getElementById('bbar').style.display='none';
+    for(var i=1;i<=TOTAL_PASOS;i++) document.getElementById('step'+i).style.display='none';
+    document.getElementById('scode').textContent=code;
+    document.getElementById('smeta').textContent=cond+' · '+placa+' · '+turno+' · '+nombreOp(OP);
+    document.getElementById('ok-titulo').textContent=ent?'¡Entrega registrada!':'¡Recibo registrado!';
+    document.getElementById('ok-sub').textContent=ent?'La entrega y las 6 fotos fueron registradas. Tu operación con este vehículo quedó cerrada.':'El recibo y las 6 fotos fueron registrados. Ya puedes hacer tu preoperacional diario.';
+    var sig=document.getElementById('ok-siguiente');
+    sig.innerHTML = ent
+      ? '<div style="font-size:11px;font-weight:700;color:var(--green-d);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Operación cerrada</div><div style="font-size:13px;color:var(--gray-7);line-height:1.7">✓ El vehículo '+esc(placa)+' queda disponible para el siguiente conductor<br>✓ Cualquier faltante o daño que reportaste le llegó al coordinador</div>'
+      : '<div style="font-size:11px;font-weight:700;color:var(--green-d);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Siguiente paso</div><div style="font-size:13px;color:var(--gray-7);line-height:1.7">1. Haz tu <strong>preoperacional diario</strong> (botón de abajo)<br>2. Al terminar tu operación, vuelve a este mismo enlace y haz la <strong>ENTREGA</strong> del vehículo</div>';
+    if(!online){
+      document.getElementById('ok-sub').innerHTML=
+        '<div style="background:#FDECEA;border:2px solid #DC2626;border-radius:10px;padding:14px;margin-top:10px;text-align:left">'
+        +'<div style="font-weight:800;color:#991B1B;font-size:15px;margin-bottom:6px">⚠️ ESTA INSPECCIÓN NO LLEGÓ AL PANEL</div>'
+        +'<div style="color:#7F1D1D;font-size:13px;line-height:1.5">Quedó guardada <strong>solo en este celular</strong>, no en el sistema oficial. '
+        +'Avisa de inmediato a tu coordinador y, si puedes, vuelve a intentar el envío con mejor señal de internet.</div>'
+        +(errorDetail?'<div style="margin-top:8px;font-size:10px;color:#991B1B;font-family:monospace;word-break:break-all">Detalle técnico: '+esc(errorDetail)+'</div>':'')
+        +'</div>';
+    }
+    var btnPreop=document.getElementById('btn-ir-preop');
+    if(btnPreop) btnPreop.style.display=(!ent && online)?'block':'none';
+    if(!ent && online){
+      // Para no volver a escribir nombre, cédula y placa en el preoperacional diario
+      try{ localStorage.setItem('fhd_handoff_preop', JSON.stringify({n:cond, c:cedula, p:placa, t:Date.now()})); }catch(e){}
+    }
+    var sf=document.getElementById('success-fotos');
+    sf.innerHTML='';
+    fotosData.forEach(function(f){
+      if(!f) return;
+      var d=document.createElement('div');
+      d.style.cssText='border-radius:6px;overflow:hidden;aspect-ratio:4/3;';
+      d.innerHTML='<img src="'+f+'" style="width:100%;height:100%;object-fit:cover">';
+      sf.appendChild(d);
+    });
+    document.getElementById('success').classList.add('active');
+    document.getElementById('success').style.display='flex';
+  }
+
+  if(API_URL){
+    // ── ENVÍO POR PARTES (igual que el preoperacional): cada archivo se sube POR SEPARADO con su
+    // propio reintento; al final se manda un registro pequeño (solo texto) con las URLs ya subidas.
+    mostrarSaving('Subiendo fotos...');
+    var barTrack=document.getElementById('saving-bar-track');
+    var barFill=document.getElementById('saving-bar-fill');
+    var pctTxt=document.getElementById('saving-pct');
+    if(barTrack){barTrack.style.display='block';}
+    if(pctTxt){pctTxt.style.display='block';}
+
+    var subirUnArchivo=function(tipo, indice, contenidoBase64){
+      return new Promise(function(resolve, reject){
+        var intento=0, MAX=6;
+        function intentar(){
+          intento++;
+          var xhrA=new XMLHttpRequest();
+          xhrA.open('POST', API_URL, true);
+          xhrA.setRequestHeader('Content-Type','text/plain;charset=utf-8');
+          xhrA.timeout = tipo==='video' ? 90000 : 45000; // el video pesa más, se le da más tiempo
+          xhrA.onload=function(){
+            if(xhrA.status<200||xhrA.status>=300){ reintentarOFallar(); return; }
+            try{
+              var res=JSON.parse(xhrA.responseText);
+              if(res && res.ok && res.url){ resolve(res.url); }
+              else { reintentarOFallar(); }
+            }catch(e){ reintentarOFallar(); }
+          };
+          xhrA.onerror=function(){ reintentarOFallar(); };
+          xhrA.ontimeout=function(){ reintentarOFallar(); };
+          function reintentarOFallar(){
+            if(intento<MAX){ setTimeout(intentar, 1000*intento); } // espera creciente
+            else { reject(new Error('No se pudo subir '+(tipo==='firma'?'la firma':tipo==='video'?'el video':'la foto '+(indice+1)))); }
+          }
+          xhrA.send(JSON.stringify({action:'uploadArchivo', tipo:tipo, indice:indice, id:code, contenido:contenidoBase64}));
+        }
+        intentar();
+      });
+    };
+
+    var archivosAPendientes=[];
+    fotosData.forEach(function(f,i){ if(f) archivosAPendientes.push({tipo:'foto', indice:i, data:f}); });
+    if(firmaData) archivosAPendientes.push({tipo:'firma', indice:undefined, data:firmaData});
+    var videoParaSubir = videoBlob;
+    var totalArchivos=archivosAPendientes.length + (videoParaSubir?1:0);
+    var subidosCount=0;
+    var fotoUrlsFinal=new Array(FOTOS_REQUERIDAS).fill('');
+    var firmaUrlFinal='';
+    var videoUrlFinal='';
+
+    var actualizarBarra=function(){
+      subidosCount++;
+      var pct=totalArchivos>0?Math.round((subidosCount/totalArchivos)*100):100;
+      if(barFill) barFill.style.width=pct+'%';
+      if(pctTxt) pctTxt.textContent=pct+'%';
+      document.getElementById('saving-txt').textContent='Subiendo archivo '+subidosCount+' de '+totalArchivos+'...';
+    };
+
+    var cadenaSubidas=Promise.resolve();
+    archivosAPendientes.forEach(function(item){
+      cadenaSubidas=cadenaSubidas.then(function(){
+        return subirUnArchivo(item.tipo, item.indice, item.data).then(function(url){
+          if(item.tipo==='firma'){ firmaUrlFinal=url; } else { fotoUrlsFinal[item.indice]=url; }
+          actualizarBarra();
+        });
+      });
+    });
+    // El video (el archivo más pesado) va al final: si algo falla, ya se alcanzaron a guardar fotos y firma.
+    if(videoParaSubir){
+      cadenaSubidas=cadenaSubidas.then(function(){
+        document.getElementById('saving-txt').textContent='Preparando video...';
+        return new Promise(function(resolve,reject){
+          var lector=new FileReader();
+          lector.onload=function(){ resolve(lector.result); };
+          lector.onerror=function(){ reject(new Error('No se pudo leer el video grabado')); };
+          lector.readAsDataURL(videoParaSubir);
+        });
+      }).then(function(videoBase64){
+        return subirUnArchivo('video', undefined, videoBase64).then(function(url){
+          videoUrlFinal=url;
+          actualizarBarra();
+        });
+      });
+    }
+
+    cadenaSubidas.then(function(){
+      document.getElementById('saving-txt').textContent='Guardando registro final...';
+      record.fotoUrls=fotoUrlsFinal;
+      record.firmaUrl=firmaUrlFinal;
+      record.videoUrl=videoUrlFinal;
+      delete record.fotos;
+      delete record.firma;
+      enviarRegistroFinal();
+    }).catch(function(err){
+      var backup=JSON.parse(JSON.stringify(record));
+      backup.fotos=[];
+      saveToStorage(backup);
+      finishOk(false, String(err&&err.message?err.message:err));
+    });
+
+    var enviarRegistroFinal=function(){
+      var intentoFinal=0, MAX_FINAL=4;
+      function intentarFinal(){
+        intentoFinal++;
+        var xhrF=new XMLHttpRequest();
+        xhrF.open('POST', API_URL, true);
+        xhrF.setRequestHeader('Content-Type','text/plain;charset=utf-8');
+        xhrF.timeout=30000;
+        xhrF.onload=function(){
+          if(xhrF.status<200||xhrF.status>=300){ reintentarFinalOFallar('Servidor respondió '+xhrF.status); return; }
+          var res=null;
+          try{ res=JSON.parse(xhrF.responseText); }catch(err2){ reintentarFinalOFallar('Respuesta inválida'); return; }
+          if(res && res.ok){ finishOk(true); return; }
+          if(res && res.rechazo){
+            // El sistema respondió, pero NO acepta esta inspección (secuencia, placa…): no se reintenta
+            // ni se guarda en el celular, porque volver a mandarla recibiría la misma respuesta.
+            ocultarSaving(); liberarEnvio(); mostrarRechazo(res); return;
+          }
+          reintentarFinalOFallar(res && res.error ? String(res.error) : 'Respuesta inválida');
+        };
+        xhrF.onerror=function(){ reintentarFinalOFallar('Conexión interrumpida'); };
+        xhrF.ontimeout=function(){ reintentarFinalOFallar('Tiempo de espera agotado'); };
+        function reintentarFinalOFallar(detalle){
+          if(intentoFinal<MAX_FINAL){
+            document.getElementById('saving-txt').textContent='Reintentando guardar ('+(intentoFinal+1)+'/'+MAX_FINAL+')...';
+            setTimeout(intentarFinal, 1000*intentoFinal);
+          } else {
+            var backup=JSON.parse(JSON.stringify(record));
+            saveToStorage(backup); // aquí ya no hay fotos en base64, es liviano igual
+            finishOk(false, detalle+' — después de '+MAX_FINAL+' intentos (fotos ya guardadas en Drive)');
+          }
+        }
+        xhrF.send(JSON.stringify(record));
+      }
+      intentarFinal();
+    };
+  } else {
+    // Modo local (sin Google Sheets configurado)
+    saveToStorage(record);
+    setTimeout(function(){ finishOk(true); },1500);
+  }
+}
+
+// Pasa al preoperacional diario (con nombre, cédula y placa ya escritos)
+function irAPreoperacional(){ window.location.href=urlPreop(); }
+
+// ─── SELECTOR DE FECHA FÁCIL (Día / Mes / Año) ───
+// Reemplaza el calendario nativo para SOAT/RTM/Licencia — elegir un año
+// varios años adelante en el calendario nativo del celular es lento
+// (hay que darle "siguiente mes" decenas de veces). Con 3 desplegables
+// simples se llega directo al año real sin tanto esfuerzo.
+
+var MESES_ES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+function construirSelectoresFecha(){
+  var hoy=new Date();
+  var anioActual=hoy.getFullYear();
+  ['doc-soat','doc-rtm','doc-lic'].forEach(function(prefix){
+    var selDia=document.getElementById(prefix+'-dia');
+    var selMes=document.getElementById(prefix+'-mes');
+    var selAnio=document.getElementById(prefix+'-anio');
+    if(!selDia||!selMes||!selAnio) return;
+    selDia.innerHTML='<option value="">Día</option>';
+    for(var d=1;d<=31;d++){ selDia.innerHTML+='<option value="'+d+'">'+d+'</option>'; }
+    selMes.innerHTML='<option value="">Mes</option>';
+    MESES_ES.forEach(function(m,i){ selMes.innerHTML+='<option value="'+(i+1)+'">'+m+'</option>'; });
+    // Rango de años: 2 atrás (para documentos ya vencidos) hasta 15
+    // adelante (licencias u otros documentos de larga vigencia).
+    selAnio.innerHTML='<option value="">Año</option>';
+    for(var y=anioActual-2;y<=anioActual+15;y++){ selAnio.innerHTML+='<option value="'+y+'">'+y+'</option>'; }
+  });
+}
+function syncFechaTriple(prefix){
+  var dia=document.getElementById(prefix+'-dia').value;
+  var mes=document.getElementById(prefix+'-mes').value;
+  var anio=document.getElementById(prefix+'-anio').value;
+  var hidden=document.getElementById(prefix);
+  if(dia && mes && anio){
+    hidden.value = anio+'-'+String(mes).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
+  } else {
+    hidden.value = '';
+  }
+  var alertId = 'alert-'+prefix.replace('doc-','');
+  checkDocVencimiento(prefix, alertId);
+}
+// Turno calculado automáticamente por la hora real del envío (hora
+// Colombia) — ya no se le pregunta al conductor, se infiere solo.
+// Horarios de la operación (cada turno incluye 1 h de receso = 7 h efectivas):
+//   Mañana 05:00–13:00 · Tarde 13:00–21:00 · Noche 22:00–06:00.
+// El preoperacional se hace al llegar, antes de arrancar, así que cada turno se
+// toma desde 1 h antes de su inicio: Mañana 04:00–11:59 · Tarde 12:00–20:59 · Noche 21:00–03:59.
+
+function calcularTurno(){
+  var hora = new Intl.DateTimeFormat('en-US',{timeZone:'America/Bogota',hour:'2-digit',hour12:false}).format(new Date());
+  var h = parseInt(hora,10) % 24; // algunos navegadores devuelven "24" a medianoche
+  if(h>=4 && h<12) return 'Mañana';
+  if(h>=12 && h<21) return 'Tarde';
+  return 'Noche';
+}
+function checkDocVencimiento(inputId, alertId){
+  var val=document.getElementById(inputId).value;
+  var box=document.getElementById(alertId);
+  if(!val){ box.style.display='none'; return; }
+  var venc=new Date(val+'T00:00:00');
+  var hoy=new Date();
+  var dias=Math.ceil((venc-hoy)/(1000*60*60*24));
+  var unAnio=365;
+  box.style.display='flex';
+  // Mapa de campo de fecha -> índice en el checklist de Documentos (states.d)
+  // 0=SOAT, 1=Tecno-mecánica(RTM), 3=Licencia. Índice 2 (Tarjeta de
+  // propiedad) no tiene fecha asociada, no se toca.
+  var idxChecklist = {'doc-soat':0, 'doc-rtm':1, 'doc-lic':3}[inputId];
+  if(dias<0){
+    box.className='doc-alert danger';
+    box.innerHTML='<i class="ti ti-alert-circle" style="font-size:16px;flex-shrink:0"></i><span>Este documento está <strong>vencido</strong>. Informa a tu coordinador antes de operar el vehículo.</span>';
+    // El documento está vencido de verdad — se fuerza el ítem del checklist
+    // a "Falla" (✗) automáticamente, sin importar lo que el conductor haya
+    // marcado antes. Esto evita que un documento vencido quede mostrando
+    // un chulito (✓) contradictorio en el listado de ítems inspeccionados.
+    if(idxChecklist!==undefined) setC('d', idxChecklist, 2);
+  } else if(dias<unAnio){
+    box.className='doc-alert warn';
+    box.innerHTML='<i class="ti ti-alert-triangle" style="font-size:16px;flex-shrink:0"></i><span>Vigencia inferior a <strong>1 año</strong> (quedan '+dias+' días). Se recomienda gestionar la renovación pronto.</span>';
+  } else {
+    box.className='doc-alert ok';
+    box.innerHTML='<i class="ti ti-circle-check" style="font-size:16px;flex-shrink:0"></i><span>Vigente — quedan '+dias+' días (más de 1 año).</span>';
+  }
+}
+
+// ─── BODEGA / AGENCIA — se identifica por el ENLACE usado (?bodega=NombreBodega) ───
+// vehículo. Esto es clave porque habrá flota propia Y tercerizada: un
+// vehículo de un tercero puede hacer su preoperacional en cualquier
+// agencia, así que lo que define "de qué agencia es este registro" es
+// el enlace con el que el conductor abrió el formulario, tomado de
+// ?bodega=NombreBodega en la URL (el mismo mecanismo que usa el panel).
+
+var BODEGA_ACTUAL = (function(){
+  try{
+    var qp = new URLSearchParams(window.location.search);
+    var b = qp.get('bodega');
+    return b || '';
+  }catch(e){ return ''; }
+})();
+// Convierte el nombre de una bodega en una abreviatura corta de 4 letras
+// (sin tildes/espacios) para incrustarla dentro del código del registro.
+// Esto es LA SOLUCIÓN DEFINITIVA para identificar de qué agencia es cada
+// preoperacional: funciona de inmediato aunque el script de Google aún no
+// se haya reimplementado con la columna "Bodega", porque el código del
+// registro (FHD-XXXX-XXXXXX) es un campo que SIEMPRE se ha guardado y
+// leído correctamente desde la primera versión del sistema.
+
+function abreviarBodega(nombre){
+  if(!nombre) return '';
+  var limpio = nombre.normalize ? nombre.normalize('NFD').replace(/[\u0300-\u036f]/g,'') : nombre;
+  limpio = limpio.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  return limpio.slice(0,4);
+}
+var BODEGA_ABREV = abreviarBodega(BODEGA_ACTUAL);
+
+// Los datos que pasan de una página a la otra (nombre, cédula, placa) solo valen un rato y se usan una vez
+var HANDOFF_MAX_MS = 2*3600*1000;
+
+// ARRANQUE DE LA PÁGINA.
+function iniciarApp(){
+  if(window.__fhdIniciado) return; // evita doble ejecución
+  window.__fhdIniciado = true;
+  // El GPS se activa PRIMERO y aislado — si cualquier otra parte falla más abajo, el GPS ya arrancó.
+  try{ initGPS(); }catch(e){ console.warn('initGPS falló:', e); }
+  try{ actualizarIndicadorPasos(); }catch(e){ console.warn('actualizarIndicadorPasos:', e); }
+  try{ construirSelectoresFecha(); }catch(e){ console.warn('construirSelectoresFecha:', e); }
+  try{
+    if(!window.isSecureContext){ document.getElementById('insecure-banner').style.display='block'; }
+  }catch(e){ console.warn('insecure-banner:', e); }
+  try{
+    if(BODEGA_ACTUAL){
+      var bb=document.getElementById('bodega-badge');
+      bb.textContent='🏭 Bodega: '+BODEGA_ACTUAL;
+      bb.style.display='inline-block';
+    }
+  }catch(e){ console.warn('bodega-badge:', e); }
+
+  // Autoformato de placa y cédula + consulta del estado del vehículo
+  try{
+    var placaInput=document.getElementById('placa');
+    placaInput.addEventListener('input',function(){
+      this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+      programarConsulta();
+    });
+    placaInput.addEventListener('blur',function(){ if(placaVal().length>=5 && CONSULTA.clave!==claveActual() && CONSULTA.claveEnCurso!==claveActual()) consultarEstado(); });
+  }catch(e){ console.warn('placa autoformato:', e); }
+  try{
+    var cedulaInput=document.getElementById('cedula');
+    cedulaInput.addEventListener('input',function(){
+      this.value=this.value.replace(/\D/g,'').slice(0,12);
+      if(placaVal().length>=5) programarConsulta();
+    });
+  }catch(e){ console.warn('cedula autoformato:', e); }
+
+  // Viene del preoperacional diario («Ir a la inspección de renting»): nombre, cédula y placa ya escritos
+  try{
+    var hd=JSON.parse(localStorage.getItem('fhd_handoff_insp')||'null');
+    if(hd){
+      localStorage.removeItem('fhd_handoff_insp');   // se usa una sola vez
+      if(hd.t && (Date.now()-hd.t)<HANDOFF_MAX_MS){
+        if(hd.n && !document.getElementById('conductor').value) document.getElementById('conductor').value=String(hd.n);
+        if(hd.c && !document.getElementById('cedula').value) document.getElementById('cedula').value=String(hd.c).replace(/\D/g,'').slice(0,12);
+        if(hd.p && !document.getElementById('placa').value) document.getElementById('placa').value=String(hd.p).toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);
+        if(placaVal().length>=5) programarConsulta();
+      }
+    }
+  }catch(e){ console.warn('traspaso desde el preoperacional:', e); }
+  try{
+    document.getElementById('km').addEventListener('input',actualizarComparativo);
+    document.getElementById('rec-nivel-comb').addEventListener('change',actualizarComparativo);
+  }catch(e){ console.warn('km listeners:', e); }
+
+  try{ buildCL('cl-d',DOC_ITEMS,'d'); }catch(e){ console.warn('buildCL docs:', e); }
+  try{ buildFotoGrid(); }catch(e){ console.warn('buildFotoGrid:', e); }
+  try{ buildElementos(); }catch(e){ console.warn('buildElementos:', e); }
+
+  var dGlobal = new Date();
+  try{
+    document.getElementById('hdate').textContent=dGlobal.toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }catch(e){ console.warn('hdate init:', e); }
+  try{
+    var fechaISO = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota',year:'numeric',month:'2-digit',day:'2-digit'}).format(dGlobal);
+    document.getElementById('fecha').value = fechaISO;
+  }catch(e){ console.warn('fecha hidden init:', e); }
+  try{
+    var fd=document.getElementById('fecha-display');
+    if(fd) fd.textContent = dGlobal.toLocaleDateString('es-CO',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  }catch(e){ console.warn('fecha-display init:', e); }
+  try{ initFirma(); }catch(e){ console.warn('initFirma:', e); }
+  try{ actualizarTextos(); }catch(e){ console.warn('actualizarTextos:', e); }
+}
+
+// ARRANQUE A PRUEBA DE FALLOS: se verifica que los elementos clave existan antes de iniciar.
+function arrancarCuandoListo(intento){
+  intento = intento || 0;
+  var listo = document.getElementById('el-lista') &&
+              document.getElementById('foto-grid') &&
+              document.getElementById('fcanvas') &&
+              document.getElementById('placa');
+  if(listo){ iniciarApp(); return; }
+  if(intento < 100){ setTimeout(function(){ arrancarCuandoListo(intento+1); }, 50); }
+  else { console.warn('La página no terminó de cargar a tiempo; se intenta iniciar de todas formas.'); iniciarApp(); }
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', function(){ arrancarCuandoListo(0); });
+} else {
+  arrancarCuandoListo(0);
+}
+window.addEventListener('load', function(){ arrancarCuandoListo(0); });
+</script>
+</body>
+</html>
