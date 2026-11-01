@@ -698,6 +698,10 @@ body.hide-costs .cost-ui{display:none !important;}
     <button class="nav-item" style="display:none" onclick="nav('nov-ruta',this)"><i class="ti ti-map-pin-exclamation"></i>Novedades en ruta<span class="nav-badge orange" id="b-nov" style="display:none">0</span></button>
   </div>
   <div class="sb-section">
+    <div class="sb-sec-lbl">Despachos RNDC</div>
+    <button class="nav-item" id="nav-rndc" onclick="abrirRNDC()"><i class="ti ti-truck-delivery"></i>Manifiestos RNDC</button>
+  </div>
+  <div class="sb-section">
     <div class="sb-sec-lbl">Costos</div>
     <button class="nav-item cost-ui" onclick="nav('cpk',this)"><i class="ti ti-coin"></i>Costo por km</button>
     <button class="nav-item" onclick="nav('rendimiento',this)"><i class="ti ti-gauge"></i>Rendimiento comb.</button>
@@ -12886,6 +12890,29 @@ function initApp(){
   refreshCondSelect();
   setInterval(function(){ loadPreops(true); },15000);
 }
+</script>
+<!-- MANIFIESTOS RNDC v5.3.3 -->
+<div id="rndc-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#F4F6F2">
+  <div style="display:flex;align-items:center;gap:12px;background:#2E5E14;color:#fff;padding:10px 18px;font-family:Arial,sans-serif;height:48px;box-sizing:border-box">
+    <span style="background:#7AB800;color:#2E5E14;font-weight:700;padding:1px 8px;border-radius:4px">FHD</span>
+    <strong>Manifiestos RNDC</strong>
+    <button onclick="cerrarRNDC()" style="margin-left:auto;background:#fff;color:#2E5E14;border:0;border-radius:6px;padding:6px 14px;font-weight:600;cursor:pointer">Volver al panel</button>
+  </div>
+  <iframe id="rndc-frame" title="Manifiestos RNDC" style="width:100%;height:calc(100% - 48px);border:0"></iframe>
+</div>
+<script>
+function abrirRNDC(){
+  var f = document.getElementById('rndc-frame');
+  if (!f.getAttribute('src')) f.setAttribute('src', 'fhd-manifiestos-rndc.html?embed=1');
+  document.getElementById('rndc-overlay').style.display = 'block';
+}
+function cerrarRNDC(){ document.getElementById('rndc-overlay').style.display = 'none'; }
+// Los enlaces de bodega (?bodega=...) no ven el módulo RNDC
+document.addEventListener('DOMContentLoaded', function(){
+  if (typeof esModoNacional === 'function' && !esModoNacional()) {
+    var i = document.getElementById('nav-rndc'); if (i) (i.closest('.sb-section') || i).style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>
