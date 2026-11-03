@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FHD · Manifiestos RNDC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --verde:#2E5E14;--verde-2:#3D7A1B;--lima:#7AB800;--lima-suave:#F2F8E6;--tinta:#333B33;--gris:#5F6A61;--linea:#DCE2D8;--fondo:#F4F6F2;--blanco:#FFFFFF;
+  --ok:#2E7D32;--ok-bg:#E6F2E7;--warn:#8A5A00;--warn-bg:#FBF0DA;--err:#B3261E;--err-bg:#FBE7E5;--info:#285C8C;--info-bg:#E4EEF7;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Barlow',Arial,sans-serif;color:var(--tinta);background:var(--fondo);font-size:15px;line-height:1.5}
+header{background:var(--verde);color:#fff;padding:12px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header h1{font-family:'Barlow Condensed',Arial,sans-serif;font-size:24px;margin:0;letter-spacing:.3px}
+header .marca{background:var(--lima);color:var(--verde);font-weight:700;font-family:'Barlow Condensed',Arial,sans-serif;padding:2px 10px;border-radius:4px;font-size:18px}
+header a{color:#fff;opacity:.85;font-size:14px;text-decoration:none}
+header a:hover{opacity:1;text-decoration:underline}
+header .ver{margin-left:auto;font-size:12.5px;opacity:.8}
+main{max-width:1280px;margin:0 auto;padding:20px 24px 48px}
+.fila{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px;margin-bottom:18px}
+.fila>*{min-width:0}
+.bloque{background:var(--blanco);border:1px solid var(--linea);border-radius:10px;padding:16px 18px}
+.bloque h2{font-family:'Barlow Condensed',Arial,sans-serif;font-size:20px;margin:0 0 10px;color:var(--verde)}
+label{font-size:13px;color:var(--gris);display:block;margin-bottom:4px}
+input[type=password],input[type=text]{width:100%;padding:8px 11px;border:1px solid var(--linea);border-radius:6px;font:inherit;background:#fff;color:var(--tinta)}
+input[readonly]{background:var(--fondo);color:var(--gris)}
+input:focus-visible,button:focus-visible,a:focus-visible,.zona:focus-visible{outline:3px solid var(--lima);outline-offset:1px}
+.btn{font:inherit;font-size:14px;font-weight:600;padding:8px 14px;border-radius:6px;border:1px solid var(--verde);background:#fff;color:var(--verde);cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--lima-suave)}
+.btn.prim{background:var(--verde);color:#fff}
+.btn.prim:hover{background:var(--verde-2)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.estado-con{margin-top:10px;font-size:14px}
+.zona{border:2px dashed var(--linea);border-radius:8px;padding:18px;text-align:center;color:var(--gris);cursor:pointer}
+.zona.activa{border-color:var(--lima);background:var(--lima-suave)}
+.zona b{color:var(--verde)}
+.resumen{display:flex;gap:24px;flex-wrap:wrap;margin-top:12px}
+.resumen .n{font-family:'Barlow Condensed',Arial,sans-serif;font-size:28px;line-height:1;color:var(--verde)}
+.resumen .t{font-size:13px;color:var(--gris)}
+.barra{height:8px;background:var(--linea);border-radius:4px;overflow:hidden;margin-top:12px;display:none}
+.barra i{display:block;height:100%;width:0;background:var(--lima);transition:width .3s}
+.msg{margin-top:10px;font-size:14px;color:var(--gris);min-height:20px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--linea);overflow-x:auto;scrollbar-width:thin}
+.tabs button{flex:0 0 auto;white-space:nowrap;font:inherit;font-weight:600;background:none;border:none;padding:10px 14px;color:var(--gris);cursor:pointer;border-bottom:3px solid transparent}
+.tabs button.on{color:var(--verde);border-bottom-color:var(--lima)}
+.tabs .cnt{font-weight:400;font-size:13px}
+.panel-tab{display:none}
+.panel-tab.on{display:block}
+.tabla-wrap{background:#fff;border:1px solid var(--linea);border-top:none;border-radius:0 0 10px 10px;overflow-x:auto}
+.tabla-wrap h2{margin:0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;background:var(--fondo);color:var(--gris);font-weight:600;font-size:13px;padding:8px 10px;border-bottom:1px solid var(--linea);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--linea);vertical-align:top}
+td.det{max-width:420px;color:var(--gris)}
+.vacio{padding:24px;text-align:center;color:var(--gris)}
+tr.clic{cursor:pointer}
+tr.clic:hover td{background:var(--lima-suave)}
+.st{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+.st.ok{background:var(--ok-bg);color:var(--ok)}
+.st.warn{background:var(--warn-bg);color:var(--warn)}
+.st.err{background:var(--err-bg);color:var(--err)}
+.st.info{background:var(--info-bg);color:var(--info)}
+.placa{font-family:'Barlow Condensed',Arial,sans-serif;font-weight:700;background:#FFD400;color:#111;padding:1px 6px;border-radius:3px;border:1px solid #111;letter-spacing:.5px;white-space:nowrap}
+.barra-tab{display:flex;justify-content:flex-end;gap:10px;padding:10px 0;flex-wrap:wrap}
+.subtabs{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:14px 0 10px}
+.subtabs button[data-base]{font:inherit;font-size:14px;padding:6px 14px;border-radius:20px;border:1px solid var(--linea);background:#fff;cursor:pointer;color:var(--gris)}
+.subtabs button[data-base].on{background:var(--verde);color:#fff;border-color:var(--verde)}
+.subtabs input{margin-left:auto;max-width:260px}
+h3.sec{font-family:'Barlow Condensed',Arial,sans-serif;color:var(--verde);font-size:19px;margin:18px 0 6px}
+dialog{border:none;border-radius:10px;padding:0;max-width:920px;width:94%}
+dialog::backdrop{background:rgba(20,30,20,.45)}
+dialog .cab{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;background:var(--verde);color:#fff}
+dialog pre{margin:0;padding:16px;max-height:65vh;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all;background:#fff}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px 16px;padding:16px;background:#fff;max-height:62vh;overflow:auto}
+.form-grid .ayuda{font-size:12px;color:var(--gris);margin-top:2px}
+@media (max-width:860px){.fila{grid-template-columns:1fr}main{padding:14px}header{padding:10px 14px}.subtabs input{margin-left:0;max-width:none}}
+@media (prefers-reduced-motion:reduce){.barra i{transition:none}}
+</style>
+</head>
+<body>
+<header id="cabecera">
+  <span class="marca">FHD</span>
+  <h1>Manifiestos RNDC</h1>
+  <a href="fhd-panel-control.html"><i class="ti ti-arrow-back-up"></i> Volver al panel</a>
+  <span class="ver" id="ver">Página v5.3.3 · servidor sin verificar</span>
+</header>
+
+<main>
+  <div class="fila">
+    <section class="bloque">
+      <h2>Acceso</h2>
+      <label for="pin">PIN del módulo</label>
+      <input type="password" id="pin" autocomplete="off" placeholder="PIN configurado en Apps Script">
+      <div class="acciones">
+        <button class="btn" id="b-probar"><i class="ti ti-plug-connected"></i> Probar conexión RNDC</button>
+        <a class="btn" href="Plantilla_RNDC_FHD_v5_3.xlsx" download><i class="ti ti-download"></i> Plantilla</a>
+      </div>
+      <div class="estado-con" id="estado-con"></div>
+    </section>
+
+    <section class="bloque">
+      <h2>Archivo plano</h2>
+      <div class="zona" id="zona" tabindex="0" role="button" aria-label="Cargar plantilla Excel">
+        <i class="ti ti-file-spreadsheet" style="font-size:28px"></i><br>
+        Arrastra aquí la plantilla diligenciada o <b>haz clic para buscarla</b>
+      </div>
+      <input type="file" id="archivo" accept=".xlsx" hidden>
+      <div class="resumen" id="resumen" hidden>
+        <div><div class="n" id="r-viajes">0</div><div class="t">viajes a expedir</div></div>
+        <div><div class="n" id="r-rem">0</div><div class="t">remesas</div></div>
+        <div><div class="n" id="r-cum">0</div><div class="t">cumplidos</div></div>
+        <div><div class="n" id="r-mae">0</div><div class="t">datos maestros</div></div>
+      </div>
+      <div class="acciones">
+        <button class="btn" id="b-simular" disabled><i class="ti ti-checklist"></i> Validar y simular</button>
+        <button class="btn prim" id="b-enviar" disabled><i class="ti ti-send"></i> Transmitir al RNDC</button>
+        <button class="btn" id="b-ordenes" disabled><i class="ti ti-clipboard-list"></i> Órdenes de cargue</button>
+      </div>
+      <div class="barra" id="barra"><i></i></div>
+      <div class="msg" id="msg" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="on" data-tab="t-control">Control</button>
+    <button data-tab="t-viajes">Manifiestos <span class="cnt" id="c-viajes"></span></button>
+    <button data-tab="t-remesas">Remesas <span class="cnt" id="c-remesas"></span></button>
+    <button data-tab="t-ordenes">Órdenes de cargue <span class="cnt" id="c-ordenes"></span></button>
+    <button data-tab="t-cumplidos">Cumplidos <span class="cnt" id="c-cumplidos"></span></button>
+    <button data-tab="t-val">Validación <span class="cnt" id="c-val"></span></button>
+    <button data-tab="t-base">Base maestra</button>
+    <button data-tab="t-hist">Historial</button>
+  </nav>
+
+  <div class="panel-tab on" id="t-control">
+    <div class="tabla-wrap" style="padding:16px 18px">
+      <div class="barra-tab" style="justify-content:space-between;padding-top:0">
+        <div class="resumen" id="ctl-hoy" style="margin-top:0"></div>
+        <button class="btn" id="b-control"><i class="ti ti-refresh"></i> Actualizar</button>
+      </div>
+      <h2 style="font-family:'Barlow Condensed',Arial,sans-serif;color:var(--verde);font-size:19px;margin:14px 0 6px">Manifiestos pendientes de cumplido</h2>
+      <p id="ctl-regla20" style="margin:0 0 8px;font-size:14px"></p>
+      <p style="margin:0 0 10px;color:var(--gris);font-size:14px">Manifiestos aceptados por el RNDC que aún no tienen cumplido registrado. Descarga el listado como plantilla de cumplidos y solo diligencia los tiempos.</p>
+      <div class="barra-tab" style="justify-content:flex-start;padding-top:0"><button class="btn" id="b-pend" disabled><i class="ti ti-file-download"></i> Descargar plantilla de cumplidos pendientes</button></div>
+      <div style="overflow-x:auto"><table><thead><tr><th>Días</th><th>Fecha expedición</th><th>ID viaje</th><th>Manifiesto</th><th>Tipo</th><th>Placa</th><th>Autorización</th><th>PDF</th></tr></thead>
+      <tbody id="tb-pend"><tr><td colspan="8" class="vacio">Ingresa el PIN y pulsa Actualizar.</td></tr></tbody></table></div>
+      <h2 style="font-family:'Barlow Condensed',Arial,sans-serif;color:var(--verde);font-size:19px;margin:22px 0 6px">Documentos vencidos o por vencer (30 días)</h2>
+      <p style="margin:0 0 10px;color:var(--gris);font-size:14px">Un viaje con SOAT, revisión técnico-mecánica o licencia vencidos a la fecha del manifiesto no se transmite.</p>
+      <div style="overflow-x:auto"><table><thead><tr><th>Días</th><th>Documento</th><th>Placa o cédula</th><th>Nombre o marca</th><th>Vence</th></tr></thead>
+      <tbody id="tb-venc"><tr><td colspan="5" class="vacio">Pulsa Actualizar.</td></tr></tbody></table></div>
+    </div>
+  </div>
+  <div class="panel-tab" id="t-viajes">
+    <div class="tabla-wrap"><table><thead><tr><th>ID viaje</th><th>Tipo</th><th>Manifiesto</th><th>Placa</th><th>Remesas</th><th>Estado</th><th>Autorización RNDC</th><th>Detalle</th><th>Manifiesto</th></tr></thead>
+    <tbody id="tb-viajes"><tr><td colspan="9" class="vacio">Sin resultados todavía.</td></tr></tbody></table></div>
+  </div>
+  <div class="panel-tab" id="t-remesas">
+    <div class="tabla-wrap"><table><thead><tr><th>ID viaje</th><th>Remesa</th><th>Estado</th><th>Autorización RNDC</th><th>Detalle</th></tr></thead>
+    <tbody id="tb-remesas"><tr><td colspan="5" class="vacio">Sin resultados todavía.</td></tr></tbody></table></div>
+  </div>
+  <div class="panel-tab" id="t-ordenes">
+    <div class="tabla-wrap"><table><thead><tr><th>ID viaje</th><th>Orden</th><th>Placa</th><th>Conductor</th><th>Cargas</th><th>Estado</th><th>Radicado RNDC</th><th>Detalle</th><th>Documento</th></tr></thead>
+    <tbody id="tb-ordenes"><tr><td colspan="9" class="vacio">Sin órdenes todavía. Carga el archivo y pulsa Órdenes de cargue.</td></tr></tbody></table></div>
+    <div class="barra-tab"><button class="btn prim" id="b-zip-ordenes" disabled><i class="ti ti-file-zip"></i> Descargar todas las órdenes PDF</button></div>
+  </div>
+  <div class="panel-tab" id="t-cumplidos">
+    <div class="tabla-wrap"><table><thead><tr><th>ID viaje</th><th>Manifiesto</th><th>Placa</th><th>Remesas</th><th>Estado</th><th>Autorización RNDC</th><th>Detalle</th><th></th></tr></thead>
+    <tbody id="tb-cumplidos"><tr><td colspan="8" class="vacio">Sin resultados todavía.</td></tr></tbody></table></div>
+  </div>
+  <div class="panel-tab" id="t-val">
+    <div class="tabla-wrap"><table><thead><tr><th>Nivel</th><th>Hoja</th><th>Fila</th><th>Columna</th><th>Mensaje</th></tr></thead>
+    <tbody id="tb-val"><tr><td colspan="5" class="vacio">Sin validaciones todavía.</td></tr></tbody></table></div>
+  </div>
+  <div class="panel-tab" id="t-base">
+    <div class="tabla-wrap" style="padding:16px 18px;border-top:1px solid var(--linea);border-radius:10px">
+      <div class="barra-tab" style="justify-content:space-between;padding-top:0;flex-wrap:wrap;gap:10px">
+        <div class="resumen" id="base-res" style="margin-top:0"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start">
+          <button class="btn" id="b-base"><i class="ti ti-refresh"></i> Actualizar</button>
+          <button class="btn" id="b-sync"><i class="ti ti-arrows-exchange"></i> Sincronizar con vehículos del panel</button>
+          <button class="btn" id="b-reg-sim"><i class="ti ti-list-check"></i> Revisar pendientes</button>
+          <button class="btn prim" id="b-reg"><i class="ti ti-cloud-upload"></i> Registrar en RNDC</button>
+          <button class="btn" id="b-base-xls"><i class="ti ti-file-download"></i> Descargar base</button>
+        </div>
+      </div>
+      <div class="subtabs">
+        <button class="on" data-base="vehiculos">Vehículos</button>
+        <button data-base="conductores">Conductores</button>
+        <button data-base="terceros">Terceros y sedes</button>
+        <button class="btn" id="b-nuevo" style="padding:6px 14px;border-radius:20px"><i class="ti ti-plus"></i> Nuevo</button>
+        <input type="text" id="base-buscar" placeholder="Buscar placa, cédula o nombre">
+      </div>
+      <div style="overflow-x:auto"><table><thead id="base-head"></thead>
+      <tbody id="base-body"><tr><td class="vacio">Ingresa el PIN y pulsa Actualizar.</td></tr></tbody></table></div>
+      <h3 class="sec" id="reg-titulo" hidden>Resultado del registro en el RNDC</h3>
+      <div style="overflow-x:auto"><table id="reg-tabla" hidden><thead><tr><th>Tipo</th><th>Identificación</th><th>Estado</th><th>Mensaje</th><th></th></tr></thead><tbody id="reg-body"></tbody></table></div>
+    </div>
+  </div>
+  <div class="panel-tab" id="t-hist">
+    <div class="barra-tab"><button class="btn" id="b-hist"><i class="ti ti-refresh"></i> Cargar historial</button></div>
+    <div class="tabla-wrap" style="border-top:1px solid var(--linea);border-radius:10px"><table><thead><tr><th>Fecha</th><th>Documento</th><th>ID viaje</th><th>Tipo</th><th>Consecutivo</th><th>Manifiesto</th><th>Placa</th><th>Estado</th><th>Autorización</th><th>Mensaje</th><th>Soporte</th><th>PDF</th></tr></thead>
+    <tbody id="tb-hist"><tr><td colspan="12" class="vacio">Pulsa "Cargar historial" para ver las últimas transmisiones.</td></tr></tbody></table></div>
+  </div>
+  <div class="barra-tab"><button class="btn prim" id="b-zip" disabled><i class="ti ti-file-zip"></i> Descargar todos los manifiestos PDF</button><button class="btn" id="b-exportar" disabled><i class="ti ti-file-export"></i> Descargar resultados en Excel</button></div>
+</main>
+
+<dialog id="dlg-form">
+  <div class="cab"><strong id="form-titulo">Registro</strong><button class="btn" id="form-cerrar" style="background:#fff">Cerrar</button></div>
+  <div class="form-grid" id="form-campos"></div>
+  <div class="barra-tab" style="padding:12px 16px;background:#fff;margin:0"><span class="msg" id="form-msg" style="margin:0 auto 0 0"></span><button class="btn prim" id="form-guardar"><i class="ti ti-device-floppy"></i> Guardar</button></div>
+</dialog>
+<dialog id="dlg">
+  <div class="cab"><strong>XML generado (clave oculta)</strong><button class="btn" id="dlg-cerrar" style="background:#fff">Cerrar</button></div>
+  <pre id="dlg-xml"></pre>
+</dialog>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  CONFIGURACIÓN: pegar aquí la MISMA URL /exec que usa el panel
+// ════════════════════════════════════════════════════════════════
+/* exported verPdf64, verManifiesto, verXml, verXmlReg, abrirForm */
+var API_URL = 'https://script.google.com/macros/s/AKfycbwjiumARkgmcSAHCdOEbNJhSPFC1jWj32zhl-wAmkniAcnYlTGwV9pU4UmiN1JQ2Kw/exec';
+
+var PAGINA_VERSION = 'Página v5.3.3';
+var LOTE_VIAJES = 3, LOTE_CUMPLIDOS = 4;
+var FECHAS = ['FECHA_EXPEDICION','FECHA_PAGO_SALDO','VENCE_POLIZA','FECHA_ENTREGA_DOCUMENTOS','VENCE_SOAT','VENCE_RTM','VENCE_LICENCIA'];
+var FECHAHORA = ['CITA_CARGUE','CITA_DESCARGUE','LLEGADA_CARGUE','ENTRADA_CARGUE','SALIDA_CARGUE','LLEGADA_DESCARGUE','ENTRADA_DESCARGUE','SALIDA_DESCARGUE'];
+var DATOS = null, RES = nuevoRes(), PEND = [], ocupado = false;
+
+function nuevoRes(){ return { viajes: [], remesas: [], cumplidos: [], ordenes: [], errores: [] }; }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function pad(n){ return ('0' + n).slice(-2); }
+function msg(t){ $('msg').textContent = t; }
+function norm(s){ return String(s == null ? '' : s).trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase(); }
+
+// Modo incrustado dentro del panel (iframe): oculta la cabecera propia
+if (/[?&]embed=1/.test(location.search)) { $('cabecera').style.display = 'none'; }
+
+$('pin').value = sessionStorage.getItem('rndc_pin') || '';
+$('pin').addEventListener('input', function(){ sessionStorage.setItem('rndc_pin', this.value); });
+
+document.querySelectorAll('.tabs button').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.tabs button').forEach(function(x){ x.classList.remove('on'); });
+    document.querySelectorAll('.panel-tab').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on'); $(b.dataset.tab).classList.add('on');
+  });
+});
+function irA(tab){ var b = document.querySelector('.tabs button[data-tab="' + tab + '"]'); if (b) b.click(); }
+
+function api(cuerpo){
+  if (!API_URL) return Promise.reject(new Error('Falta configurar API_URL en el código de esta página.'));
+  var pin = $('pin').value.trim();
+  if (!pin) return Promise.reject(new Error('Ingresa el PIN del módulo.'));
+  cuerpo.pin = pin;
+  if (cuerpo.action === 'rndc_procesar' && DATOS) cuerpo.parametros = DATOS.param;
+  return fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(cuerpo) })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (j.version) $('ver').textContent = PAGINA_VERSION + ' · ' + j.version;
+      if (!j.ok) throw new Error(j.error || 'Error del servidor');
+      return j;
+    });
+}
+
+// ── Conexión ──
+$('b-probar').addEventListener('click', function(){
+  $('estado-con').innerHTML = 'Probando...';
+  api({ action: 'rndc_probar' }).then(function(j){
+    var h = '<span class="st ' + (j.conexion === 'OK' ? 'ok' : 'err') + '">RNDC: ' + esc(j.conexion) + '</span> <span style="color:var(--gris);font-size:13px">' + esc(j.detalle) + '</span>';
+    if (j.via) h += '<br><span style="color:var(--gris);font-size:13px">Conexión: ' + esc(j.via) + '</span>';
+    if (j.propiedadesFaltantes && j.propiedadesFaltantes.length) h += '<br><span class="st warn">Faltan propiedades: ' + esc(j.propiedadesFaltantes.join(', ')) + '</span>';
+    h += '<br><span style="font-size:13px;color:var(--gris)">Numeración automática: manifiesto ' + esc(j.numeracion.manifiesto || 'no configurada') + ' · remesa ' + esc(j.numeracion.remesa || 'no configurada') + '</span>';
+    $('estado-con').innerHTML = h;
+  }).catch(function(e){ $('estado-con').innerHTML = '<span class="st err">' + esc(e.message) + '</span>'; });
+});
+
+// ── Lectura del archivo plano ──
+var zona = $('zona');
+zona.addEventListener('click', function(){ $('archivo').click(); });
+zona.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('archivo').click(); } });
+zona.addEventListener('dragover', function(e){ e.preventDefault(); zona.classList.add('activa'); });
+zona.addEventListener('dragleave', function(){ zona.classList.remove('activa'); });
+zona.addEventListener('drop', function(e){ e.preventDefault(); zona.classList.remove('activa'); if (e.dataTransfer.files[0]) leerArchivo(e.dataTransfer.files[0]); });
+$('archivo').addEventListener('change', function(){ if (this.files[0]) leerArchivo(this.files[0]); this.value = ''; });
+
+function serialFecha(n){ var d = new Date(Math.round((n - 25569) * 86400000)); return pad(d.getUTCDate()) + '/' + pad(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear(); }
+function serialFechaHora(n){ var d = new Date(Math.round((n - 25569) * 1440) * 60000); return pad(d.getUTCDate()) + '/' + pad(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear() + ' ' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); }
+function convertirCelda(h, v){
+  if (typeof v === 'number' && FECHAS.indexOf(h) > -1) return serialFecha(v);
+  if (typeof v === 'number' && FECHAHORA.indexOf(h) > -1) return serialFechaHora(v);
+  return v;
+}
+function resolverHoy(v){
+  var m = String(v).trim().toUpperCase().match(/^HOY\s*([+-]\s*\d+)?$/);
+  if (!m) return v;
+  var d = new Date(); d.setDate(d.getDate() + (m[1] ? parseInt(m[1].replace(/\s/g, ''), 10) : 0));
+  return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear();
+}
+function leerParametros(wb){
+  var ws = wb.Sheets['Parametros'], p = {};
+  if (!ws) return p;
+  XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' }).slice(1).forEach(function(f){
+    var k = String(f[0] || '').trim();
+    if (k && f[1] !== '' && f[1] != null) p[k] = resolverHoy(convertirCelda(k, f[1]));
+  });
+  return p;
+}
+function leerHoja(wb, nombre, param){
+  var ws = wb.Sheets[nombre];
+  if (!ws) return [];
+  var filas = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
+  var enc = (filas[0] || []).map(function(h){ return String(h).trim(); });
+  var out = [];
+  filas.slice(1).forEach(function(fila, i){
+    var o = { _fila: i + 2 }, vacia = true;
+    enc.forEach(function(h, k){
+      if (!h || h === 'CONTROL_REMESAS') return;
+      var v = convertirCelda(h, fila[k]);
+      if (v !== '' && v != null) vacia = false;
+      o[h] = (typeof v === 'string') ? resolverHoy(v) : v;
+    });
+    if (vacia || norm(o.ID_VIAJE).indexOf('EJEMPLO') === 0) return;
+    enc.forEach(function(h){ if (h && (o[h] === '' || o[h] == null) && param[h] != null) o[h] = param[h]; });
+    out.push(o);
+  });
+  return out;
+}
+function leerArchivo(f){
+  var r = new FileReader();
+  r.onload = function(e){
+    try {
+      var wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+      var param = leerParametros(wb);
+      DATOS = { nombre: f.name, param: param, viajes: leerHoja(wb, 'Viajes', param), remesas: leerHoja(wb, 'Remesas', param),
+                cumplidos: leerHoja(wb, 'Cumplidos', param), cumplidosRemesas: leerHoja(wb, 'Cumplidos_Remesas', param),
+                maestros: { vehiculos: leerHoja(wb, 'Vehiculos', {}), conductores: leerHoja(wb, 'Conductores', {}),
+                            terceros: leerHoja(wb, 'Terceros', {}), catalogos: leerHoja(wb, 'Catalogos', {}) } };
+      DATOS.nMaestros = ['vehiculos','conductores','terceros','catalogos'].reduce(function(a, k){ return a + DATOS.maestros[k].length; }, 0);
+      $('r-mae').textContent = DATOS.nMaestros;
+      $('r-viajes').textContent = DATOS.viajes.length; $('r-rem').textContent = DATOS.remesas.length; $('r-cum').textContent = DATOS.cumplidos.length;
+      $('resumen').hidden = false;
+      zona.innerHTML = '<i class="ti ti-file-check" style="font-size:28px;color:var(--ok)"></i><br><b>' + esc(f.name) + '</b><br>Clic para cambiar de archivo';
+      var hay = DATOS.viajes.length + DATOS.cumplidos.length + DATOS.nMaestros > 0;
+      $('b-simular').disabled = !hay; $('b-enviar').disabled = !hay; $('b-ordenes').disabled = !hay;
+      msg(hay ? 'Archivo listo. Ejecuta primero "Validar y simular".' : 'El archivo no tiene viajes ni cumplidos (las filas EJEMPLO se ignoran).');
+    } catch (err) { msg('No se pudo leer el archivo: ' + err.message); DATOS = null; }
+  };
+  r.readAsArrayBuffer(f);
+}
+
+// ── Ejecución ──
+$('b-simular').addEventListener('click', function(){ ejecutar('simular'); });
+$('b-ordenes').addEventListener('click', function(){
+  if (!DATOS || !DATOS.viajes.length) { msg('El archivo no trae viajes para generar órdenes de cargue.'); return; }
+  var reg = String((DATOS.param || {}).ORDEN_CARGUE_RNDC || 'SI').toUpperCase() !== 'NO';
+  if (!confirm('Se generarán las órdenes de cargue de ' + DATOS.viajes.length + ' viaje(s)' +
+    (reg ? ' y se registrarán en el RNDC como información de carga y de viaje (los viajes urbanos solo generan el PDF).' : ' sin registro en el RNDC.') +
+    '\nLo ya generado antes no se repite.\n\n¿Desea continuar?')) return;
+  ejecutar('enviar', true);
+});
+$('b-enviar').addEventListener('click', function(){
+  if (!DATOS) return;
+  var t = [];
+  if (DATOS.viajes.length) t.push(DATOS.viajes.length + ' viaje(s) a expedir');
+  if (DATOS.cumplidos.length) t.push(DATOS.cumplidos.length + ' cumplido(s)');
+  if (!confirm('Se transmitirán al RNDC: ' + t.join(' y ') + '.\nLo ya aceptado antes no se reenvía.\n\n¿Desea continuar?')) return;
+  ejecutar('enviar');
+});
+function bloquear(si){
+  ocupado = si;
+  $('b-simular').disabled = si || !DATOS; $('b-enviar').disabled = si || !DATOS; $('b-ordenes').disabled = si || !DATOS; $('b-probar').disabled = si;
+  $('b-exportar').disabled = si || !(RES.viajes.length || RES.cumplidos.length);
+  $('barra').style.display = si ? 'block' : 'none';
+}
+function progreso(p){ $('barra').firstElementChild.style.width = Math.round(p) + '%'; }
+function lotes(lista, n){ var o = []; for (var i = 0; i < lista.length; i += n) o.push(lista.slice(i, i + n)); return o; }
+function secuencia(tareas){ return tareas.reduce(function(p, t){ return p.then(t); }, Promise.resolve()); }
+
+function ejecutar(modo, soloOrdenes){
+  if (!DATOS || ocupado) return;
+  RES = nuevoRes(); pintar();
+  bloquear(true); progreso(3);
+  var idsArchivo = DATOS.viajes.map(function(v){ return v.ID_VIAJE; });
+  var previo = Promise.resolve();
+  if (DATOS.nMaestros) {
+    msg('Actualizando datos maestros (vehículos, conductores, terceros, catálogos)...');
+    previo = api(Object.assign({ action: 'rndc_maestros' }, DATOS.maestros)).then(function(j){
+      var r = j.resultado || {}, t = Object.keys(r).map(function(k){ return k + ': ' + r[k].nuevos + ' nuevos, ' + r[k].actualizados + ' actualizados'; });
+      RES.errores.push(['AVISO', 'Maestros', '', '', 'Datos maestros guardados · ' + t.join(' · ')]);
+    });
+  }
+  previo.then(function(){
+    if (!DATOS.viajes.length && !DATOS.cumplidos.length) { msg('Datos maestros actualizados.'); return { soloMaestros: true }; }
+    msg('Validando el archivo completo...');
+    return api({ action: 'rndc_procesar', modo: 'validar', fase: 'todo', viajes: DATOS.viajes, remesas: DATOS.remesas,
+        cumplidos: DATOS.cumplidos, cumplidosRemesas: DATOS.cumplidosRemesas });
+  })
+  .then(function(val){
+    if (val.soloMaestros) { pintar(); irA('t-val'); return; }
+    RES.errores = RES.errores.concat(val.errores || []);
+    var okV = {}, okC = {};
+    val.viajes.forEach(function(v){
+      if (v.valido) { okV[v.fila] = true; return; }
+      var raw = DATOS.viajes.filter(function(x){ return x._fila === v.fila; })[0] || {};
+      var rems = DATOS.remesas.filter(function(r){ return norm(r.ID_VIAJE) === norm(raw.ID_VIAJE); });
+      if (soloOrdenes) RES.ordenes.push({ ID_VIAJE: raw.ID_VIAJE, NUM_ORDEN: '', PLACA: raw.PLACA, CONDUCTOR: raw.NUM_ID_CONDUCTOR || '',
+        REMESAS: rems.length, ESTADO: 'NO GENERADA - VALIDACIÓN', RADICADO_RNDC: '', DETALLE: v.errores.join('; ') });
+      else RES.viajes.push({ ID_VIAJE: raw.ID_VIAJE, TIPO_VIAJE: raw.TIPO_VIAJE || '', NUM_MANIFIESTO: raw.NUM_MANIFIESTO || '', PLACA: raw.PLACA,
+        REMESAS: rems.length, ESTADO: 'NO ENVIADO - VALIDACIÓN', AUTORIZACION_RNDC: '', DETALLE: v.errores.join('; ') });
+    });
+    val.cumplidos.forEach(function(c){ if (c.valido) okC[c.fila] = true; else if (!soloOrdenes) RES.cumplidos.push(c); });
+    var listaV = DATOS.viajes.filter(function(v){ return okV[v._fila]; });
+    var auto = String((DATOS.param || {}).REGISTRO_AUTOMATICO || 'SI').toUpperCase() !== 'NO';
+    var listaC = soloOrdenes ? [] : DATOS.cumplidos.filter(function(c){ return okC[c._fila]; });
+    pintar();
+    var total = listaV.length + listaC.length, hechos = 0;
+    if (!total) { msg('Nada pasó la validación. Revisa la pestaña Validación.'); irA(soloOrdenes ? 't-ordenes' : 't-val'); return; }
+    var verbo = soloOrdenes ? 'Generando' : modo === 'enviar' ? 'Transmitiendo' : 'Simulando';
+    // Órdenes de cargue: en la simulación se revisan junto con los manifiestos; con el botón propio se generan de verdad
+    var tareasOrden = (soloOrdenes || modo === 'simular') ? lotes(listaV, LOTE_VIAJES).map(function(lote){
+      return function(){
+        var ids = lote.map(function(v){ return norm(v.ID_VIAJE); });
+        msg(verbo + ' órdenes de cargue...');
+        return api({ action: 'rndc_procesar', modo: soloOrdenes ? 'enviar' : 'simular', fase: 'ordenes', viajes: lote,
+                     remesas: DATOS.remesas.filter(function(r){ return ids.indexOf(norm(r.ID_VIAJE)) > -1; }) })
+          .then(function(j){ RES.ordenes = RES.ordenes.concat(j.ordenes || []); })
+          .catch(function(e){ lote.forEach(function(v){ RES.ordenes.push({ ID_VIAJE: v.ID_VIAJE, PLACA: v.PLACA, ESTADO: 'PENDIENTE - ERROR', DETALLE: e.message }); }); })
+          .then(function(){ if (soloOrdenes) { hechos += lote.length; progreso(5 + 95 * hechos / total); } pintar(); });
+      };
+    }) : [];
+    // Con órdenes solo en PDF (ORDEN_CARGUE_RNDC = NO) no se transmite nada al RNDC
+    var regOrden = String((DATOS.param || {}).ORDEN_CARGUE_RNDC || 'SI').toUpperCase() !== 'NO';
+    var registro = (auto && listaV.length && (!soloOrdenes || regOrden)) ? function(){
+      msg(modo === 'enviar' ? 'Registrando en el RNDC los terceros, conductores y vehículos pendientes...' : 'Revisando registros pendientes en la base maestra...');
+      return registrarLoop(modo).then(function(t){ RES.errores.push(['AVISO', 'Base maestra', '', 'REGISTRO RNDC', resumenRegistro(t, modo)]);
+        t.detalle.filter(function(d){ return /RECHAZADO|INCOMPLETO/.test(d.estado); }).forEach(function(d){ RES.errores.push(['ADVERTENCIA', 'Base maestra', '', d.tipo + ' ' + d.id, d.estado + ': ' + (d.mensaje || '')]); });
+        pintar(); }).catch(function(e){ RES.errores.push(['ADVERTENCIA', 'Base maestra', '', 'REGISTRO RNDC', e.message]); });
+    } : null;
+    var tareas = (soloOrdenes ? [] : lotes(listaV, LOTE_VIAJES)).map(function(lote){
+      return function(){
+        var ids = lote.map(function(v){ return norm(v.ID_VIAJE); });
+        msg(verbo + ' manifiestos (' + (hechos + 1) + '-' + (hechos + lote.length) + ' de ' + listaV.length + ')...');
+        return api({ action: 'rndc_procesar', modo: modo, fase: 'expedicion', viajes: lote,
+                     remesas: DATOS.remesas.filter(function(r){ return ids.indexOf(norm(r.ID_VIAJE)) > -1; }) })
+          .then(function(j){ RES.viajes = RES.viajes.concat(j.viajes); RES.remesas = RES.remesas.concat(j.remesas); })
+          .catch(function(e){ lote.forEach(function(v){ RES.viajes.push({ ID_VIAJE: v.ID_VIAJE, PLACA: v.PLACA, ESTADO: 'PENDIENTE - ERROR', DETALLE: e.message }); }); })
+          .then(function(){ hechos += lote.length; progreso(5 + 95 * hechos / total); pintar(); });
+      };
+    }).concat(lotes(listaC, LOTE_CUMPLIDOS).map(function(lote){
+      return function(){
+        msg(verbo + ' cumplidos...');
+        return api({ action: 'rndc_procesar', modo: modo, fase: 'cumplidos', cumplidos: lote, cumplidosRemesas: DATOS.cumplidosRemesas, idsViajesArchivo: idsArchivo })
+          .then(function(j){ RES.cumplidos = RES.cumplidos.concat(j.cumplidos); })
+          .catch(function(e){ lote.forEach(function(c){ RES.cumplidos.push({ ID_VIAJE: c.ID_VIAJE, NUM_MANIFIESTO: c.NUM_MANIFIESTO, ESTADO: 'PENDIENTE - ERROR', DETALLE: e.message }); }); })
+          .then(function(){ hechos += lote.length; progreso(5 + 95 * hechos / total); pintar(); });
+      };
+    }));
+    tareas = tareas.concat(tareasOrden);
+    if (registro) tareas.unshift(registro);
+    return secuencia(tareas).then(function(){
+      if (soloOrdenes) {
+        var okO = RES.ordenes.filter(function(o){ return /GENERADA|YA GENERADA/.test(o.ESTADO) && !/NO GENERADA/.test(o.ESTADO); }).length;
+        msg('Órdenes de cargue: ' + okO + ' de ' + RES.ordenes.length + ' generadas.'); irA('t-ordenes'); return;
+      }
+      var okM = RES.viajes.filter(function(v){ return /ACEPTADO|SIMULADO OK|YA TRANSMITIDO/.test(v.ESTADO); }).length;
+      var okCu = RES.cumplidos.filter(function(c){ return /ACEPTADO|SIMULADO OK|YA CUMPLIDO/.test(c.ESTADO); }).length;
+      var r = [];
+      if (RES.viajes.length) r.push('manifiestos ' + okM + ' de ' + RES.viajes.length);
+      if (RES.cumplidos.length) r.push('cumplidos ' + okCu + ' de ' + RES.cumplidos.length);
+      msg((modo === 'enviar' ? 'Transmisión terminada: ' : 'Simulación terminada: ') + r.join(' · ') + ' correctos.' +
+          (modo === 'simular' ? ' Si todo está bien, pulsa Transmitir al RNDC.' : ''));
+      irA(RES.viajes.length ? 't-viajes' : 't-cumplidos');
+      if (modo === 'enviar') cargarControl();
+    });
+  })
+  .catch(function(e){ msg(e.message); })
+  .then(function(){ bloquear(false); pintar(); });
+}
+
+// ── Pintado ──
+function clase(e){
+  e = String(e || '');
+  if (/RECHAZAD/.test(e)) return 'err';
+  if (/VALIDACI|PENDIENTE|NO ENVIAD|NO GENERAD/.test(e)) return 'warn';
+  if (/ACEPTAD|SIMULAD|YA TRANSMITID|YA CUMPLIDO|VALIDO OK|GENERAD/.test(e)) return 'ok';
+  return 'info';
+}
+function st(e){ return '<span class="st ' + clase(e) + '">' + esc(e) + '</span>'; }
+function placa(p){ return p ? '<span class="placa">' + esc(p) + '</span>' : ''; }
+function vacioFila(n){ return '<tr><td colspan="' + n + '" class="vacio">Sin resultados todavía.</td></tr>'; }
+function pintar(){
+  $('tb-viajes').innerHTML = RES.viajes.length ? RES.viajes.map(function(v, i){
+    return '<tr><td>' + esc(v.ID_VIAJE) + '</td><td>' + esc(v.TIPO_VIAJE) + '</td><td>' + esc(v.NUM_MANIFIESTO) + '</td><td>' + placa(v.PLACA) +
+      '</td><td>' + esc(v.REMESAS) + '</td><td>' + st(v.ESTADO) + '</td><td><strong>' + esc(v.AUTORIZACION_RNDC) + '</strong></td><td class="det">' +
+      esc(v.DETALLE) + '</td><td style="white-space:nowrap">' + accionesManifiesto(v, i) + '</td></tr>';
+  }).join('') : vacioFila(9);
+  $('tb-remesas').innerHTML = RES.remesas.length ? RES.remesas.map(function(r){
+    return '<tr><td>' + esc(r.ID_VIAJE) + '</td><td>' + esc(r.CONSECUTIVO_REMESA) + '</td><td>' + st(r.ESTADO) + '</td><td><strong>' +
+      esc(r.AUTORIZACION_RNDC) + '</strong></td><td class="det">' + esc(r.DETALLE) + '</td></tr>';
+  }).join('') : vacioFila(5);
+  $('tb-cumplidos').innerHTML = RES.cumplidos.length ? RES.cumplidos.map(function(c, i){
+    return '<tr><td>' + esc(c.ID_VIAJE) + '</td><td>' + esc(c.NUM_MANIFIESTO) + '</td><td>' + placa(c.PLACA) + '</td><td>' + esc(c.REMESAS) +
+      '</td><td>' + st(c.ESTADO) + '</td><td><strong>' + esc(c.AUTORIZACION_RNDC) + '</strong></td><td class="det">' + esc(c.DETALLE) + '</td><td>' +
+      (c.xml ? '<button class="btn" style="padding:4px 10px" onclick="verXml(\'cumplidos\',' + i + ')">XML</button>' : '') + '</td></tr>';
+  }).join('') : vacioFila(8);
+  $('tb-ordenes').innerHTML = RES.ordenes.length ? RES.ordenes.map(function(o, i){
+    return '<tr><td>' + esc(o.ID_VIAJE) + '</td><td><strong>' + esc(o.NUM_ORDEN) + '</strong></td><td>' + placa(o.PLACA) + '</td><td>' + esc(o.CONDUCTOR) +
+      '</td><td>' + esc(o.REMESAS) + '</td><td>' + st(o.ESTADO) + '</td><td><strong>' + esc(o.RADICADO_RNDC) + '</strong></td><td class="det">' + esc(o.DETALLE) +
+      '</td><td style="white-space:nowrap">' + accionesOrden(o, i) + '</td></tr>';
+  }).join('') : vacioFila(9);
+  $('c-ordenes').textContent = RES.ordenes.length ? '(' + RES.ordenes.length + ')' : '';
+  $('b-zip-ordenes').disabled = ocupado || !idsPdfOrdenes().length;
+  $('tb-val').innerHTML = RES.errores.length ? RES.errores.map(function(e){
+    return '<tr><td><span class="st ' + ({ ERROR: 'err', ADVERTENCIA: 'warn' }[e[0]] || 'info') + '">' + esc(e[0]) + '</span></td><td>' + esc(e[1]) + '</td><td>' + esc(e[2]) +
+      '</td><td>' + esc(e[3]) + '</td><td>' + esc(e[4]) + '</td></tr>';
+  }).join('') : '<tr><td colspan="5" class="vacio">' + (RES.viajes.length || RES.cumplidos.length ? 'Sin observaciones de validación.' : 'Sin validaciones todavía.') + '</td></tr>';
+  $('c-viajes').textContent = RES.viajes.length ? '(' + RES.viajes.length + ')' : '';
+  $('c-remesas').textContent = RES.remesas.length ? '(' + RES.remesas.length + ')' : '';
+  $('c-cumplidos').textContent = RES.cumplidos.length ? '(' + RES.cumplidos.length + ')' : '';
+  var nE = RES.errores.filter(function(e){ return e[0] === 'ERROR'; }).length;
+  $('c-val').textContent = nE ? '(' + nE + ' errores)' : '';
+  $('b-exportar').disabled = ocupado || !(RES.viajes.length || RES.cumplidos.length || RES.ordenes.length);
+  $('b-zip').disabled = ocupado || !idsPdf().length;
+}
+function idsPdfOrdenes(){ return RES.ordenes.filter(function(o){ return o.PDF_ID; }).map(function(o){ return o.PDF_ID; }); }
+function accionesOrden(o, i){
+  var h = '';
+  if (o.PDF_URL) h += '<a class="btn" style="padding:4px 9px;margin:0 3px 3px 0;font-size:13px" href="' + esc(o.PDF_URL) + '" target="_blank" rel="noopener"><i class="ti ti-file-type-pdf"></i> PDF</a>';
+  if (o.PDF_URL) h += botonWhatsApp(o.CELULAR_CONDUCTOR, 'Orden de cargue N° ' + o.NUM_ORDEN + ' - Placa ' + o.PLACA +
+    (o.RADICADO_RNDC ? ' - Radicado RNDC ' + o.RADICADO_RNDC : '') + '. Preséntala en el sitio de cargue: ' + o.PDF_URL);
+  if (o.pdf64) h += mini('<i class="ti ti-eye"></i> Vista previa', 'onclick="verPdf64(RES.ordenes[' + i + '].pdf64)"');
+  if (o.xml) h += mini('XML', 'onclick="verXml(\'ordenes\',' + i + ')"');
+  return h;
+}
+function verPdf64(b64){
+  var bin = atob(b64), arr = new Uint8Array(bin.length);
+  for (var k = 0; k < bin.length; k++) arr[k] = bin.charCodeAt(k);
+  if (!window.open(URL.createObjectURL(new Blob([arr], { type: 'application/pdf' })), '_blank')) msg('Permite las ventanas emergentes para ver la vista previa.');
+}
+function idsPdf(){ return RES.viajes.filter(function(v){ return v.PDF_ID; }).map(function(v){ return v.PDF_ID; }); }
+function mini(txt, attrs){ return '<button class="btn" style="padding:4px 9px;margin:0 3px 3px 0;font-size:13px" ' + attrs + '>' + txt + '</button>'; }
+function accionesManifiesto(v, i){
+  var h = '';
+  if (v.PDF_URL) h += '<a class="btn" style="padding:4px 9px;margin:0 3px 3px 0;font-size:13px" href="' + esc(v.PDF_URL) + '" target="_blank" rel="noopener"><i class="ti ti-file-type-pdf"></i> PDF</a>';
+  if (v.PDF_URL) h += botonWhatsApp(v.CELULAR_CONDUCTOR, textoWhatsApp(v.NUM_MANIFIESTO, v.PLACA, v.AUTORIZACION_RNDC, v.PDF_URL));
+  if (v.pdf64) h += mini('<i class="ti ti-eye"></i> Vista previa', 'onclick="verManifiesto(' + i + ')"');
+  if (v.xml) h += mini('XML', 'onclick="verXml(\'viajes\',' + i + ')"');
+  return h;
+}
+function textoWhatsApp(num, pl, aut, url){
+  return 'Manifiesto de carga N° ' + num + ' - Placa ' + pl + ' - Autorización RNDC ' + aut + '. Descárgalo aquí: ' + url;
+}
+// Con celular abre el chat del conductor; sin celular abre WhatsApp para elegir el contacto. En los dos casos el mensaje lleva el enlace al PDF.
+function botonWhatsApp(celular, texto){
+  var c = String(celular || '').replace(/\D/g, '');
+  var url = (/^3\d{9}$/.test(c) ? 'https://wa.me/57' + c : 'https://wa.me/') + '?text=' + encodeURIComponent(texto);
+  return '<a class="btn" style="padding:4px 9px;margin:0 3px 3px 0;font-size:13px" target="_blank" rel="noopener" href="' + esc(url) + '" title="' +
+    (c ? 'Enviar al ' + c : 'Elegir el contacto en WhatsApp') + '"><i class="ti ti-brand-whatsapp"></i> Enviar</a>';
+}
+function verManifiesto(i){
+  var bin = atob(RES.viajes[i].pdf64), arr = new Uint8Array(bin.length);
+  for (var k = 0; k < bin.length; k++) arr[k] = bin.charCodeAt(k);
+  var url = URL.createObjectURL(new Blob([arr], { type: 'application/pdf' }));
+  if (!window.open(url, '_blank')) msg('Permite las ventanas emergentes para ver la vista previa.');
+}
+function verXml(grupo, i){ $('dlg-xml').textContent = (RES[grupo][i].xml || []).join('\n\n'); $('dlg').showModal(); }
+$('dlg-cerrar').addEventListener('click', function(){ $('dlg').close(); });
+
+$('b-zip-ordenes').addEventListener('click', function(){
+  var b = $('b-zip-ordenes'); b.disabled = true; msg('Empaquetando ' + idsPdfOrdenes().length + ' orden(es) de cargue...');
+  api({ action: 'rndc_zip', ids: idsPdfOrdenes() }).then(function(j){
+    msg(j.cantidad + ' orden(es) de cargue empaquetadas.'); window.open(j.url, '_blank');
+  }).catch(function(e){ msg(e.message); }).then(function(){ b.disabled = false; });
+});
+$('b-zip').addEventListener('click', function(){
+  var b = $('b-zip'); b.disabled = true; msg('Empaquetando ' + idsPdf().length + ' manifiesto(s)...');
+  api({ action: 'rndc_zip', ids: idsPdf() }).then(function(j){
+    msg(j.cantidad + ' manifiesto(s) empaquetados.'); window.open(j.url, '_blank');
+  }).catch(function(e){ msg(e.message); }).then(function(){ b.disabled = false; });
+});
+
+// ── Control ──
+var NOMBRES = { REMESA: 'Remesas', MANIFIESTO: 'Manifiestos', CUMPLIDO_REMESA: 'Cumplidos remesa', CUMPLIDO_MANIFIESTO: 'Cumplidos manifiesto' };
+function cargarControl(){
+  $('tb-pend').innerHTML = '<tr><td colspan="7" class="vacio">Cargando...</td></tr>';
+  return api({ action: 'rndc_control' }).then(function(j){
+    $('ctl-hoy').innerHTML = Object.keys(NOMBRES).map(function(k){
+      var x = j.hoy[k] || { aceptados: 0, rechazados: 0 };
+      return '<div><div class="n">' + x.aceptados + '</div><div class="t">' + NOMBRES[k] + ' aceptados hoy' + (x.rechazados ? ' · <span style="color:var(--err)">' + x.rechazados + ' rechazos</span>' : '') + '</div></div>';
+    }).join('') + '<div><div class="n">' + j.pendientesCumplido.length + '</div><div class="t">pendientes de cumplido</div></div>';
+    PEND = j.pendientesCumplido;
+    var r20 = j.regla20 || { expedidos30: 0, pendientes30: 0, porcentaje: 0 };
+    var cls20 = r20.porcentaje >= 20 ? 'err' : r20.porcentaje >= 15 ? 'warn' : 'ok';
+    $('ctl-regla20').innerHTML = '<span class="st ' + cls20 + '">' + r20.porcentaje + ' %</span> de cumplidos pendientes sobre ' + r20.expedidos30 +
+      ' manifiestos de los últimos 30 días (' + r20.pendientes30 + ' pendientes). ' +
+      (r20.porcentaje >= 20 ? '<b>El RNDC bloquea nuevos manifiestos por encima del 20 %: cumpla los pendientes.</b>' :
+       r20.porcentaje >= 15 ? 'Se acerca al límite del 20 % que bloquea nuevos manifiestos.' : 'Dentro del límite del 20 % que exige el RNDC.');
+    var V = j.vencimientos || [];
+    $('tb-venc').innerHTML = V.length ? V.map(function(v){
+      return '<tr><td><span class="st ' + (v.DIAS < 0 ? 'err' : v.DIAS <= 7 ? 'warn' : 'info') + '">' + (v.DIAS < 0 ? 'Vencido ' + (-v.DIAS) + ' d' : v.DIAS + ' d') + '</span></td><td>' + esc(v.TIPO) +
+        '</td><td>' + esc(v.ID) + '</td><td>' + esc(v.NOMBRE) + '</td><td>' + esc(v.VENCE) + '</td></tr>'; }).join('')
+      : '<tr><td colspan="5" class="vacio">No hay documentos vencidos ni por vencer en los próximos 30 días.</td></tr>';
+    $('b-pend').disabled = !PEND.length;
+    $('tb-pend').innerHTML = PEND.length ? PEND.map(function(p){
+      return '<tr><td><span class="st ' + (p.DIAS >= 5 ? 'err' : p.DIAS >= 2 ? 'warn' : 'info') + '">' + esc(p.DIAS) + '</span></td><td>' + esc(p.FECHA) +
+        '</td><td>' + esc(p.ID_VIAJE) + '</td><td>' + esc(p.NUM_MANIFIESTO) + '</td><td>' + esc(p.TIPO_VIAJE) + '</td><td>' + placa(p.PLACA) +
+        '</td><td>' + esc(p.AUTORIZACION) + '</td><td>' + (p.PDF ? '<a href="' + esc(p.PDF) + '" target="_blank" rel="noopener">Ver</a> ' +
+        botonWhatsApp(p.CELULAR, textoWhatsApp(p.NUM_MANIFIESTO, p.PLACA, p.AUTORIZACION, p.PDF)) : '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="8" class="vacio">No hay manifiestos pendientes de cumplido.</td></tr>';
+  }).catch(function(e){ $('tb-pend').innerHTML = '<tr><td colspan="7" class="vacio">' + esc(e.message) + '</td></tr>'; });
+}
+$('b-control').addEventListener('click', cargarControl);
+$('b-pend').addEventListener('click', function(){
+  var enc = ['ID_VIAJE','NUM_MANIFIESTO','LLEGADA_CARGUE','ENTRADA_CARGUE','SALIDA_CARGUE','LLEGADA_DESCARGUE','ENTRADA_DESCARGUE','SALIDA_DESCARGUE',
+             'FECHA_ENTREGA_DOCUMENTOS','TIPO_CUMPLIDO','VALOR_ADIC_HORAS_CARGUE','VALOR_ADIC_HORAS_DESCARGUE','VALOR_ADIC_FLETE','MOTIVO_VALOR_ADIC',
+             'VALOR_DESCUENTO','MOTIVO_DESCUENTO','VALOR_SOBREANTICIPO','OBSERVACIONES'];
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['CAMPO','VALOR','DESCRIPCION'],
+    ['TIPO_CUMPLIDO','C','Tipo de cumplido RNDC'],['FECHA_ENTREGA_DOCUMENTOS','HOY','Fecha de entrega de documentos']]), 'Parametros');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([enc].concat(PEND.map(function(p){ return [p.ID_VIAJE, p.NUM_MANIFIESTO]; }))), 'Cumplidos');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['ID_VIAJE','NUM_MANIFIESTO','ORDEN_REMESA','CONSECUTIVO_REMESA','CANTIDAD_CARGADA','CANTIDAD_ENTREGADA','UNIDAD_MEDIDA','LLEGADA_DESCARGUE','ENTRADA_DESCARGUE','SALIDA_DESCARGUE']]), 'Cumplidos_Remesas');
+  var d = new Date();
+  XLSX.writeFile(wb, 'Cumplidos_Pendientes_' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.xlsx');
+});
+
+// ── Base maestra ──
+var BASE = null, BASE_TIPO = 'vehiculos', FORM = null;
+var BASE_VISTA = {
+  vehiculos: ['PLACA','MARCA','CONFIGURACION','PESO_VACIO','CAPACIDAD_KG','NUM_ID_PROPIETARIO','VENCE_SOAT','VENCE_RTM','ESTADO_RNDC'],
+  conductores: ['NUM_ID','NOMBRE','TELEFONO','CATEGORIA_LICENCIA','LICENCIA','VENCE_LICENCIA','ESTADO_RNDC'],
+  terceros: ['TIPO_ID','NUM_ID','SEDE','NOMBRE','NOMBRE_SEDE','MUNICIPIO','ESTADO_RNDC']
+};
+var ETIQUETAS = { PLACA:'Placa', MARCA:'Marca', COD_MARCA:'Código marca RNDC', COD_LINEA:'Código línea RNDC', MODELO_ANIO:'Año modelo', COD_COLOR:'Código color RNDC',
+  CONFIGURACION:'Configuración', NUM_EJES:'Ejes', COD_CARROCERIA:'Código carrocería RNDC', NUM_CHASIS:'Chasis', PESO_VACIO:'Peso vacío (kg)',
+  PESO_VACIO_REMOLQUE:'Peso vacío remolque (kg)', CAPACIDAD_KG:'Capacidad (kg)', COD_COMBUSTIBLE:'Código combustible RNDC',
+  TIPO_ID_PROPIETARIO:'Tipo id propietario', NUM_ID_PROPIETARIO:'Id propietario', TIPO_ID_TENEDOR:'Tipo id tenedor', NUM_ID_TENEDOR:'Id tenedor',
+  NIT_ASEGURADORA_SOAT:'NIT aseguradora SOAT', ASEGURADORA_SOAT:'Aseguradora SOAT', POLIZA_SOAT:'Póliza SOAT', VENCE_SOAT:'Vence SOAT',
+  VENCE_RTM:'Vence revisión técnico-mecánica', TIPO_ID:'Tipo de identificación', NUM_ID:'Número de identificación', NOMBRE:'Nombre completo o razón social',
+  NOMBRES:'Nombres (personas)', PRIMER_APELLIDO:'Primer apellido', SEGUNDO_APELLIDO:'Segundo apellido', DIRECCION:'Dirección', TELEFONO:'Teléfono',
+  MUNICIPIO:'Municipio (DIVIPOLA 8 dígitos)', CATEGORIA_LICENCIA:'Categoría licencia', LICENCIA:'Número de licencia', VENCE_LICENCIA:'Vence licencia',
+  SEDE:'Código de sede RNDC', NOMBRE_SEDE:'Nombre de la sede', ESTADO_RNDC:'Estado RNDC' };
+var CLAVES = { vehiculos: ['PLACA'], conductores: ['NUM_ID'], terceros: ['NUM_ID','SEDE'] };
+function diasA(v){ var m = String(v || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/) || null, f;
+  if (m) f = new Date(+m[3], +m[2] - 1, +m[1]); else { m = String(v || '').match(/^(\d{4})[-/](\d{2})[-/](\d{2})/); if (!m) return null; f = new Date(+m[1], +m[2] - 1, +m[3]); }
+  var h = new Date(); h.setHours(0,0,0,0); return Math.round((f - h) / 864e5); }
+function celdaFecha(v){ var d = diasA(v); if (d === null) return esc(v); return '<span class="st ' + (d < 0 ? 'err' : d <= 30 ? 'warn' : 'ok') + '">' + esc(v) + '</span>'; }
+function estadoReg(e){ e = e || 'PENDIENTE'; var c = /REGISTRADO|EXISTENTE/.test(e) ? 'ok' : e === 'RECHAZADO' ? 'err' : e === 'INCOMPLETO' ? 'warn' : 'info'; return '<span class="st ' + c + '">' + esc(e) + '</span>'; }
+function cargarBase(){
+  $('base-body').innerHTML = '<tr><td class="vacio">Cargando...</td></tr>';
+  return api({ action: 'rndc_base' }).then(function(j){ BASE = j; pintarBase(); }).catch(function(e){ $('base-body').innerHTML = '<tr><td class="vacio">' + esc(e.message) + '</td></tr>'; });
+}
+function pintarBase(){
+  if (!BASE) return;
+  var nombres = { vehiculos: 'Vehículos', conductores: 'Conductores', terceros: 'Terceros y sedes' };
+  $('base-res').innerHTML = ['vehiculos','conductores','terceros'].map(function(k){ var r = BASE.registro[k];
+    return '<div><div class="n">' + r.total + '</div><div class="t">' + nombres[k] + ' · ' + r.registrados + ' en RNDC' + (r.pendientes ? ' · ' + r.pendientes + ' pendientes' : '') +
+      (r.rechazados ? ' · <span style="color:var(--err)">' + r.rechazados + ' rechazados</span>' : '') + '</div></div>'; }).join('');
+  var cols = BASE_VISTA[BASE_TIPO], q = norm($('base-buscar').value);
+  $('base-head').innerHTML = '<tr>' + cols.map(function(c){ return '<th>' + esc(ETIQUETAS[c] || c) + '</th>'; }).join('') + '</tr>';
+  var filas = BASE[BASE_TIPO].map(function(o, i){ o._i = i; return o; }).filter(function(o){ return !q || norm(cols.map(function(c){ return o[c]; }).join(' ')).indexOf(q) > -1; });
+  $('base-body').innerHTML = filas.length ? filas.map(function(o){
+    return '<tr class="clic" title="' + esc(o.MENSAJE_RNDC || 'Clic para editar') + '" onclick="abrirForm(' + o._i + ')">' + cols.map(function(c){
+      if (c === 'ESTADO_RNDC') return '<td>' + estadoReg(o[c]) + '</td>';
+      if (/^VENCE_/.test(c)) return '<td>' + celdaFecha(o[c]) + '</td>';
+      if (c === 'PLACA') return '<td><span class="placa">' + esc(o[c]) + '</span></td>';
+      return '<td>' + esc(o[c]) + '</td>'; }).join('') + '</tr>';
+  }).join('') : '<tr><td colspan="' + cols.length + '" class="vacio">Sin registros. Cárgalos con la plantilla (hojas café), con Nuevo o con Sincronizar.</td></tr>';
+}
+document.querySelectorAll('[data-base]').forEach(function(b){ b.addEventListener('click', function(){
+  document.querySelectorAll('[data-base]').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); BASE_TIPO = b.dataset.base; pintarBase(); }); });
+$('base-buscar').addEventListener('input', pintarBase);
+$('b-base').addEventListener('click', cargarBase);
+function abrirForm(i){
+  if (!BASE) { msg('Pulsa Actualizar en Base maestra primero.'); return; }
+  var o = i === undefined ? {} : BASE[BASE_TIPO][i], cols = BASE.columnas[BASE_TIPO].filter(function(c){ return !/_RNDC$/.test(c); });
+  FORM = { tipo: BASE_TIPO, nuevo: i === undefined };
+  $('form-titulo').textContent = (FORM.nuevo ? 'Nuevo · ' : 'Editar · ') + { vehiculos: 'vehículo', conductores: 'conductor', terceros: 'tercero o sede' }[BASE_TIPO];
+  $('form-campos').innerHTML = cols.map(function(c){
+    var ro = !FORM.nuevo && CLAVES[BASE_TIPO].indexOf(c) > -1;
+    return '<div><label for="f-' + c + '">' + esc(ETIQUETAS[c] || c) + '</label><input type="text" id="f-' + c + '" value="' + esc(o[c] || '') + '"' + (ro ? ' readonly' : '') +
+      (/^VENCE_/.test(c) ? ' placeholder="DD/MM/AAAA"' : '') + '></div>'; }).join('') +
+    (o.ESTADO_RNDC ? '<div style="grid-column:1/-1"><label>Estado en el RNDC</label>' + estadoReg(o.ESTADO_RNDC) + ' <span class="ayuda">' + esc(o.MENSAJE_RNDC || '') + '</span></div>' : '') +
+    '<div class="ayuda" style="grid-column:1/-1">Si el registro ya estaba en el RNDC y cambias sus datos, queda como MODIFICADO para volver a registrarlo.</div>';
+  $('form-msg').textContent = ''; $('dlg-form').showModal();
+}
+$('b-nuevo').addEventListener('click', function(){ abrirForm(); });
+$('form-cerrar').addEventListener('click', function(){ $('dlg-form').close(); });
+$('form-guardar').addEventListener('click', function(){
+  var o = {}; document.querySelectorAll('#form-campos input').forEach(function(inp){ o[inp.id.substring(2)] = inp.value.trim(); });
+  if (CLAVES[FORM.tipo].some(function(k){ return k !== 'SEDE' && !o[k]; })) { $('form-msg').textContent = 'Falta la identificación o la placa.'; return; }
+  var cuerpo = { action: 'rndc_maestros' }; cuerpo[FORM.tipo] = [o];
+  $('form-msg').textContent = 'Guardando...';
+  api(cuerpo).then(function(){ $('dlg-form').close(); return cargarBase(); }).catch(function(e){ $('form-msg').textContent = e.message; });
+});
+$('b-sync').addEventListener('click', function(){
+  msg('Sincronizando con el módulo de vehículos del panel...');
+  api({ action: 'rndc_sincronizar' }).then(function(j){ msg('Sincronizados ' + j.vehiculos + ' vehículos y ' + j.conductores + ' conductores del panel.'); return cargarBase(); }).catch(function(e){ msg(e.message); });
+});
+function registrarLoop(modo){
+  var tot = { registrados: 0, existentes: 0, rechazados: 0, incompletos: 0, listos: 0, detalle: [] }, vuelta = 0;
+  function paso(){
+    vuelta++;
+    return api({ action: 'rndc_registrar', modo: modo }).then(function(j){
+      ['registrados','existentes','rechazados','incompletos','listos'].forEach(function(k){ tot[k] += j[k] || 0; });
+      tot.detalle = tot.detalle.concat(j.detalle || []);
+      if (modo === 'enviar' && j.pendientes > 0 && vuelta < 20) return paso();
+      return tot;
+    });
+  }
+  return paso();
+}
+function pintarRegistro(t){
+  $('reg-titulo').hidden = false; $('reg-tabla').hidden = false;
+  var nom = { vehiculos: 'Vehículo', conductores: 'Conductor', terceros: 'Tercero' };
+  $('reg-body').innerHTML = t.detalle.length ? t.detalle.map(function(d, i){
+    return '<tr><td>' + esc(nom[d.tipo] || d.tipo) + '</td><td>' + esc(d.id) + '</td><td>' + estadoReg(d.estado) + '</td><td class="det">' + esc(d.mensaje || '') + '</td><td>' +
+      (d.xml ? '<button class="btn" style="padding:4px 10px" onclick="verXmlReg(' + i + ')">XML</button>' : '') + '</td></tr>'; }).join('')
+    : '<tr><td colspan="5" class="vacio">No hay registros pendientes: la base está al día en el RNDC.</td></tr>';
+  window._REG = t;
+}
+function verXmlReg(i){ $('dlg-xml').textContent = window._REG.detalle[i].xml; $('dlg').showModal(); }
+function resumenRegistro(t, modo){
+  return modo === 'enviar' ? 'Registro en RNDC: ' + t.registrados + ' registrados, ' + t.existentes + ' ya existían, ' + t.rechazados + ' rechazados, ' + t.incompletos + ' incompletos'
+    : 'Registro en RNDC: ' + t.listos + ' listos para registrar, ' + t.incompletos + ' incompletos';
+}
+$('b-reg-sim').addEventListener('click', function(){
+  msg('Revisando pendientes de registro...');
+  registrarLoop('simular').then(function(t){ pintarRegistro(t); msg(resumenRegistro(t, 'simular') + '.'); return cargarBase(); }).catch(function(e){ msg(e.message); });
+});
+$('b-reg').addEventListener('click', function(){
+  if (!confirm('Se registrarán en el RNDC los terceros, conductores y vehículos pendientes de la base.\n¿Desea continuar?')) return;
+  msg('Registrando en el RNDC...');
+  registrarLoop('enviar').then(function(t){ pintarRegistro(t); msg(resumenRegistro(t, 'enviar') + '.'); return cargarBase(); }).catch(function(e){ msg(e.message); });
+});
+$('b-base-xls').addEventListener('click', function(){
+  if (!BASE) { msg('Pulsa Actualizar primero.'); return; }
+  var wb = XLSX.utils.book_new(), hojas = { vehiculos: 'Vehiculos', conductores: 'Conductores', terceros: 'Terceros' };
+  Object.keys(hojas).forEach(function(k){ XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(BASE[k].map(function(o){ var c = {}; BASE.columnas[k].forEach(function(col){ c[col] = o[col]; }); return c; }), { header: BASE.columnas[k] }), hojas[k]); });
+  var d = new Date(); XLSX.writeFile(wb, 'Base_Maestra_RNDC_' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.xlsx');
+});
+
+// ── Historial ──
+$('b-hist').addEventListener('click', function(){
+  $('tb-hist').innerHTML = '<tr><td colspan="12" class="vacio">Cargando...</td></tr>';
+  api({ action: 'rndc_historial', limite: 300 }).then(function(j){
+    $('tb-hist').innerHTML = j.filas.length ? j.filas.map(function(f){
+      return '<tr><td>' + esc(f[0]) + '</td><td>' + esc(f[1]) + '</td><td>' + esc(f[2]) + '</td><td>' + esc(f[3]) + '</td><td>' + esc(f[4]) +
+        '</td><td>' + esc(f[5]) + '</td><td>' + placa(f[6]) + '</td><td>' + st(f[7]) + '</td><td><strong>' + esc(f[8]) + '</strong></td><td class="det">' +
+        esc(f[9]) + '</td><td>' + (f[10] ? '<a href="' + esc(f[10]) + '" target="_blank" rel="noopener">XML</a>' : '') + '</td><td>' +
+        (f[15] ? '<a href="' + esc(f[15]) + '" target="_blank" rel="noopener">PDF</a>' : '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="12" class="vacio">Aún no hay transmisiones registradas.</td></tr>';
+  }).catch(function(e){ $('tb-hist').innerHTML = '<tr><td colspan="12" class="vacio">' + esc(e.message) + '</td></tr>'; });
+});
+
+// ── Exportar ──
+$('b-exportar').addEventListener('click', function(){
+  function limpio(a){ return a.map(function(x){ var c = Object.assign({}, x); delete c.xml; delete c.pdf64; delete c.PDF_ID; delete c.valido; delete c.fila; return c; }); }
+  var wb = XLSX.utils.book_new();
+  if (RES.viajes.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(limpio(RES.viajes)), 'Manifiestos');
+  if (RES.remesas.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(limpio(RES.remesas)), 'Remesas');
+  if (RES.cumplidos.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(limpio(RES.cumplidos)), 'Cumplidos');
+  if (RES.ordenes.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(limpio(RES.ordenes)), 'Ordenes de cargue');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['NIVEL','HOJA','FILA','COLUMNA','MENSAJE']].concat(RES.errores)), 'Validacion');
+  var d = new Date();
+  XLSX.writeFile(wb, 'Resultados_RNDC_' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '_' + pad(d.getHours()) + pad(d.getMinutes()) + '.xlsx');
+});
+
+if (!API_URL) msg('Configura API_URL en el código de esta página con la URL /exec del panel.');
+else if ($('pin').value) { cargarControl(); }
+document.querySelector('[data-tab="t-base"]').addEventListener('click', function(){ if (!BASE && $('pin').value) cargarBase(); });
+</script>
+
+</body>
+</html>
