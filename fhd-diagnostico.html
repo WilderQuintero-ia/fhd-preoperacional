@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnóstico de conexión FHD</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:760px;margin:20px auto;padding:0 14px;color:#222}
+h1{font-size:20px;color:#2E5E1E}button{background:#5A9A1E;color:#fff;border:0;border-radius:8px;padding:12px 20px;font-size:16px;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
+.ok{color:#2E7D32;font-weight:bold}.err{color:#C62828;font-weight:bold}.esp{color:#E65100}small{color:#666}
+</style></head><body>
+<h1>Diagnóstico de conexión — Panel FHD</h1>
+<p>Presiona el botón, espera a que terminen las 6 pruebas (máximo 2 minutos) y envía una foto de la tabla completa.</p>
+<button id="b" onclick="correr()">Iniciar diagnóstico</button>
+<table><thead><tr><th>#</th><th>Prueba</th><th>Resultado</th><th>Tiempo</th></tr></thead><tbody id="t"></tbody></table>
+<p id="info"><small></small></p>
+<script>
+var API_URL = 'https://script.google.com/macros/s/AKfycbwjiumARkgmcSAHCdOEbNJhSPFC1jWj32zhl-wAmkniAcnYlTGwV9pU4UmiN1JQ2Kw/exec';
+var tk = '';
+try { var s = JSON.parse(sessionStorage.getItem('fhd_panel_sesion') || localStorage.getItem('fhd_panel_sesion') || 'null'); tk = (s && s.tk) || ''; } catch (e) {}
+document.querySelector('#info small').textContent = 'Navegador: ' + navigator.userAgent + ' · Sesión guardada del panel: ' + (tk ? 'sí' : 'no') + ' · ' + new Date().toLocaleString();
+function fila(n, nombre) { var tr = document.createElement('tr'); tr.innerHTML = '<td>' + n + '</td><td>' + nombre + '</td><td class="esp">probando...</td><td></td>'; document.getElementById('t').appendChild(tr); return tr; }
+function prueba(n, nombre, hacer) {
+  var tr = fila(n, nombre), ini = Date.now();
+  return new Promise(function (fin) {
+    var listo = false;
+    var tmo = setTimeout(function () { if (listo) return; listo = true; tr.cells[2].className = 'err'; tr.cells[2].textContent = 'SIN RESPUESTA en 60 s'; tr.cells[3].textContent = '> 60 s'; fin(); }, 60000);
+    hacer().then(function (r) { return r.text(); }).then(function (txt) {
+      if (listo) return; listo = true; clearTimeout(tmo);
+      var seg = ((Date.now() - ini) / 1000).toFixed(1) + ' s';
+      tr.cells[2].className = 'ok'; tr.cells[2].textContent = 'Respondió (' + Math.round(txt.length / 1024) + ' KB): ' + txt.slice(0, 80);
+      tr.cells[3].textContent = seg; fin();
+    }).catch(function (e) {
+      if (listo) return; listo = true; clearTimeout(tmo);
+      tr.cells[2].className = 'err'; tr.cells[2].textContent = 'ERROR: ' + e.message; tr.cells[3].textContent = ((Date.now() - ini) / 1000).toFixed(1) + ' s'; fin();
+    });
+  });
+}
+function post(obj) { return fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(obj) }); }
+function correr() {
+  document.getElementById('b').disabled = true; document.getElementById('t').innerHTML = '';
+  var relleno = new Array(100001).join('x');
+  prueba(1, 'Consulta simple (GET versión)', function () { return fetch(API_URL + '?action=version&_ts=' + Date.now(), { cache: 'no-store' }); })
+  .then(function () { return prueba(2, 'Envío pequeño (POST sin sesión)', function () { return post({ action: 'sesion', tk: 'diagnostico' }); }); })
+  .then(function () { return prueba(3, 'Envío grande 100 KB (POST)', function () { return post({ action: 'diag_prueba', relleno: relleno }); }); })
+  .then(function () { return prueba(4, 'Validar TU sesión guardada (POST)', function () { return tk ? post({ action: 'sesion', tk: tk }) : Promise.reject(new Error('no hay sesión guardada en este navegador')); }); })
+  .then(function () { return prueba(5, 'Descargar la base del panel (GET loadDB)', function () { return tk ? fetch(API_URL + '?action=loadDB&tk=' + encodeURIComponent(tk) + '&_ts=' + Date.now(), { cache: 'no-store' }) : Promise.reject(new Error('no hay sesión guardada en este navegador')); }); })
+  .then(function () { return prueba(6, 'Lista de preoperacionales (GET)', function () { return tk ? fetch(API_URL + '?action=list&tk=' + encodeURIComponent(tk) + '&_ts=' + Date.now(), { cache: 'no-store' }) : Promise.reject(new Error('no hay sesión guardada en este navegador')); }); })
+  .then(function () { document.getElementById('b').disabled = false; document.getElementById('b').textContent = 'Repetir diagnóstico'; });
+}
+</script></body></html>
